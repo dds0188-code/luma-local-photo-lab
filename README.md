@@ -22,3 +22,7 @@ The current prototype is browser-based and does not require a paid API. Do not c
 ## Deployment
 
 GitHub Pages deployment configuration will be added after the application source is uploaded.
+
+## Deployment status
+
+GitHub Pages deployment workflow is configured via `.github/workflows/deploy-pages.yml`. Every push to `main` attempts to deploy the current site.
