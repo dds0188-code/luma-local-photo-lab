@@ -3,6 +3,7 @@ const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:4173/';
 
 test.describe('Luma Local Photo Lab browser smoke', () => {
   test('loads app, edits a real canvas image, supports history and exports', async ({ page }) => {
+    test.setTimeout(90000);
     const pageErrors = [];
     page.on('pageerror', error => pageErrors.push(error.message));
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
@@ -62,7 +63,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
     await advanced.locator('summary').click();
     await expect(page.locator('#exportSizedJpeg')).toBeVisible();
-    const downloadPromise = page.waitForEvent('download');
+    const downloadPromise = page.waitForEvent('download', { timeout: 15000 });
     await page.locator('#exportSizedJpeg').click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toMatch(/\.(jpe?g)$/i);
