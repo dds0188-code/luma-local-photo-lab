@@ -351,4 +351,36 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     expect(pageErrors, 'uncaught browser errors during rapid imports').toEqual([]);
   });
 
+  test('manual relighting changes rendered pixels, supports presets, reset, and exports without runtime errors', async ({ page }) => {
+    test.setTimeout(60000);
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+    await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+    const dataUrl = await page.evaluate(() => {
+      const c = document.createElement('canvas'); c.width = 240; c.height = 180;
+      const x = c.getContext('2d'); x.fillStyle = '#555b60'; x.fillRect(0, 0, 240, 180);
+      return c.toDataURL('image/png');
+    });
+    await page.locator('#fileInput').setInputFiles({
+      name: 'luma-relight-test.png', mimeType: 'image/png',
+      buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+    });
+    await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-relight-test.png');
+    await page.locator('[data-tool="relight"]').click();
+    await expect(page.locator('[data-tool-panel="relight"]')).toBeVisible();
+    const before = await page.locator('#preview').evaluate(c => [...c.getContext('2d').getImageData(120, 65, 1, 1).data]);
+    await page.locator('#relightPresetWarm').click();
+    await page.waitForTimeout(400);
+    const after = await page.locator('#preview').evaluate(c => [...c.getContext('2d').getImageData(120, 65, 1, 1).data]);
+    expect(after).not.toEqual(before);
+    await expect(page.locator('#relightStatus')).toContainText('적용 중');
+    await page.locator('#relightType').selectOption('linear');
+    await page.locator('#relightAngle').fill('25');
+    await page.locator('#relightAngle').dispatchEvent('input');
+    await page.waitForTimeout(200);
+    await page.locator('#relightReset').click();
+    await expect(page.locator('#relightStatus')).toContainText('꺼짐');
+    expect(pageErrors, 'uncaught relighting errors').toEqual([]);
+  });
+
 });
