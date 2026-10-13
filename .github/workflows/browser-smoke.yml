@@ -26,7 +26,17 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Start local app server
-        run: npx --yes http-server . -p 4173 -c-1 > /tmp/luma-server.log 2>&1 &
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/luma-server.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then
+              echo "Local app server ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/luma-server.log
+          exit 1
       - name: Run browser tests against checked-out source
         env:
           BASE_URL: http://127.0.0.1:4173/
