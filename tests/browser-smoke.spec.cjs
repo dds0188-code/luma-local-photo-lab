@@ -30,9 +30,9 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await expect(page.locator('#compareBtn')).toBeEnabled();
     await expect(page.locator('#exportBtn')).toBeEnabled();
 
-    // Transform controls live inside the Adjust tool panel; open it as a real user would.
-    await page.locator('[data-tool="adjust"]').click();
-    await expect(page.locator('[data-tool-panel="adjust"]')).toBeVisible();
+    // Transform controls live in the Crop/Transform tool panel; open that panel before testing them.
+    await page.locator('[data-tool="crop"]').click();
+    await expect(page.locator('[data-tool-panel="crop"]')).toBeVisible();
 
     const before = await page.locator('#preview').evaluate(c => {
       const x = c.getContext('2d'); return [...x.getImageData(80, 80, 1, 1).data];
