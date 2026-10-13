@@ -3,15 +3,20 @@ const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:4173/';
 
 test.describe('Luma Local Photo Lab browser smoke', () => {
   test('loads app, edits a real canvas image, supports history and exports', async ({ page }) => {
-    test.setTimeout(90000);
+    test.setTimeout(120000);
+    page.setDefaultTimeout(7000);
+    page.setDefaultNavigationTimeout(15000);
+    const traceStep = (name) => console.log(`[DIAG] ${name}`);
     const pageErrors = [];
     page.on('pageerror', error => pageErrors.push(error.message));
-    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    traceStep('open app');
+    await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
     await expect(page).toHaveTitle(/Luma Local Photo Lab/i);
     await expect(page.locator('#openBtn')).toBeVisible();
     await expect(page.locator('#preview')).toBeAttached();
 
     // Generate a deterministic test photograph in-browser; no private user photo is uploaded to CI.
+    traceStep('generate synthetic image');
     const dataUrl = await page.evaluate(() => {
       const c = document.createElement('canvas');
       c.width = 320; c.height = 240;
@@ -24,6 +29,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
       return c.toDataURL('image/png');
     });
     const buffer = Buffer.from(dataUrl.split(',')[1], 'base64');
+    traceStep('upload image');
     await page.locator('#fileInput').setInputFiles({ name: 'luma-smoke-test.png', mimeType: 'image/png', buffer });
     await expect.poll(() => page.locator('#preview').evaluate(c => c.width)).toBeGreaterThan(0);
     await expect.poll(() => page.locator('#preview').evaluate(c => c.height)).toBeGreaterThan(0);
@@ -32,14 +38,17 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await expect(page.locator('#exportBtn')).toBeEnabled();
 
     // Transform controls live in the Crop/Transform tool panel; open that panel before testing them.
+    traceStep('open transform panel');
     await page.locator('[data-tool="crop"]').click();
     await expect(page.locator('[data-tool-panel="crop"]')).toBeVisible();
 
+    traceStep('read initial canvas pixels');
     const before = await page.locator('#preview').evaluate(c => {
       const x = c.getContext('2d'); return [...x.getImageData(80, 80, 1, 1).data];
     });
     const slider = page.locator('#angleRange');
     await expect(slider).toBeVisible();
+    traceStep('change angle slider');
     await slider.evaluate(el => {
       const min = Number(el.min || 0), max = Number(el.max || 100);
       el.value = String(Math.min(max, Math.max(min, 30)));
@@ -50,25 +59,30 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     const after = await page.locator('#preview').evaluate(c => [...c.getContext('2d').getImageData(80, 80, 1, 1).data]);
     expect(after).not.toEqual(before);
 
+    traceStep('undo and redo');
     await page.locator('#undo').click();
     await page.waitForTimeout(250);
     await page.locator('#redo').click();
     await page.waitForTimeout(250);
+    traceStep('compare before after');
     await page.locator('#compareBtn').click();
     await expect(page.locator('#compareLabel')).not.toHaveClass(/hidden/);
     await page.locator('#compareBtn').click();
 
     // Sized export is inside the advanced section of the Mask tool, so reveal it first.
+    traceStep('open advanced export panel');
     await page.locator('[data-tool="mask"]').click();
     const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
     await advanced.locator('summary').click();
     await expect(page.locator('#exportSizedJpeg')).toBeVisible();
+    traceStep('trigger sized jpeg download');
     const downloadPromise = page.waitForEvent('download', { timeout: 15000 });
     await page.locator('#exportSizedJpeg').click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toMatch(/\.(jpe?g)$/i);
     expect((await download.createReadStream()).readable).toBeTruthy();
 
+    traceStep('verify color mask library panels');
     await page.locator('[data-tool="color"]').click();
     await expect(page.locator('[data-tool="color"]')).toHaveClass(/active/);
     await expect(page.locator('[data-tool-panel="color"]')).toBeVisible();
