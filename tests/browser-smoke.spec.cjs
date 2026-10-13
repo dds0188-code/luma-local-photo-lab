@@ -425,8 +425,9 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
   await page.mouse.click(box.x + box.width * .68, box.y + box.height * .40);
   const secondX = Number(await page.locator('#maskShapeX').inputValue());
   expect(Math.abs(firstX - secondX)).toBeGreaterThan(15);
-  await page.locator('#maskOverlayToggle').click();
   await expect(page.locator('#maskOverlayToggle')).toContainText('숨기기');
+  await page.locator('#maskOverlayToggle').click();
+  await expect(page.locator('#maskOverlayToggle')).toContainText('표시');
   await page.locator('#maskSplit2H').click();
   const splitState = await page.evaluate(() => ({
     count: maskLayers.length,
