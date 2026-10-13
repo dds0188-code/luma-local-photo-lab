@@ -33,7 +33,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('#fileInput').setInputFiles({ name: 'luma-smoke-test.png', mimeType: 'image/png', buffer });
     await expect.poll(() => page.locator('#preview').evaluate(c => c.width)).toBeGreaterThan(0);
     await expect.poll(() => page.locator('#preview').evaluate(c => c.height)).toBeGreaterThan(0);
-    if (!(await page.locator('#filename').innerText()).includes('luma-smoke-test.png')) throw new Error(`Image did not load; pageErrors=${JSON.stringify(pageErrors)}; filename=${await page.locator('#filename').innerText()}`);
+    await expect.poll(() => page.locator('#filename').innerText(), { timeout: 15000 }).toContain('luma-smoke-test.png');
     await expect(page.locator('#compareBtn')).toBeEnabled();
     await expect(page.locator('#exportBtn')).toBeEnabled();
 
