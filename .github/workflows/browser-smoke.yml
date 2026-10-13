@@ -1,0 +1,39 @@
+name: Browser smoke tests
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '23 4 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: browser-smoke
+  cancel-in-progress: true
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        run: npm install --no-save @playwright/test
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Wait for GitHub Pages
+        run: |
+          for i in $(seq 1 30); do
+            if curl --fail --silent --show-error https://dds0188-code.github.io/luma-local-photo-lab/ -o /tmp/luma.html; then
+              grep -q 'Luma Local Photo Lab' /tmp/luma.html && exit 0
+            fi
+            sleep 10
+          done
+          echo 'GitHub Pages did not become ready in time' >&2
+          exit 1
+      - name: Run browser tests against deployed site
+        run: npx playwright test tests/browser-smoke.spec.cjs --reporter=line
