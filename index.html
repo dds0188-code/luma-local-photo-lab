@@ -397,7 +397,7 @@ $('closeShortcuts').addEventListener('click',closeShortcuts);
 shortcutsModal.addEventListener('click',e=>{if(e.target===shortcutsModal)closeShortcuts()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&shortcutsModal.classList.contains('open'))closeShortcuts();if(e.key==='?'&&!['input','textarea','select'].includes(e.target?.tagName?.toLowerCase())&&!e.target?.isContentEditable){shortcutsModal.classList.add('open');$('closeShortcuts').focus()}});
 $('previewFullscreenBtn').addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else if(stage.requestFullscreen){await stage.requestFullscreen()}else{toast('이 브라우저에서는 전체 화면을 지원하지 않습니다')}}catch{toast('전체 화면을 시작할 수 없습니다. 브라우저 설정을 확인해 주세요')}});
-document.addEventListener('fullscreenchange',()=>{$('previewFullscreenBtn').textContent=document.fullscreenElement==='stage'?'⤢ 전체 화면 종료':'⛶ 전체 화면';});
+document.addEventListener('fullscreenchange',()=>{$('previewFullscreenBtn').textContent=document.fullscreenElement===stage?'⤢ 전체 화면 종료':'⛶ 전체 화면';});
 
 try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.settings){settings={...defaults,...auto.settings};curvePoints=cloneCurves(auto.curvePoints||curveDefaults);rotation=Number(auto.rotation)||0;imageScale=Math.max(50,Math.min(200,Number(auto.imageScale)||100));syncTransformControls();ratio=auto.ratio||'free';cropRect=normalizeCropRect(auto.cropRect||{x:0,y:0,w:1,h:1});updateControls();drawCurve()}}catch{}
 })();
