@@ -26,7 +26,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('#fileInput').setInputFiles({ name: 'luma-smoke-test.png', mimeType: 'image/png', buffer });
     await expect.poll(() => page.locator('#preview').evaluate(c => c.width)).toBeGreaterThan(0);
     await expect.poll(() => page.locator('#preview').evaluate(c => c.height)).toBeGreaterThan(0);
-    await expect(page.locator('#filename')).toContainText('luma-smoke-test.png');
+    if (!(await page.locator('#filename').innerText()).includes('luma-smoke-test.png')) throw new Error(`Image did not load; pageErrors=${JSON.stringify(pageErrors)}; filename=${await page.locator('#filename').innerText()}`);
     await expect(page.locator('#compareBtn')).toBeEnabled();
     await expect(page.locator('#exportBtn')).toBeEnabled();
 
@@ -60,6 +60,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     expect((await download.createReadStream()).readable).toBeTruthy();
 
     await page.locator('[data-tool="color"]').click();
+    await expect(page.locator('[data-tool="color"]')).toHaveClass(/active/);
     await expect(page.locator('[data-tool-panel="color"]')).toBeVisible();
     await page.locator('[data-tool="mask"]').click();
     await expect(page.locator('[data-tool-panel="mask"]')).toBeVisible();
@@ -81,6 +82,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     }));
     expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport + 2);
     await page.locator('[data-tool="color"]').click();
+    await expect(page.locator('[data-tool="color"]')).toHaveClass(/active/);
     await expect(page.locator('[data-tool-panel="color"]')).toBeVisible();
     await page.locator('[data-tool="adjust"]').click();
     await expect(page.locator('[data-tool-panel="adjust"]')).toBeVisible();
