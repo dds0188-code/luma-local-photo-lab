@@ -197,6 +197,68 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     expect(pageErrors, 'uncaught errors in photo workflows').toEqual([]);
   });
 
+
+  test('project files, export profiles, frame output and foreground selection', async ({ page }) => {
+    test.setTimeout(90000);
+    page.setDefaultTimeout(7000);
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+    await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+    const dataUrl = await page.evaluate(() => {
+      const c = document.createElement('canvas'); c.width = 240; c.height = 180;
+      const x = c.getContext('2d'); x.fillStyle = '#3268a4'; x.fillRect(0, 0, 240, 180);
+      x.fillStyle = '#f0c49a'; x.beginPath(); x.arc(120, 62, 34, 0, Math.PI * 2); x.fill();
+      x.fillStyle = '#2f6544'; x.fillRect(78, 98, 84, 70);
+      return c.toDataURL('image/png');
+    });
+    await page.locator('#fileInput').setInputFiles({
+      name: 'luma-project-test.png', mimeType: 'image/png',
+      buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+    });
+
+    await page.locator('[data-tool="mask"]').click();
+    await page.locator('[data-mask-view="advanced"]').click();
+    const projectPromise = page.waitForEvent('download', { timeout: 12000 });
+    await page.locator('#saveProjectJson').click();
+    const project = await projectPromise;
+    expect(project.suggestedFilename()).toMatch(/\.json$/i);
+    const recipePromise = page.waitForEvent('download', { timeout: 12000 });
+    await page.locator('[data-tool="files"]').click();
+    await page.locator('#saveRecipe').click();
+    const recipe = await recipePromise;
+    expect(recipe.suggestedFilename()).toMatch(/\.json$/i);
+
+    await page.locator('[data-tool="mask"]').click();
+    await page.locator('[data-mask-view="advanced"]').click();
+    await page.locator('#exportProfileName').fill('CI Export Profile');
+    await page.locator('#exportProfileFormat').selectOption('image/png');
+    await page.locator('#saveExportProfile').click();
+    await expect(page.locator('#exportProfileStatus')).toContainText('CI Export Profile');
+    await expect(page.locator('#exportProfileSelect')).toContainText('CI Export Profile');
+    await page.locator('#exportProfileSelect').selectOption({ label: 'CI Export Profile' });
+    await page.locator('#applyExportProfile').click();
+    await expect(page.locator('#exportProfileStatus')).not.toBeEmpty();
+
+    await page.locator('#exportFramed').evaluate(el => {
+      let parent = el.closest('details');
+      while (parent) { parent.open = true; parent = parent.parentElement.closest('details'); }
+    });
+    const framePromise = page.waitForEvent('download', { timeout: 12000 });
+    await page.locator('#exportFramed').click();
+    const frame = await framePromise;
+    expect(frame.suggestedFilename()).toMatch(/framed\.jpg$/i);
+
+    await page.locator('[data-tool="cutout"]').click();
+    await page.locator('#cutoutAutoSelect').click();
+    await expect(page.locator('#magicSelectApply')).toBeEnabled({ timeout: 12000 });
+    await page.locator('#magicSelectApply').click();
+    const cutoutPromise = page.waitForEvent('download', { timeout: 12000 });
+    await page.locator('#exportCutout').click();
+    const cutout = await cutoutPromise;
+    expect(cutout.suggestedFilename()).toMatch(/cutout\.png$/i);
+    expect(pageErrors, 'uncaught project/export/cutout errors').toEqual([]);
+  });
+
   test('mobile browser: image editing, presets, masks, AI, area tools and export', async ({ page }) => {
     test.setTimeout(90000);
     page.setDefaultTimeout(7000);
