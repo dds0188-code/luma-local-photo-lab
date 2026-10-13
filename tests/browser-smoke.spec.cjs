@@ -384,3 +384,66 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
   });
 
 });
+
+
+test('mask regression: visible overlays, editable individual shapes, non-destructive split, and distinct Instagram looks', async ({ page }) => {
+  test.setTimeout(60000);
+  page.setDefaultTimeout(8000);
+  const pageErrors = [];
+  page.on('pageerror', error => { pageErrors.push(error.message); console.log('[MASK PAGEERROR]', error.message); });
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 360; c.height = 240;
+    const x = c.getContext('2d'); x.fillStyle = '#263e62'; x.fillRect(0, 0, c.width, c.height);
+    x.fillStyle = '#d9b18a'; x.beginPath(); x.arc(180, 95, 45, 0, Math.PI * 2); x.fill();
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({
+    name: 'luma-mask-regression.png', mimeType: 'image/png',
+    buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+  });
+  await expect.poll(() => page.locator('#filename').innerText(), { timeout: 15000 }).toContain('luma-mask-regression.png');
+  await page.locator('[data-tool="mask"]').click();
+  await page.locator('#maskToggle').click();
+  await page.locator('[data-mask-mode="ellipse"]').click();
+  const overlay = page.locator('#maskOverlay');
+  await expect(overlay).toBeVisible();
+  const box = await overlay.boundingBox();
+  expect(box).not.toBeNull();
+  const drag = async (x1, y1, x2, y2) => {
+    await page.mouse.move(box.x + box.width * x1, box.y + box.height * y1);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width * x2, box.y + box.height * y2, { steps: 5 });
+    await page.mouse.up();
+  };
+  await drag(.24, .25, .48, .55);
+  await drag(.56, .25, .80, .55);
+  expect(await page.evaluate(() => activeMask().shapes.length)).toBe(2);
+  await page.locator('#maskShapeEdit').click();
+  await page.mouse.click(box.x + box.width * .36, box.y + box.height * .40);
+  const firstX = Number(await page.locator('#maskShapeX').inputValue());
+  await page.mouse.click(box.x + box.width * .68, box.y + box.height * .40);
+  const secondX = Number(await page.locator('#maskShapeX').inputValue());
+  expect(Math.abs(firstX - secondX)).toBeGreaterThan(15);
+  await page.locator('#maskOverlayToggle').click();
+  await expect(page.locator('#maskOverlayToggle')).toContainText('숨기기');
+  await page.locator('#maskSplit2H').click();
+  const splitState = await page.evaluate(() => ({
+    count: maskLayers.length,
+    masks: maskLayers.map(l => {
+      const d = l.canvas.getContext('2d').getImageData(0, 0, l.canvas.width, l.canvas.height).data;
+      let pixels = 0;
+      for (let i = 3; i < d.length; i += 4) if (d[i] > 0) pixels++;
+      return { hasData: l.hasData, pixels };
+    })
+  }));
+  expect(splitState.count).toBe(2);
+  expect(splitState.masks.every(m => m.hasData && m.pixels > 0)).toBeTruthy();
+  const looks = await page.evaluate(() => presetData.map(p => JSON.stringify({
+    exposure:p.settings.exposure, temperature:p.settings.temperature, tint:p.settings.tint,
+    saturation:p.settings.saturation, vibrance:p.settings.vibrance, fade:p.settings.fade,
+    hslOrange:p.settings.hsl_orange_sat, hslGreen:p.settings.hsl_green_sat
+  })));
+  expect(new Set(looks).size).toBeGreaterThanOrEqual(25);
+  expect(pageErrors, 'uncaught mask workflow errors').toEqual([]);
+});
