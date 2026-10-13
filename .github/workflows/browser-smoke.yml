@@ -23,8 +23,8 @@ jobs:
           node-version: 22
       - name: Install Playwright
         run: npm install --no-save @playwright/test
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install Chromium, Firefox and WebKit
+        run: npx playwright install --with-deps chromium firefox webkit
       - name: Start local app server
         run: |
           python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/luma-server.log 2>&1 &
