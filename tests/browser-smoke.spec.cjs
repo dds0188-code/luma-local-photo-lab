@@ -57,6 +57,11 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await expect(page.locator('#compareLabel')).not.toHaveClass(/hidden/);
     await page.locator('#compareBtn').click();
 
+    // Sized export is inside the advanced section of the Mask tool, so reveal it first.
+    await page.locator('[data-tool="mask"]').click();
+    const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
+    await advanced.locator('summary').click();
+    await expect(page.locator('#exportSizedJpeg')).toBeVisible();
     const downloadPromise = page.waitForEvent('download');
     await page.locator('#exportSizedJpeg').click();
     const download = await downloadPromise;
