@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const BASE_URL = 'https://dds0188-code.github.io/luma-local-photo-lab/';
+const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:4173/';
 
 test.describe('Luma Local Photo Lab browser smoke', () => {
   test('loads app, edits a real canvas image, supports history and exports', async ({ page }) => {
@@ -26,17 +26,18 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('#fileInput').setInputFiles({ name: 'luma-smoke-test.png', mimeType: 'image/png', buffer });
     await expect.poll(() => page.locator('#preview').evaluate(c => c.width)).toBeGreaterThan(0);
     await expect.poll(() => page.locator('#preview').evaluate(c => c.height)).toBeGreaterThan(0);
+    await expect(page.locator('#filename')).toContainText('luma-smoke-test.png');
     await expect(page.locator('#compareBtn')).toBeEnabled();
     await expect(page.locator('#exportBtn')).toBeEnabled();
 
     const before = await page.locator('#preview').evaluate(c => {
       const x = c.getContext('2d'); return [...x.getImageData(80, 80, 1, 1).data];
     });
-    const slider = page.locator('.control input[type="range"]').first();
+    const slider = page.locator('#angleRange');
     await expect(slider).toBeVisible();
     await slider.evaluate(el => {
       const min = Number(el.min || 0), max = Number(el.max || 100);
-      el.value = String(Math.min(max, Math.max(min, Number(el.value || 0) + (max - min) * .35)));
+      el.value = String(Math.min(max, Math.max(min, 30)));
       el.dispatchEvent(new Event('input', { bubbles: true }));
       el.dispatchEvent(new Event('change', { bubbles: true }));
     });
@@ -48,9 +49,9 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.waitForTimeout(250);
     await page.locator('#redo').click();
     await page.waitForTimeout(250);
-    await page.locator('#toggleBeforeAfter').click();
-    await expect(page.locator('#preview')).toBeVisible();
-    await page.locator('#toggleBeforeAfter').click();
+    await page.locator('#compareBtn').click();
+    await expect(page.locator('#compareLabel')).not.toHaveClass(/hidden/);
+    await page.locator('#compareBtn').click();
 
     const downloadPromise = page.waitForEvent('download');
     await page.locator('#exportSizedJpeg').click();
@@ -80,9 +81,9 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     }));
     expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport + 2);
     await page.locator('[data-tool="color"]').click();
-    await expect(page.locator('[data-tool="color"]')).toHaveClass(/active/);
+    await expect(page.locator('[data-tool-panel="color"]')).toBeVisible();
     await page.locator('[data-tool="adjust"]').click();
-    await expect(page.locator('[data-tool="adjust"]')).toHaveClass(/active/);
+    await expect(page.locator('[data-tool-panel="adjust"]')).toBeVisible();
     expect(pageErrors, 'uncaught mobile browser errors').toEqual([]);
   });
 });
