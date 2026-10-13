@@ -25,15 +25,9 @@ jobs:
         run: npm install --no-save @playwright/test
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Wait for GitHub Pages
-        run: |
-          for i in $(seq 1 30); do
-            if curl --fail --silent --show-error https://dds0188-code.github.io/luma-local-photo-lab/ -o /tmp/luma.html; then
-              grep -q 'Luma Local Photo Lab' /tmp/luma.html && exit 0
-            fi
-            sleep 10
-          done
-          echo 'GitHub Pages did not become ready in time' >&2
-          exit 1
-      - name: Run browser tests against deployed site
+      - name: Start local app server
+        run: npx --yes http-server . -p 4173 -c-1 > /tmp/luma-server.log 2>&1 &
+      - name: Run browser tests against checked-out source
+        env:
+          BASE_URL: http://127.0.0.1:4173/
         run: npx playwright test tests/browser-smoke.spec.cjs --reporter=line
