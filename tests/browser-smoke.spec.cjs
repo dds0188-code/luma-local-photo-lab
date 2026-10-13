@@ -79,6 +79,31 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     expect(pageErrors, 'uncaught browser errors').toEqual([]);
   });
 
+  test('all primary tool navigation and feature panels respond without runtime errors', async ({ page }) => {
+    test.setTimeout(60000);
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    const toolButtons = page.locator('[data-tool]');
+    const count = await toolButtons.count();
+    expect(count).toBeGreaterThanOrEqual(8);
+    const visited = [];
+    for (let i = 0; i < count; i++) {
+      const button = toolButtons.nth(i);
+      const tool = await button.getAttribute('data-tool');
+      if (!tool || visited.includes(tool)) continue;
+      visited.push(tool);
+      await button.click();
+      await expect(button).toHaveClass(/active/);
+      const panel = page.locator(`[data-tool-panel="${tool}"]`).first();
+      const sidePanel = page.locator(`[data-side-panel="${tool}"]`).first();
+      if (await panel.count()) await expect(panel).toBeVisible();
+      else if (await sidePanel.count()) await expect(sidePanel).toBeVisible();
+    }
+    expect(visited.length).toBeGreaterThanOrEqual(8);
+    expect(pageErrors, 'uncaught errors while switching tools').toEqual([]);
+  });
+
   test('mobile viewport remains within screen width and key controls are usable', async ({ page }) => {
     const pageErrors = [];
     page.on('pageerror', error => pageErrors.push(error.message));
