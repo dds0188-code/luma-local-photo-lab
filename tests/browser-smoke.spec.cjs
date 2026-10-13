@@ -327,4 +327,28 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     expect(download.suggestedFilename()).toMatch(/\.jpe?g$/i);
     expect(pageErrors, 'uncaught mobile browser errors').toEqual([]);
   });
+  test('rapid consecutive photo imports keep the most recently selected image', async ({ page }) => {
+    test.setTimeout(30000);
+    page.setDefaultTimeout(7000);
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+    await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+    const makePng = async (width, height, color) => {
+      const dataUrl = await page.evaluate(({ width, height, color }) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = color; ctx.fillRect(0, 0, width, height);
+        return canvas.toDataURL('image/png');
+      }, { width, height, color });
+      return Buffer.from(dataUrl.split(',')[1], 'base64');
+    };
+    const input = page.locator('#fileInput');
+    await input.setInputFiles({ name: 'first-photo.png', mimeType: 'image/png', buffer: await makePng(2200, 1600, '#cc3344') });
+    await input.setInputFiles({ name: 'latest-photo.png', mimeType: 'image/png', buffer: await makePng(320, 240, '#3366cc') });
+    await expect.poll(() => page.locator('#filename').innerText(), { timeout: 15000 }).toContain('latest-photo.png');
+    await expect.poll(() => page.locator('#meta').innerText()).toContain('320 × 240');
+    expect(pageErrors, 'uncaught browser errors during rapid imports').toEqual([]);
+  });
+
 });
