@@ -218,6 +218,8 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
 
     await page.locator('[data-tool="mask"]').click();
     await page.locator('[data-mask-view="advanced"]').click();
+    const advancedProject = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
+    if (!(await advancedProject.evaluate(el => el.open))) await advancedProject.locator('summary').click();
     const projectPromise = page.waitForEvent('download', { timeout: 12000 });
     await page.locator('#saveProjectJson').click();
     const project = await projectPromise;
