@@ -194,22 +194,69 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     expect(pageErrors, 'uncaught errors in photo workflows').toEqual([]);
   });
 
-  test('mobile viewport remains within screen width and key controls are usable', async ({ page }) => {
+  test('mobile browser: image editing, presets, masks, AI, area tools and export', async ({ page }) => {
+    test.setTimeout(90000);
+    page.setDefaultTimeout(7000);
     const pageErrors = [];
     page.on('pageerror', error => pageErrors.push(error.message));
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#openBtn')).toBeVisible();
     const dimensions = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
       document: document.documentElement.scrollWidth
     }));
     expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport + 2);
-    await page.locator('[data-tool="color"]').click();
-    await expect(page.locator('[data-tool="color"]')).toHaveClass(/active/);
-    await expect(page.locator('[data-tool-panel="color"]')).toBeVisible();
+    const dataUrl = await page.evaluate(() => {
+      const c = document.createElement('canvas'); c.width = 240; c.height = 180;
+      const x = c.getContext('2d'); x.fillStyle = '#3768a0'; x.fillRect(0, 0, 240, 180);
+      x.fillStyle = '#e7b27a'; x.beginPath(); x.arc(120, 65, 35, 0, Math.PI * 2); x.fill();
+      x.fillStyle = '#315b43'; x.fillRect(75, 105, 90, 65);
+      return c.toDataURL('image/png');
+    });
+    await page.locator('#fileInput').setInputFiles({
+      name: 'luma-mobile-test.png', mimeType: 'image/png',
+      buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+    });
+
     await page.locator('[data-tool="adjust"]').click();
     await expect(page.locator('[data-tool-panel="adjust"]')).toBeVisible();
+    await page.locator('[data-tool="color"]').click();
+    await expect(page.locator('[data-tool-panel="color"]')).toBeVisible();
+    await page.locator('[data-tool="crop"]').click();
+    await expect(page.locator('#angleRange')).toBeVisible();
+    await page.locator('#angleRange').evaluate(el => {
+      el.value = '12';
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    await expect(page.locator('#undo')).toBeEnabled();
+    await page.locator('#undo').click();
+    await page.locator('#redo').click();
+
+    await page.locator('[data-tool="presets"]').click();
+    await expect(page.locator('.preset').first()).toBeVisible();
+    await page.locator('.preset').first().click();
+    await page.locator('[data-tool="mask"]').click();
+    const layerCount = await page.locator('#maskLayerSelect option').count();
+    await page.locator('#maskAddLayer').click();
+    await expect.poll(() => page.locator('#maskLayerSelect option').count()).toBeGreaterThan(layerCount);
+
+    await page.locator('[data-tool="area"]').click();
+    await page.locator('#areaSkyRun').click();
+    await expect(page.locator('#areaStatus')).toBeVisible();
+    await page.locator('[data-tool="ai"]').click();
+    await page.locator('#aiAnalyze').click();
+    await expect(page.locator('#aiAuto')).toBeEnabled();
+    await page.locator('#aiAuto').click();
+
+    await page.locator('[data-tool="mask"]').click();
+    const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
+    if (!(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
+    const downloadPromise = page.waitForEvent('download', { timeout: 12000 });
+    await page.locator('#exportSizedJpeg').click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toMatch(/\.jpe?g$/i);
     expect(pageErrors, 'uncaught mobile browser errors').toEqual([]);
   });
 });
