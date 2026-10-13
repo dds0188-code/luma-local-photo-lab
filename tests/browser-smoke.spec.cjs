@@ -1,10 +1,11 @@
 const { test, expect } = require('@playwright/test');
+const BASE_URL = 'https://dds0188-code.github.io/luma-local-photo-lab/';
 
 test.describe('Luma Local Photo Lab browser smoke', () => {
   test('loads app, edits a real canvas image, supports history and exports', async ({ page }) => {
     const pageErrors = [];
     page.on('pageerror', error => pageErrors.push(error.message));
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     await expect(page).toHaveTitle(/Luma Local Photo Lab/i);
     await expect(page.locator('#openBtn')).toBeVisible();
     await expect(page.locator('#preview')).toBeAttached();
@@ -71,7 +72,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     const pageErrors = [];
     page.on('pageerror', error => pageErrors.push(error.message));
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     await expect(page.locator('#openBtn')).toBeVisible();
     const dimensions = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
