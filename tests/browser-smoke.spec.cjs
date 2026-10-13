@@ -254,6 +254,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('#aiAuto').click();
 
     await page.locator('[data-tool="mask"]').click();
+    await page.locator('[data-mask-view="advanced"]').click();
     const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
     if (!(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
     const downloadPromise = page.waitForEvent('download', { timeout: 12000 });
