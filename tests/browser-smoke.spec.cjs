@@ -119,6 +119,81 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     expect(pageErrors, 'uncaught errors while switching tools').toEqual([]);
   });
 
+
+  test('photo workflows: presets, local AI analysis, area selection, masks, library and exports', async ({ page }) => {
+    test.setTimeout(90000);
+    page.setDefaultTimeout(7000);
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+    await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+    const dataUrl = await page.evaluate(() => {
+      const c = document.createElement('canvas'); c.width = 320; c.height = 240;
+      const x = c.getContext('2d');
+      const g = x.createLinearGradient(0, 0, 320, 240);
+      g.addColorStop(0, '#214f91'); g.addColorStop(.5, '#e9b86a'); g.addColorStop(1, '#3e7852');
+      x.fillStyle = g; x.fillRect(0, 0, c.width, c.height);
+      x.fillStyle = '#f2d3bd'; x.beginPath(); x.arc(160, 92, 44, 0, Math.PI * 2); x.fill();
+      x.fillStyle = '#20242b'; x.fillRect(105, 140, 110, 80);
+      return c.toDataURL('image/png');
+    });
+    await page.locator('#fileInput').setInputFiles({
+      name: 'luma-feature-test.png', mimeType: 'image/png',
+      buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+    });
+    await expect(page.locator('#saveToLibrary')).toBeEnabled();
+
+    await page.locator('[data-tool="presets"]').click();
+    await expect(page.locator('[data-side-panel="presets"]')).toBeVisible();
+    await expect(page.locator('.preset').first()).toBeVisible();
+    await page.locator('.preset').first().click();
+    await page.locator('#presetName').fill('CI Test Preset');
+    await page.locator('#savePreset').click();
+    await expect(page.locator('#customPresets')).toContainText('CI Test Preset');
+    await page.locator('#search').fill('portrait');
+    await expect(page.locator('#presets')).toBeVisible();
+    await page.locator('#search').fill('');
+
+    // AI is local brightness/color analysis, not semantic person segmentation.
+    await page.locator('[data-tool="ai"]').click();
+    await expect(page.locator('#aiAnalyze')).toBeEnabled();
+    await page.locator('#aiAnalyze').click();
+    await expect(page.locator('#aiAuto')).toBeEnabled();
+    await expect(page.locator('#aiSummary')).not.toContainText('사진을 열면 분석 결과가 표시됩니다.');
+    await page.locator('#aiAuto').click();
+
+    await page.locator('[data-tool="area"]').click();
+    await page.locator('#areaSkyRun').click();
+    await expect(page.locator('#areaStatus')).not.toBeEmpty();
+
+    await page.locator('[data-tool="mask"]').click();
+    const beforeLayers = await page.locator('#maskLayerSelect option').count();
+    await page.locator('#maskAddLayer').click();
+    await expect.poll(() => page.locator('#maskLayerSelect option').count()).toBeGreaterThan(beforeLayers);
+    await expect(page.locator('#maskLayerSelect')).toBeVisible();
+
+    await page.locator('[data-tool="library"]').click();
+    await page.locator('#saveToLibrary').click();
+    await expect(page.locator('#libraryItems')).not.toBeEmpty();
+
+    await page.locator('[data-tool="mask"]').click();
+    const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
+    if (!(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
+    const jpegPromise = page.waitForEvent('download', { timeout: 12000 });
+    await page.locator('#exportWatermarked').click();
+    const jpeg = await jpegPromise;
+    expect(jpeg.suggestedFilename()).toMatch(/\.jpe?g$/i);
+    const pngPromise = page.waitForEvent('download', { timeout: 12000 });
+    await page.locator('#exportSizedPng').click();
+    const png = await pngPromise;
+    expect(png.suggestedFilename()).toMatch(/\.png$/i);
+    const metadataPromise = page.waitForEvent('download', { timeout: 12000 });
+    await page.locator('#downloadMetadata').click();
+    const metadata = await metadataPromise;
+    expect(metadata.suggestedFilename()).toMatch(/\.json$/i);
+
+    expect(pageErrors, 'uncaught errors in photo workflows').toEqual([]);
+  });
+
   test('mobile viewport remains within screen width and key controls are usable', async ({ page }) => {
     const pageErrors = [];
     page.on('pageerror', error => pageErrors.push(error.message));
