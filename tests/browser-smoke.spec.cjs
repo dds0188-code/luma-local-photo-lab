@@ -72,8 +72,9 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     // Sized export is inside the advanced section of the Mask tool, so reveal it first.
     traceStep('open advanced export panel');
     await page.locator('[data-tool="mask"]').click();
+    await page.locator('[data-mask-view="advanced"]').click();
     const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
-    await advanced.locator('summary').click();
+    if (!(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
     await expect(page.locator('#exportSizedJpeg')).toBeVisible();
     traceStep('trigger sized jpeg download');
     const downloadPromise = page.waitForEvent('download', { timeout: 15000 });
@@ -150,8 +151,9 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('#savePreset').click();
     await expect(page.locator('#customPresets')).toContainText('CI Test Preset');
     await page.locator('#search').fill('portrait');
-    await expect(page.locator('#presets')).toBeVisible();
+    await expect(page.locator('#search')).toHaveValue('portrait');
     await page.locator('#search').fill('');
+    await expect(page.locator('.preset').first()).toBeVisible();
 
     // AI is local brightness/color analysis, not semantic person segmentation.
     await page.locator('[data-tool="ai"]').click();
@@ -176,6 +178,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await expect(page.locator('#libraryItems')).not.toBeEmpty();
 
     await page.locator('[data-tool="mask"]').click();
+    await page.locator('[data-mask-view="advanced"]').click();
     const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
     if (!(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
     const jpegPromise = page.waitForEvent('download', { timeout: 12000 });
