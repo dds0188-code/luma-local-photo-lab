@@ -166,29 +166,62 @@ const groups=['전체','인물','풍경','여행','음식','필름','무드'];
 const presetData=names.map((name,i)=>{const s={...defaults};const cat=i<6?'인물':i<12?'풍경':i<18?'필름':i<23?'음식':i<28?'여행':i<32?'무드':'인물';s.exposure=[8,5,-4,10,8,4,0,-5,-2,-6,-10,0,3,-2,4,8,6,-4,2,-7,5,6,7,4,9,-12,5,4,3,0,-3,12,-12,7,-4][i];s.contrast=[-8,5,10,-4,8,-5,-5,12,5,18,20,-10,4,-4,-8,-10,-5,8,-2,15,-8,4,-4,0,-12,18,-3,-5,-4,8,10,-12,18,-10,20][i];s.saturation=[-8,8,-10,12,16,2,-8,-5,-18,-5,-25,-12,8,-100,-65,-12,3,-8,-10,-12,-8,18,5,-4,-15,18,-5,-12,-10,6,-12,-8,-15,-20,10][i];s.vibrance=[12,8,6,15,12,8,10,4,-8,4,-5,0,8,0,0,5,8,2,8,3,5,14,8,6,5,8,6,8,4,5,3,4,5,4,8][i];s.temperature=[4,16,-12,18,14,0,-4,-8,-3,-4,-5,8,16,0,0,8,6,8,-10,-12,14,5,3,-3,-2,-8,0,2,0,10,-10,2,-2,0,-4][i];s.fade=[12,4,0,0,0,0,4,0,12,4,0,18,5,0,0,8,5,0,0,0,6,0,3,4,12,0,0,5,8,0,0,8,0,12,0][i];s.vignette=[-4,-8,-10,-12,-14,0,-4,-10,-4,-18,-12,-5,-8,0,0,-4,-8,-10,0,-12,-5,0,-6,-8,0,-18,0,0,0,-8,-8,0,-15,0,-18][i];if(i===13||i===14){s.saturation=-100;s.vibrance=-100}return {name,cat,settings:s}});
 const curatedInstagramLooks=[{"name":"소프트 필름","cat":"인물","v":{"exposure":5,"contrast":-10,"highlights":-28,"shadows":22,"whites":-8,"blacks":10,"temperature":5,"tint":3,"saturation":-7,"vibrance":15,"fade":14,"grain":8,"vignette":-8,"clarity":-5,"hsl_orange_sat":5,"hsl_orange_lum":9,"hsl_green_sat":-18,"hsl_yellow_hue":-8}},{"name":"웜 필름","cat":"인물","v":{"exposure":4,"contrast":-6,"highlights":-24,"shadows":18,"whites":-10,"blacks":8,"temperature":13,"tint":5,"saturation":-4,"vibrance":17,"fade":10,"grain":10,"vignette":-10,"clarity":-4,"hsl_orange_sat":8,"hsl_orange_lum":8,"hsl_yellow_sat":-12,"hsl_green_sat":-25}},{"name":"쿨 필름","cat":"인물","v":{"exposure":5,"contrast":-8,"highlights":-25,"shadows":20,"whites":-6,"blacks":7,"temperature":-10,"tint":3,"saturation":-8,"vibrance":12,"fade":12,"grain":7,"vignette":-7,"clarity":-4,"hsl_blue_sat":-8,"hsl_aqua_hue":-8,"hsl_green_sat":-16}},{"name":"골든 아워","cat":"인물","v":{"exposure":8,"contrast":-4,"highlights":-30,"shadows":17,"whites":-7,"blacks":4,"temperature":20,"tint":6,"saturation":3,"vibrance":20,"fade":5,"vignette":-13,"clarity":-3,"hsl_orange_sat":12,"hsl_orange_lum":12,"hsl_yellow_hue":-12,"hsl_green_sat":-22}},{"name":"선셋 글로우","cat":"인물","v":{"exposure":4,"contrast":7,"highlights":-34,"shadows":12,"whites":-10,"blacks":8,"temperature":17,"tint":13,"saturation":5,"vibrance":22,"fade":4,"grain":4,"vignette":-17,"clarity":2,"hsl_red_sat":8,"hsl_orange_sat":15,"hsl_magenta_sat":8,"hsl_blue_sat":-18}},{"name":"클린 데이라이트","cat":"인물","v":{"exposure":7,"contrast":-5,"highlights":-20,"shadows":17,"whites":8,"blacks":-3,"temperature":1,"tint":1,"saturation":-3,"vibrance":12,"fade":0,"vignette":-4,"clarity":2,"hsl_orange_lum":7,"hsl_green_sat":-8}},{"name":"내추럴 그린","cat":"풍경","v":{"exposure":3,"contrast":-4,"highlights":-26,"shadows":19,"whites":-5,"blacks":4,"temperature":-2,"tint":3,"saturation":-6,"vibrance":17,"fade":7,"vignette":-6,"clarity":-2,"hsl_green_hue":-10,"hsl_green_sat":-15,"hsl_yellow_sat":-12,"hsl_aqua_sat":-8}},{"name":"포레스트","cat":"풍경","v":{"exposure":-2,"contrast":8,"highlights":-30,"shadows":14,"whites":-12,"blacks":10,"temperature":-4,"tint":4,"saturation":-10,"vibrance":12,"fade":10,"grain":5,"vignette":-17,"clarity":1,"dehaze":4,"hsl_green_hue":-14,"hsl_green_sat":-20,"hsl_yellow_sat":-22,"hsl_blue_sat":-10}},{"name":"어반 그레이","cat":"풍경","v":{"exposure":1,"contrast":10,"highlights":-28,"shadows":15,"whites":-8,"blacks":12,"temperature":-4,"tint":1,"saturation":-22,"vibrance":-3,"fade":5,"grain":6,"vignette":-12,"clarity":5,"dehaze":3,"hsl_blue_sat":-18,"hsl_green_sat":-30}},{"name":"시네마틱","cat":"풍경","v":{"exposure":-2,"contrast":14,"highlights":-35,"shadows":12,"whites":-12,"blacks":15,"temperature":2,"tint":4,"saturation":-9,"vibrance":11,"fade":5,"grain":7,"vignette":-22,"clarity":5,"dehaze":4,"hsl_shadows_hue":0,"hsl_orange_sat":10,"hsl_blue_hue":-8,"hsl_blue_sat":-12,"hsl_green_sat":-25}},{"name":"매트 블랙","cat":"필름","v":{"exposure":-3,"contrast":9,"highlights":-26,"shadows":13,"whites":-12,"blacks":22,"temperature":-1,"tint":1,"saturation":-17,"vibrance":1,"fade":20,"grain":12,"vignette":-10,"clarity":0,"dehaze":1}},{"name":"빈티지","cat":"필름","v":{"exposure":2,"contrast":-10,"highlights":-25,"shadows":20,"whites":-10,"blacks":13,"temperature":8,"tint":4,"saturation":-12,"vibrance":7,"fade":24,"grain":17,"vignette":-10,"clarity":-6,"hsl_yellow_hue":-12,"hsl_green_sat":-30,"hsl_blue_sat":-22}},{"name":"레트로 웜","cat":"필름","v":{"exposure":3,"contrast":-7,"highlights":-25,"shadows":19,"whites":-9,"blacks":13,"temperature":15,"tint":6,"saturation":-8,"vibrance":13,"fade":18,"grain":14,"vignette":-12,"clarity":-4,"hsl_orange_sat":8,"hsl_yellow_sat":-20,"hsl_green_sat":-35,"hsl_blue_sat":-28}},{"name":"모노 클래식","cat":"필름","v":{"exposure":1,"contrast":18,"highlights":-30,"shadows":15,"whites":0,"blacks":8,"saturation":-100,"vibrance":-100,"fade":3,"grain":5,"vignette":-16,"clarity":7}},{"name":"모노 소프트","cat":"필름","v":{"exposure":5,"contrast":-12,"highlights":-25,"shadows":25,"whites":-8,"blacks":5,"saturation":-100,"vibrance":-100,"fade":12,"grain":4,"vignette":-5,"clarity":-5}},{"name":"크림 베이지","cat":"필름","v":{"exposure":6,"contrast":-12,"highlights":-28,"shadows":23,"whites":-8,"blacks":9,"temperature":12,"tint":4,"saturation":-13,"vibrance":8,"fade":13,"vignette":-7,"clarity":-7,"hsl_orange_sat":-4,"hsl_orange_lum":15,"hsl_yellow_sat":-30,"hsl_green_sat":-35}},{"name":"로즈 블러시","cat":"필름","v":{"exposure":5,"contrast":-8,"highlights":-25,"shadows":20,"whites":-7,"blacks":7,"temperature":5,"tint":15,"saturation":-5,"vibrance":16,"fade":9,"vignette":-9,"clarity":-5,"hsl_red_sat":5,"hsl_orange_lum":8,"hsl_magenta_sat":8,"hsl_green_sat":-24}},{"name":"코코아","cat":"필름","v":{"exposure":-1,"contrast":8,"highlights":-30,"shadows":17,"whites":-11,"blacks":12,"temperature":12,"tint":4,"saturation":-15,"vibrance":6,"fade":14,"grain":8,"vignette":-15,"clarity":0,"hsl_orange_sat":6,"hsl_yellow_sat":-22,"hsl_green_sat":-30,"hsl_blue_sat":-25}},{"name":"스카이 블루","cat":"여행","v":{"exposure":6,"contrast":-5,"highlights":-24,"shadows":17,"whites":7,"blacks":-4,"temperature":-8,"tint":1,"saturation":-4,"vibrance":17,"fade":4,"vignette":-5,"clarity":-2,"hsl_aqua_hue":-8,"hsl_aqua_sat":8,"hsl_blue_hue":-8,"hsl_blue_sat":5,"hsl_green_sat":-20}},{"name":"딥 블루","cat":"여행","v":{"exposure":-3,"contrast":13,"highlights":-32,"shadows":10,"whites":-10,"blacks":13,"temperature":-12,"tint":2,"saturation":-8,"vibrance":13,"fade":5,"vignette":-18,"clarity":4,"dehaze":5,"hsl_blue_hue":-12,"hsl_blue_sat":7,"hsl_aqua_sat":-5,"hsl_orange_sat":5}},{"name":"카페 라떼","cat":"음식","v":{"exposure":4,"contrast":-6,"highlights":-26,"shadows":16,"whites":-6,"blacks":7,"temperature":14,"tint":4,"saturation":-8,"vibrance":12,"fade":8,"vignette":-9,"clarity":-3,"hsl_orange_sat":4,"hsl_orange_lum":8,"hsl_yellow_sat":-22,"hsl_green_sat":-25}},{"name":"푸드 팝","cat":"음식","v":{"exposure":5,"contrast":5,"highlights":-22,"shadows":12,"whites":6,"blacks":-3,"temperature":3,"tint":1,"saturation":4,"vibrance":23,"fade":0,"vignette":-6,"clarity":7,"texture":6,"hsl_red_sat":8,"hsl_orange_sat":10,"hsl_yellow_sat":5}},{"name":"플로럴","cat":"여행","v":{"exposure":6,"contrast":-10,"highlights":-25,"shadows":21,"whites":-6,"blacks":5,"temperature":3,"tint":9,"saturation":-5,"vibrance":19,"fade":10,"vignette":-6,"clarity":-4,"hsl_magenta_sat":8,"hsl_purple_sat":7,"hsl_green_sat":-22}},{"name":"여행 필름","cat":"여행","v":{"exposure":4,"contrast":2,"highlights":-30,"shadows":16,"whites":-8,"blacks":8,"temperature":5,"tint":3,"saturation":-6,"vibrance":15,"fade":8,"grain":5,"vignette":-12,"clarity":1,"dehaze":2,"hsl_green_sat":-18,"hsl_blue_sat":-8}},{"name":"클라우드 소프트","cat":"여행","v":{"exposure":8,"contrast":-15,"highlights":-20,"shadows":24,"whites":2,"blacks":2,"temperature":0,"tint":2,"saturation":-8,"vibrance":11,"fade":9,"vignette":-3,"clarity":-8,"dehaze":-3,"hsl_blue_sat":-12,"hsl_green_sat":-12}},{"name":"야간 네온","cat":"무드","v":{"exposure":-8,"contrast":18,"highlights":-28,"shadows":8,"whites":-8,"blacks":20,"temperature":-9,"tint":12,"saturation":6,"vibrance":22,"fade":2,"grain":4,"vignette":-24,"clarity":6,"dehaze":8,"hsl_blue_sat":10,"hsl_aqua_sat":12,"hsl_magenta_sat":12,"hsl_orange_sat":4}},{"name":"스튜디오 클린","cat":"인물","v":{"exposure":5,"contrast":-4,"highlights":-20,"shadows":12,"whites":9,"blacks":-5,"temperature":0,"tint":1,"saturation":-4,"vibrance":10,"fade":0,"vignette":0,"clarity":1,"texture":-2,"hsl_orange_lum":7,"hsl_red_sat":-3}},{"name":"스킨 내추럴","cat":"인물","v":{"exposure":5,"contrast":-6,"highlights":-25,"shadows":16,"whites":-4,"blacks":2,"temperature":4,"tint":3,"saturation":-5,"vibrance":13,"fade":3,"vignette":-5,"clarity":-5,"texture":-6,"hsl_orange_sat":-4,"hsl_orange_lum":12,"hsl_red_sat":-5,"hsl_green_sat":-25}},{"name":"미니멀","cat":"무드","v":{"exposure":4,"contrast":-8,"highlights":-22,"shadows":16,"whites":2,"blacks":0,"temperature":1,"tint":1,"saturation":-12,"vibrance":4,"fade":7,"vignette":-2,"clarity":-3,"hsl_green_sat":-20,"hsl_blue_sat":-15}},{"name":"무드 웜","cat":"무드","v":{"exposure":0,"contrast":8,"highlights":-32,"shadows":13,"whites":-10,"blacks":12,"temperature":12,"tint":5,"saturation":-7,"vibrance":12,"fade":8,"grain":5,"vignette":-16,"clarity":2,"hsl_orange_sat":8,"hsl_yellow_sat":-15,"hsl_green_sat":-25}},{"name":"무드 쿨","cat":"무드","v":{"exposure":-1,"contrast":10,"highlights":-30,"shadows":14,"whites":-10,"blacks":13,"temperature":-10,"tint":3,"saturation":-10,"vibrance":11,"fade":8,"grain":5,"vignette":-16,"clarity":3,"hsl_blue_sat":-4,"hsl_aqua_hue":-8,"hsl_green_sat":-20}},{"name":"하이키","cat":"인물","v":{"exposure":13,"contrast":-12,"highlights":-28,"shadows":24,"whites":12,"blacks":-8,"temperature":2,"tint":2,"saturation":-8,"vibrance":8,"fade":4,"vignette":0,"clarity":-5,"hsl_orange_lum":10,"hsl_green_sat":-18}},{"name":"로우키","cat":"무드","v":{"exposure":-12,"contrast":16,"highlights":-32,"shadows":7,"whites":-13,"blacks":19,"temperature":-2,"tint":2,"saturation":-10,"vibrance":7,"fade":6,"grain":6,"vignette":-23,"clarity":5,"dehaze":5}},{"name":"파스텔","cat":"무드","v":{"exposure":8,"contrast":-17,"highlights":-25,"shadows":22,"whites":0,"blacks":3,"temperature":3,"tint":5,"saturation":-12,"vibrance":9,"fade":17,"vignette":-3,"clarity":-8,"hsl_red_sat":-10,"hsl_orange_sat":-5,"hsl_green_sat":-20,"hsl_blue_sat":-15}},{"name":"드라마틱","cat":"무드","v":{"exposure":-4,"contrast":20,"highlights":-38,"shadows":8,"whites":-12,"blacks":17,"temperature":1,"tint":2,"saturation":-5,"vibrance":15,"fade":2,"grain":5,"vignette":-25,"clarity":8,"dehaze":7,"hsl_orange_sat":8,"hsl_blue_sat":-8,"hsl_green_sat":-20}}];
 curatedInstagramLooks.forEach((look,i)=>{const preset=presetData[i];if(!preset)return;preset.name=look.name;preset.cat=look.cat;Object.assign(preset.settings,look.v)});
-/* Final tonal-balance pass: retain each look's character without washed-out blacks,
-   excessive shadow lifting, muted highlights, or soft-focus-like clarity settings. */
+/* Editorial Instagram-style tonal pass: softer color, clean blacks, restrained
+   highlight recovery and less shadow lift. Keep the individual preset's signature. */
 function finishPresetTonalBalance(preset){
   const v=preset.settings;
   const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+  const num=(key)=>Number.isFinite(Number(v[key]))?Number(v[key]):0;
   const mono=preset.name==='모노 클래식'||preset.name==='모노 소프트';
-  const contrast=Number(v.contrast)||0;
-  v.contrast=clamp(contrast+(contrast<0?7:3),-8,38);
-  v.highlights=clamp(Number(v.highlights)||0,-28,45);
-  v.shadows=clamp((Number(v.shadows)||0)*.56,-18,12);
-  v.whites=clamp(Number(v.whites)||0,-6,35);
-  v.blacks=clamp(Number(v.blacks)||0,-35,5);
-  v.fade=clamp((Number(v.fade)||0)*.42,0,10);
-  v.clarity=clamp(Number(v.clarity)||0,-2,24);
-  v.texture=clamp(Number(v.texture)||0,preset.cat==='인물'?-2:0,24);
+  const softLooks=['소프트 필름','클라우드 소프트','크림 베이지','모노 소프트','파스텔'];
+  const food=preset.cat==='음식';
+  const landscape=['풍경','여행'].includes(preset.cat);
+  // Exposure should gently guide the look, not wash out the entire image.
+  v.exposure=clamp(num('exposure')*.72,-7,7);
+  // Keep real contrast and black depth; don't automatically add contrast to every look.
+  v.contrast=clamp(num('contrast')*.78,-12,26);
+  v.highlights=clamp(num('highlights')*.78,-28,12);
+  v.shadows=clamp(num('shadows')*(softLooks.includes(preset.name)?.42:.34),-12,10);
+  v.whites=clamp(num('whites')*.68,-14,16);
+  v.blacks=clamp(num('blacks')*(num('blacks')>0?.38:.72),-22,6);
+  v.fade=clamp(num('fade')*.24,0,7);
+  // Negative clarity is intentionally subtle; avoid a hazy or smeared appearance.
+  v.clarity=clamp(num('clarity')*.62,-3,12);
+  v.texture=clamp(num('texture')*.7,-3,14);
+  v.grain=clamp(num('grain')*.62,0,12);
+  v.vignette=clamp(num('vignette')*.72,-18,0);
+  v.temperature=clamp(num('temperature')*.72,-14,14);
+  v.tint=clamp(num('tint')*.68,-8,8);
+  v.dehaze=clamp(num('dehaze')*(landscape?.7:.45),-2,8);
   if(!mono){
-    v.saturation=clamp((Number(v.saturation)||0)+3,-8,35);
-    v.vibrance=clamp((Number(v.vibrance)||0)+2,-5,32);
+    // Reduce excessive saturation instead of adding more globally.
+    v.saturation=clamp(num('saturation')*.68,-24,10);
+    v.vibrance=clamp(num('vibrance')*.66,-8,16);
   }else{
     v.saturation=-100;
     v.vibrance=-100;
   }
-  if(['풍경','여행'].includes(preset.cat))v.dehaze=clamp(Math.max(2,Number(v.dehaze)||0),0,14);
+  // Prevent a single HSL channel from becoming neon or being crushed unnaturally.
+  for(const color of ['red','orange','yellow','green','aqua','blue','indigo','purple','magenta']){
+    const satKey='hsl_'+color+'_sat';
+    if(satKey in v)v[satKey]=clamp(num(satKey)*.72,-28,10);
+    const lumKey='hsl_'+color+'_lum';
+    if(lumKey in v)v[lumKey]=clamp(num(lumKey)*.72,-12,12);
+    const hueKey='hsl_'+color+'_hue';
+    if(hueKey in v)v[hueKey]=clamp(num(hueKey)*.72,-16,16);
+  }
+  // Food stays appetizing but restrained; portraits keep a natural skin palette.
+  if(food){
+    v.saturation=clamp(num('saturation'),-18,7);
+    v.vibrance=clamp(num('vibrance'),-4,13);
+    v.clarity=clamp(num('clarity'),-1,8);
+  }
+  if(preset.cat==='인물'){
+    v.temperature=clamp(num('temperature'),-10,12);
+    v.tint=clamp(num('tint'),-6,7);
+    v.clarity=clamp(num('clarity'),-2,8);
+    v.texture=clamp(num('texture'),-3,8);
+  }
   return preset;
 }
 presetData.forEach(finishPresetTonalBalance);
