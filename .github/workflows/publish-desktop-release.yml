@@ -17,6 +17,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Set app version from release tag
+        shell: bash
+        run: npm version "${GITHUB_REF_NAME#v}" --no-git-tag-version
       - name: Install dependencies
         run: npm install
       - name: Validate app syntax and configuration
@@ -43,10 +46,24 @@ jobs:
       - uses: android-actions/setup-android@v3
       - name: Install dependencies
         run: npm install
+      - name: Set app version from release tag
+        shell: bash
+        run: npm version "${GITHUB_REF_NAME#v}" --no-git-tag-version
       - name: Create and sync Android project
         run: |
           npx cap add android
           npm run android:sync
+          python3 - <<'PY'
+          from pathlib import Path
+          import os, re
+          p = Path("android/app/build.gradle")
+          source = p.read_text()
+          version = os.environ["GITHUB_REF_NAME"].lstrip("v")
+          source, count = re.subn(r'versionName\s+"[^"]+"', 'versionName "' + version + '"', source, count=1)
+          if count != 1:
+              raise SystemExit("Could not set Android versionName from release tag")
+          p.write_text(source)
+          PY
       - name: Configure release signing
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
