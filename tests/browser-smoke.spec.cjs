@@ -419,7 +419,7 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
   };
   await drag(.24, .25, .48, .55);
   await drag(.56, .25, .80, .55);
-  expect(await page.evaluate(() => activeMask().shapes.length)).toBe(2);
+  expect(await page.evaluate(() => maskLayers.find(l => String(l.id) === String(document.querySelector('#maskLayerSelect').value))?.shapes.length || 0)).toBe(2);
   await page.locator('#maskShapeEdit').click();
   await page.mouse.click(box.x + box.width * .36, box.y + box.height * .40);
   const firstX = Number(await page.locator('#maskShapeX').inputValue());
@@ -443,7 +443,7 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
   expect(splitState.count).toBe(2);
   expect(splitState.masks.every(m => m.hasData && m.pixels > 0)).toBeTruthy();
   await expect(page.locator('#maskSplitAdjust')).toBeVisible();
-  await page.locator('#maskSplitBoundary1').fill('62');
+  await page.locator('#maskSplitBoundary1').evaluate(el => { el.value = '62'; el.dispatchEvent(new Event('input', { bubbles: true })); });
   await expect.poll(() => page.evaluate(() => Math.round(maskLayers.find(l => l.clipRegion)?.clipRegion?.h * 100))).toBe(62);
   const looks = await page.evaluate(() => presetData.map(p => JSON.stringify({
     exposure:p.settings.exposure, temperature:p.settings.temperature, tint:p.settings.tint,
