@@ -502,6 +502,42 @@ test('crop coordinates stay aligned before and after preview zoom on desktop and
   expect(errors, 'uncaught crop coordinate errors').toEqual([]);
 });
 
+test('full library ZIP backup restores original photos and metadata without deleting existing items', async ({ page }) => {
+  test.setTimeout(60000);
+  page.setDefaultTimeout(10000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 160; c.height = 120;
+    const x = c.getContext('2d'); x.fillStyle = '#345b91'; x.fillRect(0, 0, 160, 120);
+    x.fillStyle = '#f0c5a5'; x.beginPath(); x.arc(80, 45, 22, 0, Math.PI * 2); x.fill();
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({
+    name: 'luma-zip-restore-test.png', mimeType: 'image/png',
+    buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+  });
+  await page.locator('[data-tool="library"]').click();
+  await page.locator('#saveToLibrary').click();
+  await expect(page.locator('#libraryItems .library-row')).toHaveCount(1);
+
+  page.once('dialog', dialog => dialog.accept());
+  const downloadPromise = page.waitForEvent('download', { timeout: 15000 });
+  await page.locator('#backupFullLibrary').click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/luma-full-library-backup-.*\.zip$/i);
+  const zipPath = await download.path();
+  expect(zipPath).toBeTruthy();
+
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#fullLibraryZipFile').setInputFiles(zipPath);
+  await expect(page.locator('#libraryBulkStatus')).toContainText('ZIP 복원 완료', { timeout: 15000 });
+  await expect(page.locator('#libraryItems .library-row')).toHaveCount(2);
+  await expect(page.locator('#libraryOverview')).toContainText('2장');
+  expect(errors, 'uncaught library ZIP restore errors').toEqual([]);
+});
+
 test('preset tonal balance regression across portrait, landscape, food and night test scenes', async ({ page }) => {
   test.setTimeout(120000);
   page.setDefaultTimeout(10000);
