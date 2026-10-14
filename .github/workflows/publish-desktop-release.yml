@@ -1,0 +1,28 @@
+name: Publish Luma desktop release
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: luma-release
+  cancel-in-progress: false
+jobs:
+  windows-release:
+    runs-on: windows-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install
+      - name: Validate app syntax and configuration
+        run: npm run test:syntax
+      - name: Publish Windows installer and updater metadata
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run dist:win -- --publish always
