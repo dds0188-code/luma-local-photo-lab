@@ -64,9 +64,13 @@ jobs:
           p = Path("android/app/build.gradle")
           source = p.read_text()
           version = os.environ["GITHUB_REF_NAME"].lstrip("v")
+          code = os.environ["GITHUB_RUN_NUMBER"]
           source, count = re.subn(r'versionName\s+"[^"]+"', 'versionName "' + version + '"', source, count=1)
           if count != 1:
               raise SystemExit("Could not set Android versionName from release tag")
+          source, count = re.subn(r'versionCode\s+\d+', 'versionCode ' + code, source, count=1)
+          if count != 1:
+              raise SystemExit("Could not set monotonically increasing Android versionCode")
           p.write_text(source)
           PY
       - name: Configure release signing
