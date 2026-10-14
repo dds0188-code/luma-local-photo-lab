@@ -1,0 +1,51 @@
+{
+  "name": "luma-local-photo-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local-first photo editor for desktop and Android",
+  "license": "UNLICENSED",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "build:web": "node scripts/build-web.cjs",
+    "test:syntax": "node scripts/check-syntax.cjs",
+    "desktop:dir": "npm run build:web && electron-builder --dir",
+    "dist:win": "npm run build:web && electron-builder --win nsis",
+    "android:sync": "npm run build:web && cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3",
+    "electron": "^38.2.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.luma.localphotolab",
+    "productName": "Luma Local Photo Lab",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "desktop/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "artifactName": "Luma-Local-Photo-Lab-Setup-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
