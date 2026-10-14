@@ -518,9 +518,12 @@ test('full library ZIP backup restores original photos and metadata without dele
     name: 'luma-zip-restore-test.png', mimeType: 'image/png',
     buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
   });
+  // Safari/WebKit can dispatch file selection before the asynchronous image decode finishes.
+  await expect.poll(() => page.locator('#filename').innerText(), { timeout: 15000 }).toContain('luma-zip-restore-test.png');
+  await expect(page.locator('#saveToLibrary')).toBeEnabled();
   await page.locator('[data-tool="library"]').click();
   await page.locator('#saveToLibrary').click();
-  await expect(page.locator('#libraryItems .library-row')).toHaveCount(1);
+  await expect(page.locator('#libraryItems .library-row')).toHaveCount(1, { timeout: 15000 });
 
   page.once('dialog', dialog => dialog.accept());
   const downloadPromise = page.waitForEvent('download', { timeout: 15000 });
