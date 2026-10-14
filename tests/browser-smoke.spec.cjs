@@ -524,6 +524,9 @@ test('full library ZIP backup restores original photos and metadata without dele
   await page.locator('[data-tool="library"]').click();
   await page.locator('#saveToLibrary').click();
   await expect(page.locator('#libraryItems .library-row')).toHaveCount(1, { timeout: 15000 });
+  const keywords = page.locator('#libraryItems .library-row input[type="text"]');
+  await keywords.fill('zip-test, metadata-roundtrip');
+  await keywords.dispatchEvent('change');
 
   page.once('dialog', dialog => dialog.accept());
   const downloadPromise = page.waitForEvent('download', { timeout: 15000 });
@@ -538,6 +541,9 @@ test('full library ZIP backup restores original photos and metadata without dele
   await expect(page.locator('#libraryBulkStatus')).toContainText('ZIP 복원 완료', { timeout: 15000 });
   await expect(page.locator('#libraryItems .library-row')).toHaveCount(2);
   await expect(page.locator('#libraryOverview')).toContainText('2장');
+  await expect(page.locator('#libraryItems .library-row input[type="text"]')).toHaveCount(2);
+  await expect(page.locator('#libraryItems .library-row input[type="text"]').nth(0)).toHaveValue('zip-test, metadata-roundtrip');
+  await expect(page.locator('#libraryItems .library-row input[type="text"]').nth(1)).toHaveValue('zip-test, metadata-roundtrip');
   expect(errors, 'uncaught library ZIP restore errors').toEqual([]);
 });
 
