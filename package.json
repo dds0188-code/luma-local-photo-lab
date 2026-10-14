@@ -14,12 +14,14 @@
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
-    "@capacitor/core": "^7.4.3"
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/app": "^7.1.0"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.4.3",
     "electron": "^38.2.0",
-    "electron-builder": "^26.0.12"
+    "electron-builder": "^26.0.12",
+    "electron-updater": "^6.6.2"
   },
   "build": {
     "appId": "com.luma.localphotolab",
@@ -36,7 +38,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "artifactName": "Luma-Local-Photo-Lab-Setup-${version}-${arch}.${ext}"
@@ -46,6 +50,14 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "dds0188-code",
+        "repo": "luma-local-photo-lab",
+        "releaseType": "release"
+      }
+    ]
   }
 }
