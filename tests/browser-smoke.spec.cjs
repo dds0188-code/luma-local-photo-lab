@@ -442,6 +442,9 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
   }));
   expect(splitState.count).toBe(2);
   expect(splitState.masks.every(m => m.hasData && m.pixels > 0)).toBeTruthy();
+  await expect(page.locator('#maskSplitAdjust')).toBeVisible();
+  await page.locator('#maskSplitBoundary1').fill('62');
+  await expect.poll(() => page.evaluate(() => Math.round(maskLayers.find(l => l.clipRegion)?.clipRegion?.h * 100))).toBe(62);
   const looks = await page.evaluate(() => presetData.map(p => JSON.stringify({
     exposure:p.settings.exposure, temperature:p.settings.temperature, tint:p.settings.tint,
     saturation:p.settings.saturation, vibrance:p.settings.vibrance, fade:p.settings.fade,
