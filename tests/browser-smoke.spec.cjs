@@ -404,6 +404,7 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
   });
   await expect.poll(() => page.locator('#filename').innerText(), { timeout: 15000 }).toContain('luma-mask-regression.png');
   await page.locator('[data-tool="mask"]').click();
+  await page.locator('[data-mask-view="paint"]').click();
   await page.locator('#maskToggle').click();
   await page.locator('[data-mask-mode="ellipse"]').click();
   const overlay = page.locator('#maskOverlay');
@@ -428,6 +429,7 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
   await expect(page.locator('#maskOverlayToggle')).toContainText('숨기기');
   await page.locator('#maskOverlayToggle').click();
   await expect(page.locator('#maskOverlayToggle')).toContainText('표시');
+  await page.locator('[data-mask-view="layers"]').click();
   await page.locator('#maskSplit2H').click();
   const splitState = await page.evaluate(() => ({
     count: maskLayers.length,
