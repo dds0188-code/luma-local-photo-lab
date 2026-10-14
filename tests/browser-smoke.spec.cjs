@@ -442,3 +442,103 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
   expect(new Set(presetLabels).size).toBeGreaterThanOrEqual(25);
   expect(pageErrors, 'uncaught mask workflow errors').toEqual([]);
 });
+
+
+test('preset tonal balance regression across portrait, landscape, food and night test scenes', async ({ page }) => {
+  test.setTimeout(120000);
+  page.setDefaultTimeout(10000);
+  const pageErrors = [];
+  page.on('pageerror', error => pageErrors.push(error.message));
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+
+  const presetStats = await page.evaluate(() => {
+    const presets = eval('presetData');
+    return presets.map(p => ({
+      name: p.name,
+      contrast: Number(p.settings.contrast) || 0,
+      shadows: Number(p.settings.shadows) || 0,
+      blacks: Number(p.settings.blacks) || 0,
+      whites: Number(p.settings.whites) || 0,
+      fade: Number(p.settings.fade) || 0,
+      clarity: Number(p.settings.clarity) || 0
+    }));
+  });
+  expect(presetStats).toHaveLength(35);
+  for (const p of presetStats) {
+    expect(p.fade, p.name + ' fade should not wash out the image').toBeLessThanOrEqual(10);
+    expect(p.shadows, p.name + ' should not lift all shadows').toBeLessThanOrEqual(12);
+    expect(p.blacks, p.name + ' should retain black point').toBeLessThanOrEqual(5);
+    expect(p.whites, p.name + ' should retain highlight separation').toBeGreaterThanOrEqual(-6);
+    expect(p.clarity, p.name + ' should not soften global contrast excessively').toBeGreaterThanOrEqual(-2);
+    expect(p.contrast, p.name + ' should preserve a usable contrast floor').toBeGreaterThanOrEqual(-8);
+  }
+
+  const scenes = [
+    { name: 'portrait', presets: ['클린 데이라이트', '스튜디오 클린', '스킨 내추럴', '골든 아워', '소프트 필름'], colors: ['#8aafc4', '#e7c4ad', '#4c6b85'] },
+    { name: 'landscape', presets: ['내추럴 그린', '포레스트', '스카이 블루', '딥 블루', '드라마틱'], colors: ['#5c9ed8', '#47784a', '#344c35'] },
+    { name: 'food', presets: ['카페 라떼', '푸드 팝', '크림 베이지', '골든 아워', '클린 데이라이트'], colors: ['#8d6042', '#e7d8b8', '#bf4b32'] },
+    { name: 'night', presets: ['야간 네온', '로우키', '시네마틱', '딥 블루', '드라마틱'], colors: ['#101a38', '#1d9dc7', '#ed3a9d'] }
+  ];
+  await page.locator('[data-tool="presets"]').click();
+  for (const scene of scenes) {
+    const dataUrl = await page.evaluate(({ colors, name }) => {
+      const c = document.createElement('canvas'); c.width = 320; c.height = 240;
+      const x = c.getContext('2d');
+      const g = x.createLinearGradient(0, 0, 320, 240);
+      g.addColorStop(0, colors[0]); g.addColorStop(.52, colors[1]); g.addColorStop(1, colors[2]);
+      x.fillStyle = g; x.fillRect(0, 0, 320, 240);
+      if (name === 'portrait') {
+        x.fillStyle = '#f0c6a7'; x.beginPath(); x.ellipse(160, 92, 43, 54, 0, 0, Math.PI * 2); x.fill();
+        x.fillStyle = '#34313b'; x.beginPath(); x.ellipse(160, 72, 47, 32, 0, Math.PI, Math.PI * 2); x.fill();
+        x.fillStyle = '#344a62'; x.beginPath(); x.moveTo(90, 240); x.lineTo(112, 164); x.lineTo(160, 148); x.lineTo(208, 164); x.lineTo(230, 240); x.fill();
+      } else if (name === 'landscape') {
+        x.fillStyle = '#d7e5ed'; x.beginPath(); x.arc(250, 42, 20, 0, Math.PI * 2); x.fill();
+        x.fillStyle = '#42556b'; x.beginPath(); x.moveTo(0, 170); x.lineTo(80, 65); x.lineTo(150, 165); x.lineTo(225, 82); x.lineTo(320, 180); x.lineTo(320, 240); x.lineTo(0, 240); x.fill();
+        x.fillStyle = '#33583b'; x.fillRect(0, 188, 320, 52);
+      } else if (name === 'food') {
+        x.fillStyle = '#f0e4d1'; x.beginPath(); x.ellipse(160, 142, 105, 72, 0, 0, Math.PI * 2); x.fill();
+        x.fillStyle = '#c64d32'; x.beginPath(); x.arc(130, 130, 26, 0, Math.PI * 2); x.fill();
+        x.fillStyle = '#dfb44d'; x.beginPath(); x.arc(180, 145, 24, 0, Math.PI * 2); x.fill();
+        x.fillStyle = '#477a45'; x.beginPath(); x.ellipse(166, 104, 18, 8, -.5, 0, Math.PI * 2); x.fill();
+      } else {
+        x.fillStyle = '#f13b9d'; x.fillRect(28, 40, 14, 130);
+        x.fillStyle = '#19c8ee'; x.fillRect(274, 25, 16, 145);
+        x.fillStyle = '#f6b642'; x.beginPath(); x.arc(160, 112, 27, 0, Math.PI * 2); x.fill();
+        x.fillStyle = '#17192a'; x.fillRect(70, 172, 180, 68);
+      }
+      return c.toDataURL('image/png');
+    }, scene);
+    await page.locator('#fileInput').setInputFiles({
+      name: 'preset-test-' + scene.name + '.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+    });
+    await expect.poll(() => page.locator('#filename').innerText(), { timeout: 15000 }).toContain('preset-test-' + scene.name + '.png');
+    await page.waitForTimeout(120);
+    const baseline = await page.locator('#preview').evaluate(c => {
+      const { data } = c.getContext('2d').getImageData(0, 0, c.width, c.height);
+      let n = 0, sum = 0, sum2 = 0;
+      for (let i = 0; i < data.length; i += 16) {
+        const l = .2126 * data[i] + .7152 * data[i + 1] + .0722 * data[i + 2];
+        sum += l; sum2 += l * l; n++;
+      }
+      return Math.sqrt(Math.max(0, sum2 / n - (sum / n) ** 2));
+    });
+    expect(baseline).toBeGreaterThan(12);
+    for (const name of scene.presets) {
+      await page.locator('.preset[data-name="' + name + '"]').click();
+      await page.waitForTimeout(180);
+      const spread = await page.locator('#preview').evaluate(c => {
+        const { data } = c.getContext('2d').getImageData(0, 0, c.width, c.height);
+        let n = 0, sum = 0, sum2 = 0;
+        for (let i = 0; i < data.length; i += 16) {
+          const l = .2126 * data[i] + .7152 * data[i + 1] + .0722 * data[i + 2];
+          sum += l; sum2 += l * l; n++;
+        }
+        return Math.sqrt(Math.max(0, sum2 / n - (sum / n) ** 2));
+      });
+      expect(spread, scene.name + ' / ' + name + ' contrast spread').toBeGreaterThan(baseline * .42);
+    }
+  }
+  expect(pageErrors, 'uncaught errors while testing preset looks').toEqual([]);
+});
