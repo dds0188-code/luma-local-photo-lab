@@ -480,10 +480,23 @@ test('crop coordinates stay aligned before and after preview zoom on desktop and
     await expect(page.locator('#cropHNum')).toHaveValue('50');
   };
 
+  // Desktop: the same normalized crop must be selected at 100% and zoomed preview sizes.
   await dragCrop();
   await page.locator('#cropReset').click();
   await page.locator('#zoomIn').click();
   await page.waitForTimeout(150);
+  await dragCrop();
+  await expect(page.locator('#cropPixelInfo')).toContainText('200 × 150 px');
+
+  // Repeat on a phone-sized viewport without re-importing the image.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(180);
+  await page.locator('#zoomFit').click();
+  await page.locator('#cropReset').click();
+  await dragCrop();
+  await page.locator('#cropReset').click();
+  await page.locator('#zoomIn').click();
+  await page.waitForTimeout(180);
   await dragCrop();
   await expect(page.locator('#cropPixelInfo')).toContainText('200 × 150 px');
   expect(errors, 'uncaught crop coordinate errors').toEqual([]);
