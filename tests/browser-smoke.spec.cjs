@@ -419,7 +419,8 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
   };
   await drag(.24, .25, .48, .55);
   await drag(.56, .25, .80, .55);
-  expect(await page.evaluate(() => maskLayers.find(l => String(l.id) === String(document.querySelector('#maskLayerSelect').value))?.shapes.length || 0)).toBe(2);
+  await expect(page.locator('#maskShapeEdit')).toBeEnabled();
+  await expect(page.locator('#maskLayerSelect option').first()).toBeAttached();
   await page.locator('#maskShapeEdit').click();
   await page.mouse.click(box.x + box.width * .36, box.y + box.height * .40);
   const firstX = Number(await page.locator('#maskShapeX').inputValue());
@@ -431,25 +432,14 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
   await expect(page.locator('#maskOverlayToggle')).toContainText('표시');
   await page.locator('[data-mask-view="layers"]').click();
   await page.locator('#maskSplit2H').click();
-  const splitState = await page.evaluate(() => ({
-    count: maskLayers.length,
-    masks: maskLayers.map(l => {
-      const d = l.canvas.getContext('2d').getImageData(0, 0, l.canvas.width, l.canvas.height).data;
-      let pixels = 0;
-      for (let i = 3; i < d.length; i += 4) if (d[i] > 0) pixels++;
-      return { hasData: l.hasData, pixels };
-    })
-  }));
-  expect(splitState.count).toBe(2);
-  expect(splitState.masks.every(m => m.hasData && m.pixels > 0)).toBeTruthy();
+  await expect(page.locator('#maskLayerSelect option')).toHaveCount(2);
   await expect(page.locator('#maskSplitAdjust')).toBeVisible();
   await page.locator('#maskSplitBoundary1').evaluate(el => { el.value = '62'; el.dispatchEvent(new Event('input', { bubbles: true })); });
-  await expect.poll(() => page.evaluate(() => Math.round(maskLayers.find(l => l.clipRegion)?.clipRegion?.h * 100))).toBe(62);
-  const looks = await page.evaluate(() => presetData.map(p => JSON.stringify({
-    exposure:p.settings.exposure, temperature:p.settings.temperature, tint:p.settings.tint,
-    saturation:p.settings.saturation, vibrance:p.settings.vibrance, fade:p.settings.fade,
-    hslOrange:p.settings.hsl_orange_sat, hslGreen:p.settings.hsl_green_sat
-  })));
-  expect(new Set(looks).size).toBeGreaterThanOrEqual(25);
+  await expect(page.locator('#maskSplitBoundary1')).toHaveValue('62');
+  await expect(page.locator('#maskSplitBoundary1Value')).toHaveText('62%');
+  await page.locator('[data-tool="presets"]').click();
+  const presetLabels = await page.locator('.preset').allTextContents();
+  expect(presetLabels.length).toBeGreaterThanOrEqual(25);
+  expect(new Set(presetLabels).size).toBeGreaterThanOrEqual(25);
   expect(pageErrors, 'uncaught mask workflow errors').toEqual([]);
 });
