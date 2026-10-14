@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111214">
 <meta name="description" content="오프라인 기본 편집과 로컬 사진 처리를 지원하는 Luma Local Photo Lab">
+<meta name="luma-app-version" content="1.0.0">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icons/luma-icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icons/luma-icon.svg">
@@ -589,8 +590,14 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
     if (!capacitor || typeof capacitor.getPlatform !== "function" || capacitor.getPlatform() !== "android") return;
     try {
       const appPlugin = capacitor.Plugins?.App;
-      if (!appPlugin?.getInfo) return;
-      const info = await appPlugin.getInfo();
+      let currentVersion = document.querySelector('meta[name="luma-app-version"]')?.content || "";
+      if (appPlugin?.getInfo) {
+        try {
+          const info = await appPlugin.getInfo();
+          currentVersion = info.version || currentVersion;
+        } catch {}
+      }
+      if (!currentVersion) return;
       const response = await fetch("https://api.github.com/repos/dds0188-code/luma-local-photo-lab/releases/latest", {
         headers: { Accept: "application/vnd.github+json" },
         cache: "no-store"
@@ -598,7 +605,7 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
       if (!response.ok) return;
       const release = await response.json();
       const version = value => String(value || "").replace(/^v/, "").split(/[.+-]/).slice(0, 3).map(part => Number.parseInt(part, 10) || 0);
-      const current = version(info.version);
+      const current = version(currentVersion);
       const latest = version(release.tag_name);
       const newer = latest.some((part, index) => part > (current[index] || 0) && latest.slice(0, index).every((v, i) => v === current[i])) &&
         latest.some((part, index) => part !== (current[index] || 0));
