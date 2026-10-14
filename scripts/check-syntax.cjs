@@ -1,14 +1,17 @@
 const fs = require("node:fs");
 const html = fs.readFileSync("index.html", "utf8");
-const start = html.indexOf("<script");
-const bodyStart = html.indexOf(">", start) + 1;
-const end = html.indexOf("</script>", bodyStart);
-if (start < 0 || bodyStart <= 0 || end < 0) throw new Error("Main application script was not found");
-new Function(html.slice(bodyStart, end));
+const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)];
+if (!scripts.length) throw new Error("No inline application scripts found");
+scripts.forEach((match, index) => {
+  if (match[1].trim()) {
+    try { new Function(match[1]); }
+    catch (error) { throw new Error("Inline script " + (index + 1) + ": " + error.message); }
+  }
+});
 for (const file of ["desktop/main.cjs", "scripts/build-web.cjs"]) {
   new Function(fs.readFileSync(file, "utf8"));
 }
-JSON.parse(fs.readFileSync("package.json", "utf8"));
-JSON.parse(fs.readFileSync("capacitor.config.json", "utf8"));
-JSON.parse(fs.readFileSync("manifest.webmanifest", "utf8"));
-console.log("Luma syntax and configuration checks passed.");
+for (const file of ["package.json", "capacitor.config.json", "manifest.webmanifest"]) {
+  JSON.parse(fs.readFileSync(file, "utf8"));
+}
+console.log("Luma inline scripts, desktop shell, and configuration checks passed.");
