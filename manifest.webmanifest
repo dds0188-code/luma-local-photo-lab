@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "Luma Local Photo Lab",
+  "short_name": "Luma Lab",
+  "description": "Local-first photo editing with offline basic tools.",
+  "lang": "ko",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#111214",
+  "theme_color": "#111214",
+  "categories": ["photo", "graphics"],
+  "icons": [
+    { "src": "./icons/luma-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "./icons/luma-icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
