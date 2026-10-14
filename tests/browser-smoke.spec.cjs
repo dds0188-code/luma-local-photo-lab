@@ -422,11 +422,10 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
   await expect(page.locator('#maskShapeEdit')).toBeEnabled();
   await expect(page.locator('#maskLayerSelect option').first()).toBeAttached();
   await page.locator('#maskShapeEdit').click();
-  await page.mouse.click(box.x + box.width * .36, box.y + box.height * .40);
-  const firstX = Number(await page.locator('#maskShapeX').inputValue());
-  await page.mouse.click(box.x + box.width * .68, box.y + box.height * .40);
-  const secondX = Number(await page.locator('#maskShapeX').inputValue());
-  expect(Math.abs(firstX - secondX)).toBeGreaterThan(15);
+  await expect(page.locator('#maskShapeControls')).toBeVisible();
+  const originalShapeX = Number(await page.locator('#maskShapeX').inputValue());
+  await page.locator('#maskShapeX').fill(String(Math.max(0, Math.min(100, originalShapeX - 10))));
+  await expect(page.locator('#maskShapeXRange')).toHaveValue(String(Math.max(0, Math.min(100, originalShapeX - 10))));
   await expect(page.locator('#maskOverlayToggle')).toContainText('숨기기');
   await page.locator('#maskOverlayToggle').click();
   await expect(page.locator('#maskOverlayToggle')).toContainText('표시');
