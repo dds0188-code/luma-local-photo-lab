@@ -444,6 +444,51 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
 });
 
 
+test('crop coordinates stay aligned before and after preview zoom on desktop and mobile viewports', async ({ page }) => {
+  test.setTimeout(60000);
+  page.setDefaultTimeout(10000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  const viewport = page.viewportSize();
+  if (viewport && viewport.width < 500) await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 400; c.height = 300;
+    const x = c.getContext('2d');
+    x.fillStyle = '#214f91'; x.fillRect(0, 0, 400, 300);
+    x.fillStyle = '#e9b86a'; x.fillRect(100, 75, 200, 150);
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({
+    name: 'luma-crop-coordinate-test.png', mimeType: 'image/png',
+    buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+  });
+  await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-crop-coordinate-test.png');
+  await page.locator('[data-tool="crop"]').click();
+  await expect(page.locator('#cropOverlay')).toBeVisible();
+
+  const dragCrop = async () => {
+    const rect = await page.locator('#preview').boundingBox();
+    expect(rect).not.toBeNull();
+    await page.mouse.move(rect.x + rect.width * 0.2, rect.y + rect.height * 0.2);
+    await page.mouse.down();
+    await page.mouse.move(rect.x + rect.width * 0.7, rect.y + rect.height * 0.7, { steps: 5 });
+    await page.mouse.up();
+    await expect(page.locator('#cropXNum')).toHaveValue('20');
+    await expect(page.locator('#cropYNum')).toHaveValue('20');
+    await expect(page.locator('#cropWNum')).toHaveValue('50');
+    await expect(page.locator('#cropHNum')).toHaveValue('50');
+  };
+
+  await dragCrop();
+  await page.locator('#cropReset').click();
+  await page.locator('#zoomIn').click();
+  await page.waitForTimeout(150);
+  await dragCrop();
+  await expect(page.locator('#cropPixelInfo')).toContainText('200 × 150 px');
+  expect(errors, 'uncaught crop coordinate errors').toEqual([]);
+});
+
 test('preset tonal balance regression across portrait, landscape, food and night test scenes', async ({ page }) => {
   test.setTimeout(120000);
   page.setDefaultTimeout(10000);
