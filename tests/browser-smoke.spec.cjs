@@ -532,6 +532,8 @@ test('full library ZIP backup restores original photos and metadata without dele
   await keywords.dispatchEvent('change');
   await expect(page.locator('#toast')).toContainText('키워드를 저장했습니다', { timeout: 10000 });
 
+  await page.locator('#libraryActionGroups summary').filter({ hasText: '백업 · 복원' }).click();
+  await expect(page.locator('#backupFullLibrary')).toBeVisible();
   page.once('dialog', dialog => dialog.accept());
   const downloadPromise = page.waitForEvent('download', { timeout: 15000 });
   await page.locator('#backupFullLibrary').click();
@@ -916,4 +918,31 @@ test('active editor panel can expand and collapse all detail groups', async ({ p
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await expect(details).not.toHaveAttribute('open', '');
   expect(errors, 'panel group toggle browser errors').toEqual([]);
+});
+
+
+test('photo library actions are grouped into collapsible task sections', async ({ page }) => {
+  test.setTimeout(30000);
+  page.setDefaultTimeout(8000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-tool="library"]').click();
+  const groups = page.locator('#libraryActionGroups');
+  await expect(groups).toBeVisible();
+  await expect(groups.locator('details').nth(0)).toHaveAttribute('open', '');
+  await expect(groups.locator('details').nth(1)).toHaveAttribute('open', '');
+  await expect(groups.locator('details').nth(2)).not.toHaveAttribute('open', '');
+  await groups.locator('summary').filter({ hasText: '백업 · 복원' }).click();
+  await expect(page.locator('#backupFullLibrary')).toBeVisible();
+  await groups.locator('summary').filter({ hasText: '백업 · 복원' }).click();
+  await expect(page.locator('#backupFullLibrary')).not.toBeVisible();
+  const settings = page.locator('#batchExportSettings');
+  await expect(settings).toHaveAttribute('open', '');
+  await settings.locator('summary').click();
+  await expect(page.locator('#batchFormat')).not.toBeVisible();
+  await settings.locator('summary').click();
+  await expect(page.locator('#batchFormat')).toBeVisible();
+  expect(errors, 'library action group browser errors').toEqual([]);
 });
