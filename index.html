@@ -778,12 +778,12 @@ function groupChildrenBySection(container,firstOpen=false){
 function organizeEditorPanels(){
  const pane=name=>document.querySelector('[data-tool-panel="'+name+'"]');
  // Crop and color sections: make the individual workflows open/close independently.
- ['crop','color','area'].forEach(name=>groupChildrenBySection(pane(name),name==='crop'));
+ ['crop','color'].forEach(name=>groupChildrenBySection(pane(name),name==='crop'));
  // Main adjustment panel: tuck away reset and clipping utilities rather than letting them dominate.
  const adjust=pane('adjust');
  if(adjust){
   const resets=adjust.querySelector('#groupResetTools');
-  if(resets&&resets.parentElement===adjust){const d=document.createElement('details');d.className='ui-group';d.innerHTML='<summary>초기화·클리핑 도구</summary>';adjust.insertBefore(d,resets);d.appendChild(resets);const clip=resets.nextElementSibling; if(clip&&clip.classList.contains('preset-tools'))d.appendChild(clip);const hint=d.nextElementSibling;if(hint&&hint.classList.contains('subtle')&&hint.textContent.includes('클리핑 경고'))d.appendChild(hint)}
+  if(resets&&resets.parentElement===adjust){const clip=resets.nextElementSibling;const hint=clip?.nextElementSibling;const end=hint?.classList.contains('subtle')&&hint.textContent.includes('클리핑 경고')?hint:(clip||resets);wrapSiblingRange(adjust,resets,end,'초기화·클리핑 도구',false)}
  }
  // Relighting: separate source, placement, presets/layers and mask restriction.
  const rel=pane('relight');
@@ -800,7 +800,9 @@ function organizeEditorPanels(){
  // Area selection: target modes, individual target cards, painting/applying, and precision.
  const area=pane('area');
  if(area){
-  const targets=area.querySelector('.area-targets');
+  const targets=area.querySelector(':scope > .area-targets');
+  const intro=area.querySelector(':scope > .section');
+  if(targets&&intro&&intro.parentElement===area){const end=targets.previousElementSibling;if(end&&end!==intro)wrapSiblingRange(area,intro,end,'영역 선택 기본 도구',true)}
   const targetCards=Array.from(area.querySelectorAll(':scope > .area-card.area-target'));
   if(targets&&targetCards.length){
    const first=targets,last=targetCards[targetCards.length-1];
@@ -849,7 +851,7 @@ function organizeEditorPanels(){
     ['#exportOriginalsZip','#exportLibraryProjects','내보내기·백업',false],
     ['#findDuplicateLibrary','#findDuplicateLibrary','정리 도구',false]
    ];
-   groups.forEach(([a,b,title,open])=>{const start=ops.querySelector(a),end=ops.querySelector(b);if(start&&end&&start!==end)wrapSiblingRange(ops,start,end,title,open);});
+   groups.forEach(([a,b,title,open])=>{const start=ops.querySelector(a),end=ops.querySelector(b);if(start&&end&&start!==end&&start.parentElement===end.parentElement)wrapSiblingRange(start.parentElement,start,end,title,open);});
   }
  }
  // AI assistant groups
