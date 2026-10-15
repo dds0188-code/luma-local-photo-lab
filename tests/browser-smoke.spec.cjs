@@ -569,8 +569,8 @@ test('all editor tools expose compact functional subgroups instead of one long c
     await expect(page.locator(selector).first(), tool + ' has navigable subgroups').toBeAttached();
   }
   await page.locator('[data-tool="relight"]').click();
-  await expect(page.locator('[data-tool-panel="relight"] details.ui-group > summary')).toContainText(['광원 유형·색상']);
-  await expect(page.locator('[data-tool-panel="relight"] details.ui-group > summary')).toContainText(['위치·범위·부드러움']);
+  await expect(page.locator('[data-tool-panel="relight"] details.ui-group > summary').filter({ hasText: '광원 유형·색상' })).toBeAttached();
+  await expect(page.locator('[data-tool-panel="relight"] details.ui-group > summary').filter({ hasText: '위치·범위·부드러움' })).toBeAttached();
   expect(errors, 'panel grouping should not create runtime errors').toEqual([]);
 });
 
