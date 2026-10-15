@@ -1526,7 +1526,6 @@ function organizeAdjustSubcategories(){
   else if(['light','color','effects','detail'].includes(id)){controls.hidden=false;activateAdjustGroup(id)}
   if(id==='auto'||id==='quick'){/* keep the selected utility panel compact and visible */}
   nav.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===button));
-  button.scrollIntoView({block:'nearest',inline:'nearest',behavior:'auto'});
  }
  nav.querySelectorAll('[data-adjust-group]').forEach(button=>{
   const group=button.dataset.adjustGroup;
