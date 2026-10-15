@@ -671,6 +671,25 @@ details.ui-group .section{margin:10px 0 7px!important;padding:0 0 6px!important;
 .toolpane details[hidden],.toolpane [hidden]{display:none!important}
 .panel-subnav{position:relative!important;top:auto!important;z-index:1!important;margin:0 0 12px!important;padding:8px 0!important;background:transparent!important;backdrop-filter:none!important}
 
+
+/* In-place editor navigation: compact horizontal tabs, no accordion controls or scroll jumps. */
+.toolpane > .section:first-of-type{display:none!important}
+.toolpane details>summary,.toolpane .quick-action-details>summary{display:none!important}
+.toolpane details>summary::after,.toolpane .quick-action-details>summary::after{content:none!important;display:none!important}
+.toolpane details,.toolpane details[open],.toolpane .ui-group,.toolpane .quick-action-details{border:0!important;border-radius:0!important;padding:0!important;margin:0 0 10px!important;background:transparent!important;overflow:visible!important}
+.toolpane details:not([open])>*:not(summary){display:block!important}
+.toolpane details[hidden],.toolpane [hidden]{display:none!important}
+.toolpane .panel-subnav{display:flex;flex-wrap:nowrap;gap:5px;position:relative!important;top:auto!important;z-index:1!important;margin:0 -2px 12px!important;padding:5px 0 10px!important;background:transparent!important;border-bottom:1px solid var(--line);overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x}
+.toolpane .panel-subnav::-webkit-scrollbar{display:none}
+.toolpane .panel-subnav button{flex:0 0 auto;min-width:max-content;min-height:42px;padding:8px 13px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-size:12px;white-space:nowrap}
+.toolpane .panel-subnav button.active{background:#30333a;color:var(--text);box-shadow:inset 0 -3px var(--accent);font-weight:800}
+@media(max-width:760px){
+ .toolpane > .section:first-of-type{display:none!important}
+ .toolpane .panel-subnav{margin:0 -12px 12px!important;padding:5px 12px 9px!important}
+ .toolpane .panel-subnav button{min-height:44px;padding:8px 12px;font-size:12px}
+ .toolpane details,.toolpane details[open],.toolpane .ui-group{margin-bottom:8px!important}
+}
+
 </head>
 <body>
 <div class="app">
@@ -1287,65 +1306,42 @@ $('areaBackgroundRun').onclick=()=>startAreaColorPick('배경');
 $('areaColorRun').onclick=()=>startAreaColorPick('색상 범위');
 $('areaLassoToggle').onclick=()=>{if(!image){toast('먼저 사진을 열어 주세요');return}activateTool('area');areaShowOverlay=true;$('areaPreviewToggle').textContent='보정 결과만 보기';areaPickMode=true;magicSelectEnabled=false;lassoSelectEnabled=!lassoSelectEnabled;maskPainting=lassoSelectEnabled;maskShowOverlay=true;maskOnlyPreview=false;cutoutPreview=false;updateMaskUI();$('areaLassoToggle').classList.toggle('primary',lassoSelectEnabled);$('areaStatus').textContent=lassoSelectEnabled?'사진에서 보정할 영역을 여유 있게 둘러 그리세요. 선택은 누끼와 별개입니다.':'올가미 그리기가 꺼졌습니다.'};$('lassoSmartToggle').onclick=()=>{lassoSmartRefine=!lassoSmartRefine;$('lassoSmartToggle').textContent='올가미 스마트 보정 '+(lassoSmartRefine?'켜짐':'꺼짐');$('lassoSmartToggle').classList.toggle('primary',lassoSmartRefine);$('areaSmartToggle').textContent='그린 영역 안 스마트 보정 '+(lassoSmartRefine?'켜짐':'꺼짐');$('areaSmartToggle').classList.toggle('primary',lassoSmartRefine);toast(lassoSmartRefine?'올가미 안쪽에서 경계 색상 기반 보정을 사용합니다':'완전 수동 올가미: 그린 다각형 그대로 선택합니다')};$('areaSmartToggle').onclick=()=>$('lassoSmartToggle').click();document.querySelectorAll('[data-area-clear]').forEach(b=>b.onclick=()=>{const key=b.dataset.areaClear;delete areaSelections[key];if(document.querySelector('[data-area-target].active')?.dataset.areaTarget===key)areaSelection=null;$('areaApplySelection').disabled=!areaSelection;drawMaskOverlay();render();$('areaStatus').textContent=({sky:'하늘',person:'인물',background:'배경',color:'색상'})[key]+' 선택 영역만 초기화했습니다. 누끼 선택과 다른 대상 영역은 유지됩니다.'});$('areaApplySelection').onclick=()=>{if(!areaSelection||!image){toast('먼저 보정할 영역을 선택하세요');return}const target=currentAreaTarget();ensureMaskSize($('preview').width,$('preview').height);const l=createMaskLayer('영역 · '+({sky:'하늘',person:'인물',background:'배경',color:'직접 지정'})[target]);ensureMaskSize($('preview').width,$('preview').height);l.local={...(areaPreviewLocals[target]||{})};l.paintCanvas.getContext('2d').clearRect(0,0,l.paintCanvas.width,l.paintCanvas.height);l.paintCanvas.getContext('2d').drawImage(areaSelection,0,0,l.paintCanvas.width,l.paintCanvas.height);l.paintHasData=true;renderMaskLayer(l);maskCanvas=l.canvas;maskHasData=l.hasData;areaAppliedMaskId=l.id;areaAppliedMaskIds[target]=l.id;maskShowOverlay=true;drawMaskOverlay();updateMaskLayerUI();updateMaskUI();updateAreaCorrectionControls();render();saveAuto();historyRecord();areaSelections[target]=null;areaSelection=null;areaPickMode=false;magicSelectEnabled=false;lassoSelectEnabled=false;maskPainting=false;drawMaskOverlay();$('areaApplySelection').disabled=true;$('areaLassoToggle').classList.remove('primary');$('areaStatus').textContent=({sky:'하늘',person:'인물',background:'배경',color:'지정 영역'})[target]+' 선택을 별도 마스크 레이어에 적용했습니다. 보정값도 이 대상에만 저장됩니다.';toast('대상별 부분 보정 마스크를 만들었습니다')};$('areaClearSelection').onclick=()=>{const key=currentAreaTarget();delete areaSelections[key];areaSelection=null;areaPickMode=false;magicSelectEnabled=false;lassoSelectEnabled=false;lassoDraft=[];maskPainting=false;$('areaApplySelection').disabled=true;$('areaLassoToggle').classList.remove('primary');drawMaskOverlay();updateMaskUI();render();$('areaStatus').textContent='현재 대상의 선택 영역을 초기화했습니다. 다른 대상 선택과 누끼 선택은 유지됩니다.'};$('areaGoMask').onclick=()=>activateTool('mask');document.querySelectorAll('[data-area-lasso]').forEach(b=>b.addEventListener('click',()=>startAreaLasso(b.dataset.areaLasso)));
 function buildPanelNavigation(){
- // Rebuilt after panel organization so each tab points to a real feature group.
- const definitions={
-  color:[['HSL','#hslDetails'],['톤 커브','#curveDetails'],['컬러 그레이딩','#gradeDetails']],
-  crop:[['각도·크기','#angleRange'],['비율','#crop'],['자르기 영역','#cropPixelInfo']],
-  relight:[['광원','#relightType'],['위치·범위','#relightX'],['레이어·마스크','#relightLayerSelect']],
-  area:[['기본 도구','.area-targets'],['대상 선택','#areaSkyRun'],['영역 보정','#areaApplySelection']],
-  ai:[['사진 분석','#aiAnalyze'],['추천 스타일','#aiRecommendations'],['보정 목표','#aiSummary']],
-  files:[['설정 저장','#saveRecipe'],['설정 불러오기','#loadRecipe']]
- };
- Object.entries(definitions).forEach(([name,items])=>{
-  const panel=document.querySelector('[data-tool-panel="'+name+'"]');
-  if(!panel||panel.querySelector(':scope > .panel-subnav'))return;
-  const nav=document.createElement('nav');nav.className='panel-subnav';nav.setAttribute('aria-label','기능 선택');
-  const groups=[];
-  const groupFor=target=>{
-   if(name==='color')return target.closest('details');
-   if(name==='crop')return target.closest('details.ui-group')||target.closest('.transform-control')||target.closest('#crop')||target.closest('#cropPixelInfo')||target.closest('.crop-number-grid');
-   if(name==='relight')return target.closest('details.ui-group')||target.closest('.transform-control')||target.closest('.relight-layer-tools')?.parentElement;
-   if(name==='area')return target.closest('details.ui-group')||target.closest('.area-card')||target.closest('.area-targets')||target.closest('.area-view');
-   if(name==='ai')return target.closest('#aiRecommendations')||target.closest('#aiSummary')||target.closest('#aiAnalyze')?.parentElement;
-   return target.closest('.section')?.parentElement||target;
-  };
-  items.forEach(([label,selector])=>{
-   const target=panel.querySelector(selector);if(!target)return;
-   const group=groupFor(target);if(!group||groups.some(g=>g.el===group))return;
-   const b=document.createElement('button');b.type='button';b.textContent=label;
-   b.addEventListener('click',()=>{
-    // Keep navigation and any shared panel introduction; switch feature groups in place.
-    const siblings=Array.from(panel.children).filter(el=>el!==nav);
-    const direct=(()=>{let n=group;while(n.parentElement&&n.parentElement!==panel)n=n.parentElement;return n})();
-    const allowed=new Set([direct]);
-    // For nested feature cards/groups, keep only the selected card visible within its wrapper.
-    siblings.forEach(el=>{
-      if(el===direct){el.hidden=false;return}
-      if(el.classList.contains('panelhead')||el.classList.contains('section')&&el.textContent.trim()==='')return;
-      if(el.classList.contains('subtle')&&el.textContent.trim().length<90)return;
-      el.hidden=true;
-    });
-    if(group!==direct){
-      const holder=group.parentElement;
-      if(holder){
-       Array.from(holder.children).forEach(el=>{
-        if(el===group){el.hidden=false;if(el.matches('details'))el.open=true}
-        else if(el.matches('details,.ui-group,.area-card,.transform-control,.section,.crop,.crop-number-grid,.subtle,.preset-tools,.wheel-grid,.curve-channels,canvas'))el.hidden=true;
-       });
-      }
-    }
-    group.hidden=false;
-    if(group.matches('details'))group.open=true;
-    group.querySelectorAll?.('details').forEach(d=>d.open=true);
-    nav.querySelectorAll('button').forEach(x=>{x.classList.toggle('active',x===b);if(x===b)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
-   });
-   nav.appendChild(b);groups.push({el:group,b});
+ // Build real in-place tabs from sibling feature groups. Never scroll to a control.
+ document.querySelectorAll('.toolpane').forEach(panel=>{
+  const groupsByParent=new Map();
+  panel.querySelectorAll('details.ui-group').forEach(group=>{
+   const parent=group.parentElement;
+   if(!parent||!panel.contains(parent))return;
+   if(!groupsByParent.has(parent))groupsByParent.set(parent,[]);
+   groupsByParent.get(parent).push(group);
   });
-  if(groups.length>1){
-   panel.prepend(nav);
-   // Choose the first tab but do not scroll the page.
-   groups[0].b.click();
-  }
+  groupsByParent.forEach((groups,parent)=>{
+   if(groups.length<2||Array.from(parent.children).some(el=>el.classList?.contains('panel-subnav')))return;
+   const nav=document.createElement('nav');
+   nav.className='panel-subnav';
+   nav.setAttribute('aria-label','편집 기능 선택');
+   groups.forEach((group,index)=>{
+    const summary=group.querySelector(':scope > summary');
+    const label=(summary?.textContent||'기능 '+(index+1)).replace(/[＋−+]/g,'').trim();
+    const button=document.createElement('button');
+    button.type='button';
+    button.textContent=label;
+    button.addEventListener('click',()=>{
+     groups.forEach(item=>{
+      item.hidden=item!==group;
+      if(item===group){item.open=true;item.querySelectorAll('details').forEach(nested=>nested.open=true)}
+     });
+     nav.querySelectorAll('button').forEach(tab=>{
+      const active=tab===button;
+      tab.classList.toggle('active',active);
+      if(active)tab.setAttribute('aria-current','page');else tab.removeAttribute('aria-current');
+     });
+    });
+    nav.appendChild(button);
+   });
+   parent.insertBefore(nav,groups[0]);
+   nav.querySelector('button')?.click();
+  });
  });
 }
 
