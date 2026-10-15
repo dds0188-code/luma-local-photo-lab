@@ -766,3 +766,31 @@ test('preset tonal balance regression across portrait, landscape, food and night
   }
   expect(pageErrors, 'uncaught errors while testing preset looks').toEqual([]);
 });
+
+
+test('library imports multiple originals with progress and skips duplicate name-size pairs', async ({ page }) => {
+  test.setTimeout(45000);
+  page.setDefaultTimeout(10000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const png = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 64; c.height = 48;
+    const x = c.getContext('2d'); x.fillStyle = '#405b7b'; x.fillRect(0, 0, c.width, c.height);
+    return c.toDataURL('image/png').split(',')[1];
+  });
+  const buffer = Buffer.from(png, 'base64');
+  const files = [
+    { name: 'library-import-one.png', mimeType: 'image/png', buffer },
+    { name: 'library-import-two.png', mimeType: 'image/png', buffer: Buffer.from(buffer) }
+  ];
+  await page.locator('[data-tool="library"]').click();
+  await page.locator('#multiLibraryFiles').setInputFiles(files);
+  await expect(page.locator('#libraryImportText')).toContainText('가져오기 완료', { timeout: 15000 });
+  await expect(page.locator('#libraryItems .library-row')).toHaveCount(2);
+  await expect(page.locator('#libraryOverview')).toContainText('2장');
+  await page.locator('#multiLibraryFiles').setInputFiles([files[0]]);
+  await expect(page.locator('#libraryImportText')).toContainText('추가 0장 / 중복 1장', { timeout: 15000 });
+  await expect(page.locator('#libraryItems .library-row')).toHaveCount(2);
+  expect(errors, 'uncaught multi-photo import errors').toEqual([]);
+});
