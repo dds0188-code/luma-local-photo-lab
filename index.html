@@ -1068,10 +1068,10 @@ function sampleLassoPrompts(points,w,h){
 async function runAISmartLasso(){
  if(!image){toast('먼저 사진을 열어 주세요');return}
  if(!lassoDraft.length){toast('먼저 올가미 그리기 버튼으로 피사체를 대략 둘러 그려 주세요');return}
- const status=$('magicSelectStatus'),button=$('cutoutAISegment'),preview=$('preview');
+ const areaMode=areaPickMode,status=$(areaMode?'areaStatus':'magicSelectStatus'),button=areaMode?null:$('cutoutAISegment'),preview=$('preview');
  const pts=lassoDraft.map(p=>({x:p.x/Math.max(1,$('maskOverlay').width)*preview.width,y:p.y/Math.max(1,$('maskOverlay').height)*preview.height}));
  if(pts.length<8){toast('피사체 둘레를 조금 더 길게 그려 주세요');return}
- button.disabled=true;status.textContent='AI 분할 모델을 준비하는 중입니다. 첫 실행은 모델 다운로드 때문에 시간이 걸릴 수 있습니다.';
+ if(button)button.disabled=true;status.textContent='AI 분할 모델을 준비하는 중입니다. 첫 실행은 모델 다운로드 때문에 시간이 걸릴 수 있습니다.';
  try{
   const mod=await loadSamRuntime();
   const maxEdge=768,scale=Math.min(1,maxEdge/Math.max(preview.width,preview.height));
