@@ -577,7 +577,7 @@ test('adjustment subtabs remain in layout flow and never overlay the photo previ
   expect(await nav.evaluate(el => getComputedStyle(el).position)).not.toBe('sticky');
 });
 
-test('basic and auto adjustment tabs sit beside light, color, effects and detail', async ({ page }) => {
+test('light/tone and auto adjustment tabs sit beside color, effects and detail without sticky overlays', async ({ page }) => {
   test.setTimeout(45000);
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -585,20 +585,21 @@ test('basic and auto adjustment tabs sit beside light, color, effects and detail
   await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
   await page.locator('[data-tool="adjust"]').click();
   const nav = page.locator('#basicSubnav');
-  await expect(nav.locator('button')).toHaveCount(7);
-  await expect(nav.locator('button').nth(0)).toHaveText('기본 보정');
-  await expect(nav.locator('button').nth(1)).toHaveText('자동 보정');
-  await expect(nav.locator('button').nth(2)).toHaveText('빛·톤');
-  await expect(nav.locator('button').nth(3)).toHaveText('색상');
-  await expect(nav.locator('button').nth(4)).toHaveText('효과');
-  await expect(nav.locator('button').nth(5)).toHaveText('디테일');
+  await expect(nav.locator('button')).toHaveCount(6);
+  await expect(nav.locator('button').nth(0)).toHaveText('자동 보정');
+  await expect(nav.locator('button').nth(1)).toHaveText('빛·톤');
+  await expect(nav.locator('button').nth(2)).toHaveText('색상');
+  await expect(nav.locator('button').nth(3)).toHaveText('효과');
+  await expect(nav.locator('button').nth(4)).toHaveText('디테일');
+  await expect(page.locator('.adjust-subnav')).not.toHaveCSS('position', 'sticky');
+  await expect(page.locator('.panel-subnav')).not.toHaveCSS('position', 'sticky');
   await nav.locator('button').filter({ hasText: '자동 보정' }).click();
   await expect(page.locator('.adjust-utility-panel[data-adjust-utility="auto"] #autoToneQuick')).toBeAttached();
   await expect(page.locator('.adjust-utility-panel[data-adjust-utility="auto"] #autoWhiteBalanceQuick')).toBeAttached();
   await expect(page.locator('#basicControls')).toBeHidden();
   await nav.locator('button').filter({ hasText: '빠른 보정' }).click();
   await expect(page.locator('.adjust-utility-panel[data-adjust-utility="quick"] .quick-action-details')).toBeAttached();
-  await nav.locator('button').filter({ hasText: '기본 보정' }).click();
+  await nav.locator('button').filter({ hasText: '빛·톤' }).click();
   await expect(page.locator('#basicControls')).toBeVisible();
   await expect(page.locator('#basicGroup-light')).toBeVisible();
   await nav.locator('button').filter({ hasText: '색상' }).click();
