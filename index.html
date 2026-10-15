@@ -1100,15 +1100,24 @@ async function runAISmartLasso(){
   }
   // SAM post_process_masks returns foreground logits for float tensors; use the standard SAM cutoff of 0.0.
   const threshold=0;
-  const out=document.createElement('canvas');out.width=preview.width;out.height=preview.height;
-  const ctx=out.getContext('2d',{willReadFrequently:true}),id=ctx.createImageData(out.width,out.height);
+  // Build the binary mask at the model output resolution first. Expanding it pixel-by-pixel
+  // to a full-resolution preview is needlessly expensive on mobile CPUs.
+  const maskCanvas=document.createElement('canvas');maskCanvas.width=maskW;maskCanvas.height=maskH;
+  const maskCtx=maskCanvas.getContext('2d',{willReadFrequently:true}),id=maskCtx.createImageData(maskW,maskH);
   let count=0;
-  for(let y=0;y<out.height;y++){const sy=Math.min(maskH-1,Math.floor(y*maskH/out.height));for(let x=0;x<out.width;x++){const sx=Math.min(maskW-1,Math.floor(x*maskW/out.width)),srcIndex=candidate*plane+sy*maskW+sx,v=rawData[srcIndex],i=(y*out.width+x)*4;if(Number(v)>threshold){id.data[i]=id.data[i+1]=id.data[i+2]=255;id.data[i+3]=255;count++}}}
+  for(let p=0;p<plane;p++){
+   if(Number(rawData[candidate*plane+p])>threshold){
+    const i=p*4;id.data[i]=id.data[i+1]=id.data[i+2]=255;id.data[i+3]=255;count++;
+   }
+  }
   if(!count)throw new Error('AI가 선택 영역을 만들지 못했습니다. 올가미를 더 넓게 그려 다시 시도해 주세요.');
-  ctx.putImageData(id,0,0);
-  // Let the model refine the silhouette beyond the rough lasso boundary.
-  const refined=ctx.getImageData(0,0,out.width,out.height),data=refined.data;let finalCount=0;
-  for(let i=3;i<data.length;i+=4)if(data[i])finalCount++;
+  maskCtx.putImageData(id,0,0);
+  // Let the browser's canvas scaler expand the model mask instead of running a JS loop
+  // over every full-resolution preview pixel. Nearest-neighbour scaling preserves binary edges.
+  const out=document.createElement('canvas');out.width=preview.width;out.height=preview.height;
+  const ctx=out.getContext('2d');ctx.imageSmoothingEnabled=false;
+  ctx.drawImage(maskCanvas,0,0,out.width,out.height);
+  const finalCount=Math.round(count*(out.width* out.height)/(maskW*maskH));
   if(!finalCount)throw new Error('올가미 안에서 AI 결과가 비었습니다. 피사체를 조금 더 여유 있게 둘러 주세요.');
   magicSelection=combineMagicSelection(out);lassoDraft=[];lassoSelectEnabled=false;maskPainting=false;
   $('cutoutAISegment').classList.remove('primary');drawMaskOverlay();updateMagicSelectionUI();updateMaskUI();render();
