@@ -1752,7 +1752,7 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
  const status=()=>document.getElementById('magicSelectStatus');
  const say=t=>{if(status())status().textContent=t};
  btn.addEventListener('click',async()=>{
-  if(!window.image){say('먼저 사진을 열어 주세요.');return}
+  if(typeof image==='undefined'||!image){say('먼저 사진을 열어 주세요.');return}
   if(!window.isSecureContext && location.hostname!=='localhost'){say('AI 누끼는 HTTPS 환경에서 실행해야 합니다.');return}
   const preview=document.getElementById('preview');
   if(!preview||!preview.width||!preview.height){say('처리할 사진을 찾을 수 없습니다.');return}
