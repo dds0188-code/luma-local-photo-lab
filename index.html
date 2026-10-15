@@ -749,7 +749,7 @@ details.ui-group .section{margin:10px 0 7px!important;padding:0 0 6px!important;
 <div class="section" style="margin-top:12px">SNS 비율 캔버스</div><div class="preset-tools" style="flex-wrap:wrap"><button id="ratioOriginal">원본 비율</button><button id="ratioSquare">정사각형 1:1</button><button id="ratioPortrait">세로 4:5</button><button id="ratioStory">스토리 9:16</button><button id="ratioWide">와이드 16:9</button></div><label class="transform-control" style="display:block;margin-top:8px">워터마크 문구 <input id="watermarkText" type="text" maxlength="80" placeholder="선택 사항 · 예: 내 사진"></label><label class="transform-control" style="display:block;margin-top:8px">워터마크 크기 <input id="watermarkSize" type="range" min="12" max="72" value="28"></label><label class="transform-control" style="display:block;margin-top:8px">워터마크 투명도 <input id="watermarkOpacity" type="range" min="10" max="100" value="65"></label><div class="transform-control"><label for="watermarkPosition">워터마크 위치</label><select id="watermarkPosition"><option value="br">오른쪽 아래</option><option value="bl">왼쪽 아래</option><option value="tr">오른쪽 위</option><option value="tl">왼쪽 위</option><option value="center">중앙</option><option value="bc">아래 중앙</option><option value="tc">위 중앙</option><option value="mr">오른쪽 중앙</option><option value="ml">왼쪽 중앙</option></select></div><div class="transform-control"><label for="watermarkColor">글자 색상</label><select id="watermarkColor"><option value="#ffffff">흰색</option><option value="#111111">검정</option><option value="#ffe08a">골드</option><option value="#8be9fd">하늘색</option></select></div><label class="transform-control" style="display:block"><input id="watermarkBackground" type="checkbox" checked> 반투명 배경 넣기</label><button id="exportWatermarked">워터마크 포함 JPG 저장</button><div class="section" style="margin-top:12px">목표 용량 JPG 저장</div><label class="transform-control" style="display:block">목표 파일 크기 (MB) <input id="targetFileSize" type="number" min="0.1" max="20" step="0.1" value="1" style="display:block;width:100%;margin-top:5px;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:7px;padding:8px"></label><div class="preset-tools" style="flex-wrap:wrap"><button id="exportTargetSmall">웹용 · 0.5 MB</button><button id="exportTargetMedium">공유용 · 1 MB</button><button id="exportTargetLarge">고화질 · 2 MB</button></div><div class="subtle">현재 편집 결과를 JPG로 인코딩하고 목표 용량에 가까워지도록 압축 품질을 자동 조절합니다. 사진 내용이나 픽셀 크기는 늘리거나 줄이지 않습니다.</div><div class="section" style="margin-top:12px">빠른 내보내기</div><div class="preset-tools" style="flex-wrap:wrap"><button id="exportJpeg90">JPEG 90%</button><button id="exportJpegMax">JPEG 최고 품질</button><button id="exportPngFull">PNG 전체 크기</button></div><div class="section" style="margin-top:12px">액자 · 여백 내보내기</div><div class="transform-control"><label for="framePadding">바깥 여백 <span id="framePaddingValue">5%</span></label><input id="framePadding" type="range" min="1" max="15" value="5"></div><div class="transform-control"><label for="frameColor">테두리 색상</label><input id="frameColor" type="color" value="#ffffff"></div><div class="transform-control"><label for="frameBackground">바깥 배경 색상</label><input id="frameBackground" type="color" value="#202020"></div><div class="subtle">편집된 사진 바깥에 여백과 테두리를 추가해 별도 파일로 저장합니다. 원본 사진과 현재 편집 상태는 변경하지 않습니다.</div><button id="exportFramed">액자 포함 JPG 저장</button></details><div class="mask-group" data-mask-subgroup="paint"><div class="section" style="margin-top:14px">도형 위치·크기·가장자리</div><div id="maskShapeControls" hidden><div class="transform-control"><div class="numrow"><label for="maskShapeX">가로 위치 (%)</label><input id="maskShapeX" type="number" min="0" max="100" value="50"></div><input id="maskShapeXRange" type="range" min="0" max="100" value="50"></div><div class="transform-control"><div class="numrow"><label for="maskShapeY">세로 위치 (%)</label><input id="maskShapeY" type="number" min="0" max="100" value="50"></div><input id="maskShapeYRange" type="range" min="0" max="100" value="50"></div><div class="transform-control"><div class="numrow"><label for="maskShapeW">가로 크기 (%)</label><input id="maskShapeW" type="number" min="2" max="200" value="40"></div><input id="maskShapeWRange" type="range" min="2" max="200" value="40"></div><div class="transform-control"><div class="numrow"><label for="maskShapeH">세로 크기 (%)</label><input id="maskShapeH" type="number" min="2" max="200" value="40"></div><input id="maskShapeHRange" type="range" min="2" max="200" value="40"></div><div class="transform-control"><div class="numrow"><label for="maskShapeAngle">회전 (°)</label><input id="maskShapeAngle" type="number" min="-180" max="180" value="0"></div><input id="maskShapeAngleRange" type="range" min="-180" max="180" value="0"></div><div class="transform-control"><div class="numrow"><label for="maskShapeFeather">가장자리 부드러움</label><input id="maskShapeFeather" type="number" min="0" max="100" value="50"></div><input id="maskShapeFeatherRange" type="range" min="0" max="100" value="50"></div><div class="preset-tools"><button id="maskShapeDelete">도형 삭제</button><button id="maskGradientReverse">그라데이션 반전</button></div></div><div class="preset-tools" style="margin-top:8px;flex-wrap:wrap"><button id="maskOverlayToggle">선택 테두리 표시</button><button id="maskOnlyToggle">선택 영역만 보기</button><button id="maskResultToggle" class="primary">보정 결과 보기</button><button id="maskPreviewOverlayToggle" type="button">색상 오버레이 켜기</button></div><div class="transform-control"><div class="numrow"><label for="maskBrushSize">브러시 크기</label><input id="maskBrushNum" class="transform-number" type="number" min="8" max="120" step="1" value="32"></div><input id="maskBrushSize" type="range" min="8" max="120" step="1" value="32"><output id="maskBrushValue">32 px</output></div></div><div class="mask-group" data-mask-subgroup="adjust"><div class="section" style="margin-top:14px">선택 영역 보정</div><div class="preset-tools" style="flex-wrap:wrap"><button id="maskAdjustPreviewToggle" type="button" class="primary">보정 결과 보기</button><button id="maskAdjustOverlayToggle" type="button">선택 표시 켜기</button></div><div class="preset-tools" style="margin-top:8px;flex-wrap:wrap"><button id="maskBrightPreset">선택 영역 밝게</button><button id="maskDarkPreset">선택 영역 어둡게</button><button id="maskColorPreset">선택 영역 채도</button></div><div id="maskControls"></div></div></details></div><div class="toolpane" data-tool-panel="cutout" hidden><details open><summary>누끼 작업</summary><div class="subtle" style="margin:8px 0">선택한 영역은 화면에서 바로 확인할 수 있습니다. 배경이 제거된 상태는 미리보기 전환으로 확인하고, PNG 저장 시 투명 배경으로 내보냅니다.</div><div id="magicSelectGroup">
 <div class="section">누끼 선택 방식</div>
 <div class="subtle">자동 선택은 사진 가장자리의 배경색을 기준으로 배경 후보를 분리합니다. 단색·대비가 뚜렷한 배경에서 가장 잘 작동하며, 복잡한 머리카락이나 비슷한 색의 배경은 수동으로 다듬어 주세요.</div>
-<div class="preset-tools cutout-mode-buttons" style="margin-top:10px"><button id="cutoutAutoSelect" class="primary">자동 선택</button><button id="magicSelectToggle">수동 터치</button><button id="cutoutLassoToggle">올가미 그리기</button><button id="lassoSmartToggle">올가미 스마트 보정 꺼짐</button><button id="cutoutSubtractToggle">선택에서 빼기</button></div><div class="subtle" style="margin-top:7px">선택은 기본적으로 누적됩니다. 수동 터치는 색상으로 이어진 영역을 더하고, 올가미는 피사체 둘레를 여유 있게 그리면 테두리와 연결된 배경을 색상 경계로 추정해 제거한 뒤 추가합니다. 복잡한 머리카락·배경과 피사체 색이 비슷한 사진은 결과를 확대해 확인하세요. 새로 시작하려면 ‘선택 초기화’를 누르세요.</div>
+<div class="preset-tools cutout-mode-buttons" style="margin-top:10px"><button id="cutoutAutoSelect" class="primary">자동 선택</button><button id="cutoutAiSelect" type="button">AI 누끼 (실험)</button><button id="magicSelectToggle">수동 터치</button><button id="cutoutLassoToggle">올가미 그리기</button><button id="lassoSmartToggle">올가미 스마트 보정 꺼짐</button><button id="cutoutSubtractToggle">선택에서 빼기</button></div><div class="subtle" style="margin-top:7px">선택은 기본적으로 누적됩니다. 수동 터치는 색상으로 이어진 영역을 더하고, 올가미는 피사체 둘레를 여유 있게 그리면 테두리와 연결된 배경을 색상 경계로 추정해 제거한 뒤 추가합니다. 복잡한 머리카락·배경과 피사체 색이 비슷한 사진은 결과를 확대해 확인하세요. 새로 시작하려면 ‘선택 초기화’를 누르세요.</div>
 <div class="preset-tools" style="margin-top:8px;flex-wrap:wrap"><button id="cutoutPreviewToggle" class="primary">편집 화면에서 누끼 미리보기</button><button id="magicSelectApply" disabled>선택을 마스크에 추가</button><button id="magicSelectClear">선택 초기화</button><button id="maskInvert">선택 반전</button><button id="exportCutout" disabled>투명 PNG 저장</button></div>
 <label class="transform-control" style="display:block;margin-top:8px">자동·수동 선택 허용 범위 <input id="magicTolerance" type="range" min="8" max="110" value="34"><span id="magicToleranceValue">34</span></label>
 <label class="transform-control" style="display:block;margin-top:8px">선택 가장자리 부드럽게 <input id="magicFeather" type="range" min="0" max="18" value="2"><span id="magicFeatherValue">2 px</span></label>
@@ -1740,6 +1740,79 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
     }
   }
   window.addEventListener("load", checkAndroidRelease);
+})();
+</script>
+
+<script>
+/* Optional browser-side AI cutout. Model loads only when requested. */
+(()=>{
+ const btn=document.getElementById('cutoutAiSelect');
+ if(!btn)return;
+ let extractorPromise=null;
+ const status=()=>document.getElementById('magicSelectStatus');
+ const say=t=>{if(status())status().textContent=t};
+ btn.addEventListener('click',async()=>{
+  if(!window.image){say('먼저 사진을 열어 주세요.');return}
+  if(!window.isSecureContext && location.hostname!=='localhost'){say('AI 누끼는 HTTPS 환경에서 실행해야 합니다.');return}
+  const preview=document.getElementById('preview');
+  if(!preview||!preview.width||!preview.height){say('처리할 사진을 찾을 수 없습니다.');return}
+  const previous=btn.textContent;
+  btn.disabled=true;btn.textContent='AI 모델 불러오는 중…';
+  say('AI 누끼 모델을 처음 불러오는 중입니다. 모델 파일 다운로드에 시간이 걸릴 수 있습니다.');
+  try{
+   if(!extractorPromise){
+    extractorPromise=import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.2');
+    extractorPromise=extractorPromise.then(async mod=>{
+     const factory=mod.pipeline;
+     if(typeof factory!=='function')throw new Error('Transformers.js를 불러오지 못했습니다.');
+     return await factory('background-removal','Xenova/modnet',{device:'webgpu'});
+    }).catch(async firstError=>{
+     try{
+      const mod=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.2');
+      return await mod.pipeline('background-removal','Xenova/modnet',{device:'wasm'});
+     }catch(secondError){extractorPromise=null;throw secondError||firstError}
+    });
+   }
+   const extractor=await extractorPromise;
+   btn.textContent='AI로 배경 분리 중…';
+   say('AI가 피사체와 배경을 분리하고 있습니다. 사진 크기에 따라 시간이 걸릴 수 있습니다.');
+   const source=document.createElement('canvas');
+   const maxSide=1024,scale=Math.min(1,maxSide/Math.max(preview.width,preview.height));
+   source.width=Math.max(1,Math.round(preview.width*scale));source.height=Math.max(1,Math.round(preview.height*scale));
+   source.getContext('2d').drawImage(preview,0,0,source.width,source.height);
+   const result=await extractor(source);
+   const item=Array.isArray(result)?result[0]:result;
+   const mask=item?.mask||item?.output||item;
+   let maskCanvas=document.createElement('canvas');
+   if(mask instanceof HTMLCanvasElement){maskCanvas.width=mask.width;maskCanvas.height=mask.height;maskCanvas.getContext('2d').drawImage(mask,0,0)}
+   else if(mask instanceof ImageBitmap || mask instanceof HTMLImageElement){maskCanvas.width=mask.width||mask.naturalWidth;maskCanvas.height=mask.height||mask.naturalHeight;maskCanvas.getContext('2d').drawImage(mask,0,0)}
+   else if(mask&&mask.data&&mask.width&&mask.height){
+    maskCanvas.width=mask.width;maskCanvas.height=mask.height;
+    const mc=maskCanvas.getContext('2d'),id=mc.createImageData(mask.width,mask.height),data=mask.data;
+    const channels=data.length/(mask.width*mask.height);
+    for(let p=0;p<mask.width*mask.height;p++){
+     let v=Number(data[p*channels]||0);
+     if(v<=1)v*=255;
+     const i=p*4;id.data[i]=id.data[i+1]=id.data[i+2]=255;id.data[i+3]=Math.max(0,Math.min(255,Math.round(v)));
+    }
+    mc.putImageData(id,0,0);
+   }else throw new Error('AI 모델이 인식 가능한 마스크를 반환하지 않았습니다.');
+   const out=document.createElement('canvas');out.width=preview.width;out.height=preview.height;
+   const ctx=out.getContext('2d',{willReadFrequently:true});
+   ctx.drawImage(maskCanvas,0,0,out.width,out.height);
+   const pixels=ctx.getImageData(0,0,out.width,out.height),d=pixels.data;
+   for(let i=0;i<d.length;i+=4){const alpha=d[i+3];d[i]=d[i+1]=d[i+2]=255;d[i+3]=alpha}
+   ctx.putImageData(pixels,0,0);
+   magicSelection=combineMagicSelection(out);
+   cutoutPreview=false;maskShowOverlay=true;
+   updateMagicSelectionUI();updateMaskUI();drawMaskOverlay();
+   say('AI 누끼 선택이 완료되었습니다. 가장자리를 확인한 뒤 선택 적용 또는 투명 PNG 저장을 진행하세요.');
+   if(typeof toast==='function')toast('AI 누끼 선택을 만들었습니다. 결과를 확인해 주세요.');
+  }catch(error){
+   console.error('Luma AI cutout failed:',error);
+   say('AI 누끼를 실행하지 못했습니다: '+(error?.message||'알 수 없는 오류')+'. 기존 자동 선택 기능을 사용할 수 있습니다.');
+  }finally{btn.disabled=false;btn.textContent=previous}
+ });
 })();
 </script>
 </body></html>
