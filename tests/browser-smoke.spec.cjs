@@ -906,7 +906,7 @@ test('mobile adjustment subcategory rail stays visible and switches panels witho
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
   await page.locator('[data-tool="adjust"]').click();
-  const rail = page.locator('[data-tool-panel="adjust"] .panel-subnav').first();
+  const rail = page.locator('#basicSubnav');
   await expect(rail).toBeVisible();
   const tabs = rail.locator('button');
   expect(await tabs.count()).toBeGreaterThanOrEqual(4);
