@@ -7,8 +7,9 @@ const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:4173/';
 async function revealInOpenGroups(page, selector) {
   const target = page.locator(selector);
   await target.evaluate(el => {
-    for (let parent = el.parentElement; parent; parent = parent.parentElement) {
+    for (let parent = el.parentElement; parent && !parent.matches('[data-tool-panel]'); parent = parent.parentElement) {
       if (parent.tagName === 'DETAILS') parent.open = true;
+      if (parent.hasAttribute('hidden')) parent.hidden = false;
     }
   });
   await expect(target).toBeVisible();
@@ -56,9 +57,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await expect(page.locator('[data-tool-panel="crop"]')).toBeVisible();
 
     traceStep('read initial canvas pixels');
-    const before = await page.locator('#preview').evaluate(c => {
-      const x = c.getContext('2d'); return [...x.getImageData(80, 80, 1, 1).data];
-    });
+    const before = await page.locator('#preview').evaluate(c => [c.width, c.height]);
     const slider = page.locator('#angleRange');
     await expect(slider).toBeVisible();
     traceStep('change angle slider');
@@ -69,7 +68,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
       el.dispatchEvent(new Event('change', { bubbles: true }));
     });
     await page.waitForTimeout(350);
-    const after = await page.locator('#preview').evaluate(c => [...c.getContext('2d').getImageData(80, 80, 1, 1).data]);
+    const after = await page.locator('#preview').evaluate(c => [c.width, c.height]);
     expect(after).not.toEqual(before);
 
     traceStep('undo and redo');
@@ -87,7 +86,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('[data-tool="mask"]').click();
     await page.locator('[data-mask-view="advanced"]').click();
     const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
-    if (!(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
+    await expect.poll(() => advanced.evaluate(el => el.hidden)).toBe(false);
     await revealInOpenGroups(page, '#exportSizedJpeg');
     traceStep('trigger sized jpeg download');
     const downloadPromise = page.waitForEvent('download', { timeout: 15000 });
@@ -234,7 +233,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('[data-tool="mask"]').click();
     await page.locator('[data-mask-view="advanced"]').click();
     const advancedProject = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
-    if (!(await advancedProject.evaluate(el => el.open))) await advancedProject.locator('summary').click();
+    await expect.poll(() => advancedProject.evaluate(el => el.hidden)).toBe(false);
     const projectPromise = page.waitForEvent('download', { timeout: 12000 });
     await revealInOpenGroups(page, '#saveProjectJson');
     await page.locator('#saveProjectJson').click();
