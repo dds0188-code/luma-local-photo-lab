@@ -197,7 +197,7 @@ kbd{font:600 10px/1.2 ui-monospace,SFMono-Regular,monospace;padding:5px 7px;bord
 }
 
 /* One Lightroom-like horizontal rail: Basic / Auto sit beside Light, Color, Effects and Detail */
-#basicSubnav.adjust-subnav{display:flex;flex-wrap:nowrap;gap:4px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x;position:sticky;top:0;z-index:10;margin:0 -14px 12px;padding:7px 12px;background:rgba(23,24,27,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+#basicSubnav.adjust-subnav{display:flex;flex-wrap:nowrap;gap:4px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x;position:relative;top:auto;z-index:1;margin:0 -14px 12px;padding:7px 12px;background:var(--panel);backdrop-filter:none;border-bottom:1px solid var(--line);isolation:isolate}
 #basicSubnav.adjust-subnav::-webkit-scrollbar{display:none}
 #basicSubnav.adjust-subnav button{flex:0 0 auto;min-width:max-content;min-height:48px;padding:8px 13px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-size:12px;white-space:nowrap}
 #basicSubnav.adjust-subnav button.active{background:#30333a;color:var(--text);box-shadow:inset 0 -2px var(--accent);font-weight:800}
@@ -210,6 +210,13 @@ kbd{font:600 10px/1.2 ui-monospace,SFMono-Regular,monospace;padding:5px 7px;bord
 @media(min-width:761px){
  #basicSubnav.adjust-subnav{margin:0 0 12px;padding:7px 0;background:var(--panel)}
  #basicSubnav.adjust-subnav button{font-size:13px}
+}
+
+/* Keep adjustment subtabs in document flow: never float over the photo while scrolling. */
+@media(max-width:760px){
+ #basicSubnav.adjust-subnav{position:relative!important;top:auto!important;z-index:1!important;margin:0 -14px 12px;padding:7px 12px;background:var(--panel);backdrop-filter:none}
+ .controls{padding-bottom:calc(100px + env(safe-area-inset-bottom));scroll-padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+ .adjust-subcategory-panels,.adjust-utility-panel{scroll-margin-top:10px}
 }
 </style>
 </head>
