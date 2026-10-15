@@ -661,7 +661,16 @@ details.ui-group .section{margin:10px 0 7px!important;padding:0 0 6px!important;
  .toolpane[data-tool-panel="adjust"] .controlhead{grid-template-columns:minmax(0,1fr) 27px 70px!important}
 }
 
-</style>
+
+/* Subcategory menus switch the visible feature in-place; no anchor scrolling or accordion affordances. */
+.panel-subnav button.active{background:var(--accent)!important;color:var(--accentText)!important;border-color:var(--accent)!important}
+.toolpane details>summary,.toolpane .ui-group>summary,.toolpane .quick-action-details>summary{display:none!important}
+.toolpane details>summary:after,.toolpane .ui-group>summary:after,.toolpane .quick-action-details>summary:after{content:none!important;display:none!important}
+.toolpane details,.toolpane details[open],.toolpane .ui-group,.toolpane .quick-action-details{border:0!important;padding:0!important;margin:8px 0!important;background:transparent!important;overflow:visible!important}
+.toolpane details:not([open])>*:not(summary){display:block!important}
+.toolpane details[hidden],.toolpane [hidden]{display:none!important}
+.panel-subnav{position:relative!important;top:auto!important;z-index:1!important;margin:0 0 12px!important;padding:8px 0!important;background:transparent!important;backdrop-filter:none!important}
+
 </head>
 <body>
 <div class="app">
@@ -1294,9 +1303,26 @@ function buildPanelNavigation(){
   const panel=document.querySelector('[data-tool-panel="'+name+'"]')||document.querySelector('[data-side-panel="'+name+'"]');
   if(!panel||panel.querySelector(':scope > .panel-subnav'))return;
   const nav=document.createElement('nav');nav.className='panel-subnav';nav.setAttribute('aria-label','세부 메뉴');
-  let added=0;
-  items.forEach(([label,selector])=>{const target=panel.querySelector(selector);if(!target)return;const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',()=>{let ancestor=target;while(ancestor&&ancestor!==panel){if(ancestor.matches?.('details'))ancestor.open=true;ancestor=ancestor.parentElement}if(target.matches('details'))target.open=true;target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start',inline:'nearest'});nav.querySelectorAll('button').forEach(x=>x.removeAttribute('aria-current'));b.setAttribute('aria-current','location')});nav.appendChild(b);added++});
-  if(added>1)panel.prepend(nav);
+  const entries=[];
+  items.forEach(([label,selector])=>{const target=panel.querySelector(selector);if(!target)return;const b=document.createElement('button');b.type='button';b.textContent=label;
+   b.addEventListener('click',()=>{
+    const unit=target.closest('details, .ui-group, .area-card, .histogram-panel, .adjust-utility-panel, .adjust-subcategory-panels')||target;
+    const topUnit=(()=>{let n=unit;while(n.parentElement&&n.parentElement!==panel)n=n.parentElement;return n})();
+    [...panel.children].forEach(child=>{if(child===nav||child.classList.contains('panelhead')||child.matches('.panel-title,.tool-title'))return;child.hidden=child!==topUnit});
+    topUnit.hidden=false;
+    unit.hidden=false;
+    if(unit.matches('details'))unit.open=true;
+    unit.querySelectorAll?.('details').forEach(d=>d.open=true);
+    nav.querySelectorAll('button').forEach(x=>{x.classList.toggle('active',x===b);if(x===b)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
+   });
+   nav.appendChild(b);entries.push({b,target});
+  });
+  if(entries.length>1){
+   panel.prepend(nav);
+   const first=entries[0];first.b.classList.add('active');first.b.setAttribute('aria-current','page');
+   // Start with the first selected feature visible; keep shared panel title and navigation in place.
+   first.b.click();
+  }
  });
 }
 buildPanelNavigation();
