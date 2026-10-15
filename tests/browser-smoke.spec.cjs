@@ -430,6 +430,8 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
   await page.locator('#maskOverlayToggle').click();
   await expect(page.locator('#maskOverlayToggle')).toContainText('표시');
   await page.locator('[data-mask-view="layers"]').click();
+  const splitGroup = page.locator('[data-tool-panel="mask"] details.ui-group').filter({ hasText: '마스크 분할 도구' });
+  if (!(await splitGroup.evaluate(el => el.open))) await splitGroup.locator('summary').click();
   await page.locator('#maskSplit2H').click();
   await expect(page.locator('#maskLayerSelect option')).toHaveCount(2);
   await expect(page.locator('#maskSplitAdjust')).toBeVisible();
@@ -676,9 +678,11 @@ test('individual adjustment resets on double click and mobile preview stays pinn
   await expect(value).toHaveValue('36');
   await page.locator('#exposure').dblclick();
   await expect(value).toHaveValue('0');
-  await expect(page.locator('#stage')).toHaveCSS('position', 'sticky');
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-  await expect.poll(() => page.locator('#stage').evaluate(el => Math.round(el.getBoundingClientRect().top))).toBe(48);
+  const stage = page.locator('#stage');
+  await expect(stage).toHaveCSS('position', 'relative');
+  const stageTop = await stage.evaluate(el => Math.round(el.getBoundingClientRect().top));
+  await page.locator('.controls').evaluate(el => { el.scrollTop = el.scrollHeight; });
+  await expect.poll(() => stage.evaluate(el => Math.round(el.getBoundingClientRect().top))).toBe(stageTop);
   expect(errors, 'reset and mobile sticky preview errors').toEqual([]);
 });
 
