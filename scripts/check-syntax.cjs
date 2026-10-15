@@ -4,7 +4,7 @@ const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)];
 if (!scripts.length) throw new Error("No inline application scripts found");
 
 // Check static HTML IDs separately from JavaScript templates, where repeated template
-// placeholders (for example id="area-") are not actual duplicate DOM IDs.
+const staticMarkup = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
 const staticIds = [...staticMarkup.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
 const staticIds = [...staticMarkup.matchAll(/\\bid=["']([^"']+)["']/g)].map(match => match[1]);
 const duplicateIds = [...new Set(staticIds.filter((id, index) => staticIds.indexOf(id) !== index))];
