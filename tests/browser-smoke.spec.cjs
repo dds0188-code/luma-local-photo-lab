@@ -193,7 +193,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('[data-tool="mask"]').click();
     await page.locator('[data-mask-view="advanced"]').click();
     const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
-    if (!(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
+    await expect.poll(() => advanced.evaluate(el => el.hidden)).toBe(false);
     const jpegPromise = page.waitForEvent('download', { timeout: 12000 });
     await revealInOpenGroups(page, '#exportWatermarked');
     await page.locator('#exportWatermarked').click();
@@ -336,8 +336,9 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('[data-tool="mask"]').click();
     await page.locator('[data-mask-view="advanced"]').click();
     const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
-    if (!(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
+    await expect.poll(() => advanced.evaluate(el => el.hidden)).toBe(false);
     const downloadPromise = page.waitForEvent('download', { timeout: 12000 });
+    await revealInOpenGroups(page, '#exportSizedJpeg');
     await page.locator('#exportSizedJpeg').click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toMatch(/\.jpe?g$/i);
