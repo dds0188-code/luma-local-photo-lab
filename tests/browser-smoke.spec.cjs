@@ -953,7 +953,7 @@ test('preview rendering is bounded and responds to adjustment and rotation chang
   await page.locator('[data-tool="adjust"]').click();
   const before = await page.locator('#preview').evaluate(c => [...c.getContext('2d').getImageData(Math.floor(c.width / 2), Math.floor(c.height / 2), 1, 1).data]);
   const startAdjust = Date.now();
-  await page.locator('#exposureRange').evaluate(el => {
+  await page.locator('#exposure').evaluate(el => {
     el.value = '35'; el.dispatchEvent(new Event('input', { bubbles: true }));
   });
   await expect.poll(async () => page.locator('#preview').evaluate(c => [...c.getContext('2d').getImageData(Math.floor(c.width / 2), Math.floor(c.height / 2), 1, 1).data]), { timeout: 5000 }).not.toEqual(before);
