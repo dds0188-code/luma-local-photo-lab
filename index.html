@@ -673,6 +673,7 @@ details.ui-group .section{margin:10px 0 7px!important;padding:0 0 6px!important;
 
 
 /* In-place editor navigation: compact horizontal tabs, no accordion controls or scroll jumps. */
+.panelhead{display:none!important}
 .toolpane > .section:first-of-type{display:none!important}
 .toolpane details>summary,.toolpane .quick-action-details>summary{display:none!important}
 .toolpane details>summary::after,.toolpane .quick-action-details>summary::after{content:none!important;display:none!important}
@@ -690,6 +691,9 @@ details.ui-group .section{margin:10px 0 7px!important;padding:0 0 6px!important;
  .toolpane details,.toolpane details[open],.toolpane .ui-group{margin-bottom:8px!important}
 }
 
+
+/* The selected tab is the title: remove redundant tool title bars and intro headings. */
+.panelhead{display:none!important}
 </head>
 <body>
 <div class="app">
@@ -1309,7 +1313,7 @@ function buildPanelNavigation(){
  // Build real in-place tabs from sibling feature groups. Never scroll to a control.
  document.querySelectorAll('.toolpane').forEach(panel=>{
   const groupsByParent=new Map();
-  panel.querySelectorAll('details.ui-group').forEach(group=>{
+  panel.querySelectorAll('details').forEach(group=>{
    const parent=group.parentElement;
    if(!parent||!panel.contains(parent))return;
    if(!groupsByParent.has(parent))groupsByParent.set(parent,[]);
