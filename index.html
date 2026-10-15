@@ -1758,7 +1758,7 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
   if(!preview||!preview.width||!preview.height){say('처리할 사진을 찾을 수 없습니다.');return}
   const previous=btn.textContent;
   btn.disabled=true;btn.textContent='AI 모델 불러오는 중…';
-  say('AI 누끼 모델을 처음 불러오는 중입니다. 모델 파일 다운로드에 시간이 걸릴 수 있습니다.');
+  say('AI 누끼를 시작했습니다. 모델을 처음 불러오면 다운로드 때문에 시간이 걸릴 수 있습니다.');
   try{
    if(!extractorPromise){
     extractorPromise=import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.2');
@@ -1780,7 +1780,16 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
    const maxSide=1024,scale=Math.min(1,maxSide/Math.max(preview.width,preview.height));
    source.width=Math.max(1,Math.round(preview.width*scale));source.height=Math.max(1,Math.round(preview.height*scale));
    source.getContext('2d').drawImage(preview,0,0,source.width,source.height);
-   const result=await extractor(source);
+   let result;
+   try{
+    result=await extractor(source);
+   }catch(inferenceError){
+    if(!window.navigator.gpu)throw inferenceError;
+    say('GPU 처리에 실패해 호환 모드로 다시 시도합니다…');
+    const mod=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.2');
+    extractorPromise=await mod.pipeline('background-removal','Xenova/modnet',{device:'wasm'});
+    result=await extractorPromise(source);
+   }
    const item=Array.isArray(result)?result[0]:result;
    if(!item)throw new Error('AI 모델이 결과를 반환하지 않았습니다.');
    const maskCanvas=document.createElement('canvas');
