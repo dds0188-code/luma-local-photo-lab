@@ -659,6 +659,10 @@ test('press-and-hold preview compares original and release restores edits; mobil
   expect(await nav.locator('[aria-current="page"]').getAttribute('data-tool')).toBe('adjust');
   expect(await nav.evaluate(el => el.scrollWidth > el.clientWidth)).toBeTruthy();
   expect(await nav.evaluate(el => getComputedStyle(el).position)).toBe('fixed');
+  for (const [key, tool] of [['2','crop'],['3','color'],['4','area'],['5','mask'],['6','relight'],['7','cutout'],['8','ai'],['9','presets']]) {
+    await page.evaluate(key => window.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true })), key);
+    await expect(nav.locator(`[data-tool="${tool}"]`)).toHaveAttribute('aria-current', 'page');
+  }
   expect(errors, 'press-and-hold compare and mobile toolbar errors').toEqual([]);
 });
 
