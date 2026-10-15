@@ -551,6 +551,13 @@ test('adjustment subtabs remain in layout flow and never overlay the photo previ
   test.setTimeout(45000);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 320; c.height = 240;
+    const x = c.getContext('2d'); x.fillStyle = '#8ba5c1'; x.fillRect(0, 0, c.width, c.height);
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({name:'submenu-layout-test.png',mimeType:'image/png',buffer:Buffer.from(dataUrl.split(',')[1],'base64')});
+  await expect.poll(() => page.locator('#preview').evaluate(c => c.width)).toBeGreaterThan(0);
   await page.locator('[data-tool="adjust"]').click();
   const nav = page.locator('#basicSubnav');
   await expect(nav).toBeVisible();
