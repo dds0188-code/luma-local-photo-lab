@@ -547,6 +547,32 @@ test('full library ZIP backup restores original photos and metadata without dele
   expect(errors, 'uncaught library ZIP restore errors').toEqual([]);
 });
 
+test('individual adjustment resets on double click and mobile preview stays pinned while controls scroll', async ({ page }) => {
+  test.setTimeout(45000);
+  page.setDefaultTimeout(8000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 160; c.height = 120;
+    const x = c.getContext('2d'); x.fillStyle = '#527da9'; x.fillRect(0, 0, 160, 120);
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({ name: 'luma-reset-test.png', mimeType: 'image/png', buffer: Buffer.from(dataUrl.split(',')[1], 'base64') });
+  await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-reset-test.png');
+  const value = page.locator('#exposureNum');
+  await value.fill('36');
+  await value.dispatchEvent('change');
+  await expect(value).toHaveValue('36');
+  await page.locator('#exposure').dblclick();
+  await expect(value).toHaveValue('0');
+  await expect(page.locator('#stage')).toHaveCSS('position', 'sticky');
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await expect.poll(() => page.locator('#stage').evaluate(el => Math.round(el.getBoundingClientRect().top))).toBe(54);
+  expect(errors, 'reset and mobile sticky preview errors').toEqual([]);
+});
+
 test('preset tonal balance regression across portrait, landscape, food and night test scenes', async ({ page }) => {
   test.setTimeout(120000);
   page.setDefaultTimeout(10000);
