@@ -872,7 +872,7 @@ function organizeEditorPanels(){
   const intensityControl=intensity?.closest('.transform-control')||intensity,featherControl=feather?.closest('.transform-control')||feather;
   wrapSiblingRange(rel,intensityControl,featherControl,'위치·범위·부드러움',true);
   const layerTools=rel.querySelector('.relight-layer-tools')?.parentElement;
-  if(layerTools&&layerTools.parentElement===rel){const d=document.createElement('details');d.className='ui-group';d.open=false;rel.insertBefore(d,layerTools);d.appendChild(layerTools);const title=document.createElement('summary');title.textContent='라이팅 레이어·프리셋';d.prepend(title)}
+  if(layerTools&&layerTools.parentElement===rel){const d=document.createElement('details');d.className='ui-group';d.open=true;rel.insertBefore(d,layerTools);d.appendChild(layerTools);const title=document.createElement('summary');title.textContent='라이팅 레이어·프리셋';d.prepend(title)}
   const useMask=rel.querySelector('#relightUseMask'),status=rel.querySelector('#relightStatus');
   wrapSiblingRange(rel,useMask,status,'마스크·영역 제한',false);
  }
