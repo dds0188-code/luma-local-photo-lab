@@ -1287,45 +1287,67 @@ $('areaBackgroundRun').onclick=()=>startAreaColorPick('배경');
 $('areaColorRun').onclick=()=>startAreaColorPick('색상 범위');
 $('areaLassoToggle').onclick=()=>{if(!image){toast('먼저 사진을 열어 주세요');return}activateTool('area');areaShowOverlay=true;$('areaPreviewToggle').textContent='보정 결과만 보기';areaPickMode=true;magicSelectEnabled=false;lassoSelectEnabled=!lassoSelectEnabled;maskPainting=lassoSelectEnabled;maskShowOverlay=true;maskOnlyPreview=false;cutoutPreview=false;updateMaskUI();$('areaLassoToggle').classList.toggle('primary',lassoSelectEnabled);$('areaStatus').textContent=lassoSelectEnabled?'사진에서 보정할 영역을 여유 있게 둘러 그리세요. 선택은 누끼와 별개입니다.':'올가미 그리기가 꺼졌습니다.'};$('lassoSmartToggle').onclick=()=>{lassoSmartRefine=!lassoSmartRefine;$('lassoSmartToggle').textContent='올가미 스마트 보정 '+(lassoSmartRefine?'켜짐':'꺼짐');$('lassoSmartToggle').classList.toggle('primary',lassoSmartRefine);$('areaSmartToggle').textContent='그린 영역 안 스마트 보정 '+(lassoSmartRefine?'켜짐':'꺼짐');$('areaSmartToggle').classList.toggle('primary',lassoSmartRefine);toast(lassoSmartRefine?'올가미 안쪽에서 경계 색상 기반 보정을 사용합니다':'완전 수동 올가미: 그린 다각형 그대로 선택합니다')};$('areaSmartToggle').onclick=()=>$('lassoSmartToggle').click();document.querySelectorAll('[data-area-clear]').forEach(b=>b.onclick=()=>{const key=b.dataset.areaClear;delete areaSelections[key];if(document.querySelector('[data-area-target].active')?.dataset.areaTarget===key)areaSelection=null;$('areaApplySelection').disabled=!areaSelection;drawMaskOverlay();render();$('areaStatus').textContent=({sky:'하늘',person:'인물',background:'배경',color:'색상'})[key]+' 선택 영역만 초기화했습니다. 누끼 선택과 다른 대상 영역은 유지됩니다.'});$('areaApplySelection').onclick=()=>{if(!areaSelection||!image){toast('먼저 보정할 영역을 선택하세요');return}const target=currentAreaTarget();ensureMaskSize($('preview').width,$('preview').height);const l=createMaskLayer('영역 · '+({sky:'하늘',person:'인물',background:'배경',color:'직접 지정'})[target]);ensureMaskSize($('preview').width,$('preview').height);l.local={...(areaPreviewLocals[target]||{})};l.paintCanvas.getContext('2d').clearRect(0,0,l.paintCanvas.width,l.paintCanvas.height);l.paintCanvas.getContext('2d').drawImage(areaSelection,0,0,l.paintCanvas.width,l.paintCanvas.height);l.paintHasData=true;renderMaskLayer(l);maskCanvas=l.canvas;maskHasData=l.hasData;areaAppliedMaskId=l.id;areaAppliedMaskIds[target]=l.id;maskShowOverlay=true;drawMaskOverlay();updateMaskLayerUI();updateMaskUI();updateAreaCorrectionControls();render();saveAuto();historyRecord();areaSelections[target]=null;areaSelection=null;areaPickMode=false;magicSelectEnabled=false;lassoSelectEnabled=false;maskPainting=false;drawMaskOverlay();$('areaApplySelection').disabled=true;$('areaLassoToggle').classList.remove('primary');$('areaStatus').textContent=({sky:'하늘',person:'인물',background:'배경',color:'지정 영역'})[target]+' 선택을 별도 마스크 레이어에 적용했습니다. 보정값도 이 대상에만 저장됩니다.';toast('대상별 부분 보정 마스크를 만들었습니다')};$('areaClearSelection').onclick=()=>{const key=currentAreaTarget();delete areaSelections[key];areaSelection=null;areaPickMode=false;magicSelectEnabled=false;lassoSelectEnabled=false;lassoDraft=[];maskPainting=false;$('areaApplySelection').disabled=true;$('areaLassoToggle').classList.remove('primary');drawMaskOverlay();updateMaskUI();render();$('areaStatus').textContent='현재 대상의 선택 영역을 초기화했습니다. 다른 대상 선택과 누끼 선택은 유지됩니다.'};$('areaGoMask').onclick=()=>activateTool('mask');document.querySelectorAll('[data-area-lasso]').forEach(b=>b.addEventListener('click',()=>startAreaLasso(b.dataset.areaLasso)));
 function buildPanelNavigation(){
- const specs={
-  adjust:[['기본 보정','#basicSubnav'],['자동·빠른 보정','#autoToneQuick'],['히스토그램','.histogram-panel']],
-  presets:[['프리셋','#search'],['즐겨찾기','#favoriteOnly'],['내 프리셋','#presetName'],['XMP 가져오기','#importXmpBtn']],
+ // Rebuilt after panel organization so each tab points to a real feature group.
+ const definitions={
+  color:[['HSL','#hslDetails'],['톤 커브','#curveDetails'],['컬러 그레이딩','#gradeDetails']],
   crop:[['각도·크기','#angleRange'],['비율','#crop'],['자르기 영역','#cropPixelInfo']],
-  color:[['색상별 HSL','#hslDetails'],['톤 커브','#curveDetails'],['컬러 그레이딩','#gradeDetails']],
-  area:[['대상 선택','.area-targets'],['하늘','#areaSkyRun'],['인물','#areaPersonRun'],['배경','#areaBackgroundRun'],['색상 범위','#areaColorRun'],['부분 보정','#areaApplySelection']],
-  mask:[['레이어','#maskLayerSelect'],['브러시','#maskToggle'],['도형·그라데이션','#maskShapeControls'],['부분 보정','#maskExposure'],['마스크 관리','#clearMask']],
-  relight:[['광원 유형','#relightType'],['위치·크기','#relightX'],['색상·강도','#relightColor'],['레이어','#relightLayerSelect']],
-  cutout:[['피사체 선택','#magicSelectGroup'],['가장자리 다듬기','#cutoutEdgeGroup'],['배경 처리','#cutoutBackgroundGroup']],
+  relight:[['광원','#relightType'],['위치·범위','#relightX'],['레이어·마스크','#relightLayerSelect']],
+  area:[['기본 도구','.area-targets'],['대상 선택','#areaSkyRun'],['영역 보정','#areaApplySelection']],
   ai:[['사진 분석','#aiAnalyze'],['추천 스타일','#aiRecommendations'],['보정 목표','#aiSummary']],
   files:[['설정 저장','#saveRecipe'],['설정 불러오기','#loadRecipe']]
  };
- Object.entries(specs).forEach(([name,items])=>{
-  const panel=document.querySelector('[data-tool-panel="'+name+'"]')||document.querySelector('[data-side-panel="'+name+'"]');
+ Object.entries(definitions).forEach(([name,items])=>{
+  const panel=document.querySelector('[data-tool-panel="'+name+'"]');
   if(!panel||panel.querySelector(':scope > .panel-subnav'))return;
-  const nav=document.createElement('nav');nav.className='panel-subnav';nav.setAttribute('aria-label','세부 메뉴');
-  const entries=[];
-  items.forEach(([label,selector])=>{const target=panel.querySelector(selector);if(!target)return;const b=document.createElement('button');b.type='button';b.textContent=label;
+  const nav=document.createElement('nav');nav.className='panel-subnav';nav.setAttribute('aria-label','기능 선택');
+  const groups=[];
+  const groupFor=target=>{
+   if(name==='color')return target.closest('details');
+   if(name==='crop')return target.closest('details.ui-group')||target.closest('.transform-control')||target.closest('#crop')||target.closest('#cropPixelInfo')||target.closest('.crop-number-grid');
+   if(name==='relight')return target.closest('details.ui-group')||target.closest('.transform-control')||target.closest('.relight-layer-tools')?.parentElement;
+   if(name==='area')return target.closest('details.ui-group')||target.closest('.area-card')||target.closest('.area-targets')||target.closest('.area-view');
+   if(name==='ai')return target.closest('#aiRecommendations')||target.closest('#aiSummary')||target.closest('#aiAnalyze')?.parentElement;
+   return target.closest('.section')?.parentElement||target;
+  };
+  items.forEach(([label,selector])=>{
+   const target=panel.querySelector(selector);if(!target)return;
+   const group=groupFor(target);if(!group||groups.some(g=>g.el===group))return;
+   const b=document.createElement('button');b.type='button';b.textContent=label;
    b.addEventListener('click',()=>{
-    const unit=target.closest('details, .ui-group, .area-card, .histogram-panel, .adjust-utility-panel, .adjust-subcategory-panels')||target;
-    const topUnit=(()=>{let n=unit;while(n.parentElement&&n.parentElement!==panel)n=n.parentElement;return n})();
-    [...panel.children].forEach(child=>{if(child===nav||child.classList.contains('panelhead')||child.matches('.panel-title,.tool-title'))return;child.hidden=child!==topUnit});
-    topUnit.hidden=false;
-    unit.hidden=false;
-    if(unit.matches('details'))unit.open=true;
-    unit.querySelectorAll?.('details').forEach(d=>d.open=true);
+    // Keep navigation and any shared panel introduction; switch feature groups in place.
+    const siblings=Array.from(panel.children).filter(el=>el!==nav);
+    const direct=(()=>{let n=group;while(n.parentElement&&n.parentElement!==panel)n=n.parentElement;return n})();
+    const allowed=new Set([direct]);
+    // For nested feature cards/groups, keep only the selected card visible within its wrapper.
+    siblings.forEach(el=>{
+      if(el===direct){el.hidden=false;return}
+      if(el.classList.contains('panelhead')||el.classList.contains('section')&&el.textContent.trim()==='')return;
+      if(el.classList.contains('subtle')&&el.textContent.trim().length<90)return;
+      el.hidden=true;
+    });
+    if(group!==direct){
+      const holder=group.parentElement;
+      if(holder){
+       Array.from(holder.children).forEach(el=>{
+        if(el===group){el.hidden=false;if(el.matches('details'))el.open=true}
+        else if(el.matches('details,.ui-group,.area-card,.transform-control,.section,.crop,.crop-number-grid,.subtle,.preset-tools,.wheel-grid,.curve-channels,canvas'))el.hidden=true;
+       });
+      }
+    }
+    group.hidden=false;
+    if(group.matches('details'))group.open=true;
+    group.querySelectorAll?.('details').forEach(d=>d.open=true);
     nav.querySelectorAll('button').forEach(x=>{x.classList.toggle('active',x===b);if(x===b)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
    });
-   nav.appendChild(b);entries.push({b,target});
+   nav.appendChild(b);groups.push({el:group,b});
   });
-  if(entries.length>1){
+  if(groups.length>1){
    panel.prepend(nav);
-   const first=entries[0];first.b.classList.add('active');first.b.setAttribute('aria-current','page');
-   // Start with the first selected feature visible; keep shared panel title and navigation in place.
-   first.b.click();
+   // Choose the first tab but do not scroll the page.
+   groups[0].b.click();
   }
  });
 }
-buildPanelNavigation();
 
 // Organize long tool panels into named, independently collapsible work groups.
 // Existing controls keep their IDs/listeners; only their DOM containers change.
@@ -1447,6 +1469,7 @@ function organizeEditorPanels(){
  }
 }
 organizeEditorPanels();
+buildPanelNavigation();
 
 function organizeAdjustSubcategories(){
  const pane=document.querySelector('[data-tool-panel="adjust"]');
