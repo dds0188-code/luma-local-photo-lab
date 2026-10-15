@@ -554,6 +554,23 @@ summary{color:#e9eff7}
  *,*:before,*:after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
 }
 
+
+
+/* UX correction: remove repeated shortcut rails and accordion +/− walls.
+   Keep real category controls; expose grouped controls directly in the scrollable panel. */
+.panel-subnav{display:none!important}
+details.ui-group{display:block!important;overflow:visible!important;padding:0!important;margin:10px 0!important;border:0!important;border-radius:0!important;background:transparent!important}
+details.ui-group>summary{display:none!important}
+details.ui-group:not([open])>*:not(summary){display:block!important}
+details.ui-group[open]>*:not(summary){display:block}
+details.ui-group[open]>summary{display:none!important}
+details.ui-group .section{display:block;margin:14px 0 8px;padding-bottom:7px;border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.1em;color:var(--muted)}
+@media(max-width:760px){
+ .panel-subnav{display:none!important}
+ details.ui-group{margin:8px 0!important}
+ details.ui-group .section{margin-top:12px;padding-bottom:7px}
+}
+
 </style>
 </head>
 <body>
@@ -1192,7 +1209,7 @@ function buildPanelNavigation(){
   if(added>1)panel.prepend(nav);
  });
 }
-buildPanelNavigation();
+// Removed redundant per-tool shortcut rails; use the main tool tabs and in-panel category buttons.
 
 // Organize long tool panels into named, independently collapsible work groups.
 // Existing controls keep their IDs/listeners; only their DOM containers change.
