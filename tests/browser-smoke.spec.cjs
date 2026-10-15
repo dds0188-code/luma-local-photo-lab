@@ -655,6 +655,8 @@ test('press-and-hold preview compares original and release restores edits; mobil
   await expect(page.locator('#compareLabel')).toHaveClass(/hidden/);
   await expect(page.locator('#exposureNum')).toHaveValue('35');
   const nav = page.locator('#toolNav');
+  expect(await nav.locator('button').evaluateAll(nodes => nodes.map(node => node.dataset.tool))).toEqual(['adjust','crop','color','area','mask','relight','cutout','ai','presets','library','files']);
+  expect(await nav.locator('[aria-current="page"]').getAttribute('data-tool')).toBe('adjust');
   expect(await nav.evaluate(el => el.scrollWidth > el.clientWidth)).toBeTruthy();
   expect(await nav.evaluate(el => getComputedStyle(el).position)).toBe('fixed');
   expect(errors, 'press-and-hold compare and mobile toolbar errors').toEqual([]);
