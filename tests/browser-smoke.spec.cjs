@@ -547,6 +547,29 @@ test('full library ZIP backup restores original photos and metadata without dele
   expect(errors, 'uncaught library ZIP restore errors').toEqual([]);
 });
 
+test('basic adjustment, auto tone, quick edits and histogram have separate secondary tabs', async ({ page }) => {
+  test.setTimeout(45000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-tool="adjust"]').click();
+  const nav = page.locator('.adjust-subnav');
+  await expect(nav.locator('button')).toHaveCount(5);
+  await expect(nav.locator('button').nth(0)).toHaveText('기본 보정');
+  await expect(nav.locator('button').nth(1)).toHaveText('자동 보정');
+  await nav.locator('button').filter({ hasText: '자동 보정' }).click();
+  await expect(page.locator('[data-adjust-subcategory="auto"] #autoToneQuick')).toBeAttached();
+  await expect(page.locator('[data-adjust-subcategory="auto"] #autoWhiteBalanceQuick')).toBeAttached();
+  await nav.locator('button').filter({ hasText: '빠른 보정' }).click();
+  await expect(page.locator('[data-adjust-subcategory="quick"] .quick-action-details')).toBeAttached();
+  await nav.locator('button').filter({ hasText: '히스토그램' }).click();
+  await expect(page.locator('[data-adjust-subcategory="histogram"] .histogram-panel')).toBeAttached();
+  await nav.locator('button').filter({ hasText: '기본 보정' }).click();
+  await expect(page.locator('[data-adjust-subcategory="basic"] #basicSubnav')).toBeAttached();
+  expect(errors, 'secondary tabs should not create runtime errors').toEqual([]);
+});
+
 test('all editor tools expose compact functional subgroups instead of one long control dump', async ({ page }) => {
   test.setTimeout(45000);
   const errors = [];
