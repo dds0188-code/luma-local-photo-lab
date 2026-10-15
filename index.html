@@ -756,18 +756,27 @@ async function readLumaStoredZip(file){
   return files;
 }
 async function restoreLibraryBatch(items){
+ const writeBatch=async records=>{
   const db=await openLibraryDb();
   return new Promise((resolve,reject)=>{
-    let settled=false;const close=()=>{if(!settled){settled=true;db.close()}};
-    let tx;
-    try{tx=db.transaction('photos','readwrite');const store=tx.objectStore('photos');for(const item of items)store.put(item)}
-    catch(err){close();reject(err);return}
-    tx.oncomplete=()=>{close();resolve(items.length)};
-    tx.onerror=()=>{const err=tx.error||new Error('라이브러리 복원 트랜잭션에 실패했습니다');close();reject(err)};
-    tx.onabort=()=>{const err=tx.error||new Error('저장 공간 부족으로 복원이 취소되었습니다');close();reject(err)};
+   let tx,settled=false;
+   const finish=error=>{if(settled)return;settled=true;try{db.close()}catch{}if(error)reject(error);else resolve(records.length)};
+   try{tx=db.transaction('photos','readwrite');const store=tx.objectStore('photos');for(const item of records)store.put(item);tx.oncomplete=()=>finish();tx.onerror=()=>finish(tx.error||new Error('라이브러리 복원 트랜잭션에 실패했습니다'));tx.onabort=()=>finish(tx.error||new Error('저장 공간 부족으로 복원이 취소되었습니다'))}
+   catch(error){finish(error)}
   });
-}
-$('restoreFullLibrary').onclick=()=> $('fullLibraryZipFile').click();
+ };
+ try{return await writeBatch(items)}
+ catch(firstError){
+  const fallback=[];
+  for(const item of items){
+   if(item&&item.blob&&typeof item.blob.arrayBuffer==='function'){
+    fallback.push({...item,blob:null,blobBytes:await item.blob.arrayBuffer(),blobType:item.type||item.blob.type||'application/octet-stream'});
+   }else fallback.push(item);
+  }
+  try{return await writeBatch(fallback)}
+  catch(error){throw new Error('라이브러리 복원 트랜잭션에 실패했습니다: '+(error?.message||firstError?.message||''))}
+ }
+}$('restoreFullLibrary').onclick=()=> $('fullLibraryZipFile').click();
 $('fullLibraryZipFile').addEventListener('change',async e=>{
   const file=e.target.files?.[0];e.target.value='';if(!file)return;
   const btn=$('restoreFullLibrary'),old=btn.textContent;btn.disabled=true;btn.textContent='ZIP 확인 중…';

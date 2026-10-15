@@ -816,14 +816,14 @@ test('bounded export renders at target resolution and preserves normalized crop 
   });
   await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-bounded-export-test.png');
   await page.locator('[data-tool="crop"]').click();
-  await page.locator('#cropXNum').fill('20');
-  await page.locator('#cropXNum').dispatchEvent('change');
-  await page.locator('#cropYNum').fill('20');
-  await page.locator('#cropYNum').dispatchEvent('change');
   await page.locator('#cropWNum').fill('50');
   await page.locator('#cropWNum').dispatchEvent('change');
   await page.locator('#cropHNum').fill('50');
   await page.locator('#cropHNum').dispatchEvent('change');
+  await page.locator('#cropXNum').fill('20');
+  await page.locator('#cropXNum').dispatchEvent('change');
+  await page.locator('#cropYNum').fill('20');
+  await page.locator('#cropYNum').dispatchEvent('change');
   await expect(page.locator('#cropPixelInfo')).toContainText('1600 × 1200 px');
   const answers = ['png', '100', '1200', '', 'bounded-output'];
   page.on('dialog', async dialog => {
@@ -840,6 +840,15 @@ test('bounded export renders at target resolution and preserves normalized crop 
   const width = bytes.readUInt32BE(16), height = bytes.readUInt32BE(20);
   expect(width).toBe(1200);
   expect(height).toBe(900);
+  const centerPixel = await page.evaluate(async base64 => {
+    const img = new Image(); img.src = 'data:image/png;base64,' + base64; await img.decode();
+    const c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight;
+    const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0);
+    return [...ctx.getImageData(Math.floor(c.width / 2), Math.floor(c.height / 2), 1, 1).data];
+  }, bytes.toString('base64'));
+  expect(centerPixel[0]).toBeGreaterThan(220);
+  expect(centerPixel[1]).toBeGreaterThan(170);
+  expect(centerPixel[2]).toBeGreaterThan(70);
   expect(errors, 'uncaught bounded export errors').toEqual([]);
 });
 
