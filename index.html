@@ -1098,7 +1098,8 @@ async function runAISmartLasso(){
    const score=scores?Number(scores[i]):-Infinity;
    if(score>best){best=score;candidate=i}
   }
-  const threshold=maskBatch.type==='bool'?0:0.5;
+  // SAM post_process_masks returns foreground logits for float tensors; use the standard SAM cutoff of 0.0.
+  const threshold=0;
   const out=document.createElement('canvas');out.width=preview.width;out.height=preview.height;
   const ctx=out.getContext('2d',{willReadFrequently:true}),id=ctx.createImageData(out.width,out.height);
   let count=0;
