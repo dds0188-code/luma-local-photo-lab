@@ -815,6 +815,7 @@ test('bounded export renders at target resolution and preserves normalized crop 
     buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
   });
   await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-bounded-export-test.png');
+  await page.locator('[data-tool="crop"]').click();
   await page.locator('#cropXNum').fill('20');
   await page.locator('#cropXNum').dispatchEvent('change');
   await page.locator('#cropYNum').fill('20');
