@@ -218,6 +218,32 @@ kbd{font:600 10px/1.2 ui-monospace,SFMono-Regular,monospace;padding:5px 7px;bord
  .controls{padding-bottom:calc(100px + env(safe-area-inset-bottom));scroll-padding-bottom:calc(100px + env(safe-area-inset-bottom))}
  .adjust-subcategory-panels,.adjust-utility-panel{scroll-margin-top:10px}
 }
+/* UI stability pass: keep adjustment headings and nested tool menus in normal document flow. */
+.toolpane details>summary,
+.toolpane[data-tool-panel="mask"] details>summary,
+.toolpane .quick-action-details>summary{
+  position:static!important;
+  top:auto!important;
+  z-index:auto!important;
+  scroll-margin-top:12px;
+}
+.toolpane details{min-width:0;overflow:clip}
+.toolpane details>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;line-height:1.4}
+.toolpane details>summary:after{flex:none;margin-left:auto}
+.toolpane .subnav{position:relative;top:auto;z-index:1;max-width:100%;min-width:0;overscroll-behavior-x:contain}
+.toolpane .subnav button{flex:0 0 auto;min-width:64px}
+.toolpane .ui-group{min-width:0}
+.toolpane .ui-group>summary{overflow-wrap:anywhere}
+.toolpane .ui-group[open]>summary{margin-bottom:8px}
+.toolpane .ui-group>*:not(summary){min-width:0}
+@media(max-width:760px){
+  .toolpane details{margin:8px 0;border-radius:10px}
+  .toolpane details>summary{padding:12px 2px;font-size:13px}
+  .toolpane .subnav{margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}
+  .toolpane .subnav button{min-height:44px;padding:8px 10px}
+  .toolpane .preset-tools{gap:6px}
+  .toolpane .preset-tools button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+}
 </style>
 </head>
 <body>
