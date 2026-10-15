@@ -816,7 +816,7 @@ function buildPanelNavigation(){
   if(!panel||panel.querySelector(':scope > .panel-subnav'))return;
   const nav=document.createElement('nav');nav.className='panel-subnav';nav.setAttribute('aria-label','세부 메뉴');
   let added=0;
-  items.forEach(([label,selector])=>{const target=panel.querySelector(selector);if(!target)return;const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',()=>{target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start',inline:'nearest'});nav.querySelectorAll('button').forEach(x=>x.removeAttribute('aria-current'));b.setAttribute('aria-current','location');if(target.matches('details'))target.open=true});nav.appendChild(b);added++});
+  items.forEach(([label,selector])=>{const target=panel.querySelector(selector);if(!target)return;const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',()=>{let ancestor=target;while(ancestor&&ancestor!==panel){if(ancestor.matches?.('details'))ancestor.open=true;ancestor=ancestor.parentElement}if(target.matches('details'))target.open=true;target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start',inline:'nearest'});nav.querySelectorAll('button').forEach(x=>x.removeAttribute('aria-current'));b.setAttribute('aria-current','location')});nav.appendChild(b);added++});
   if(added>1)panel.prepend(nav);
  });
 }
@@ -866,9 +866,11 @@ function organizeEditorPanels(){
  const rel=pane('relight');
  if(rel){
   const first=rel.querySelector('#relightType'),blend=rel.querySelector('#relightBlend');
-  wrapSiblingRange(rel,first,blend,'광원 유형·색상',true);
+  const firstControl=first?.closest('.transform-control')||first,blendControl=blend?.closest('.transform-control')||blend;
+  wrapSiblingRange(rel,firstControl,blendControl,'광원 유형·색상',true);
   const intensity=rel.querySelector('#relightIntensity'),feather=rel.querySelector('#relightFeather');
-  wrapSiblingRange(rel,intensity,feather,'위치·범위·부드러움',true);
+  const intensityControl=intensity?.closest('.transform-control')||intensity,featherControl=feather?.closest('.transform-control')||feather;
+  wrapSiblingRange(rel,intensityControl,featherControl,'위치·범위·부드러움',true);
   const layerTools=rel.querySelector('.relight-layer-tools')?.parentElement;
   if(layerTools&&layerTools.parentElement===rel){const d=document.createElement('details');d.className='ui-group';d.open=false;rel.insertBefore(d,layerTools);d.appendChild(layerTools);const title=document.createElement('summary');title.textContent='라이팅 레이어·프리셋';d.prepend(title)}
   const useMask=rel.querySelector('#relightUseMask'),status=rel.querySelector('#relightStatus');
@@ -917,7 +919,7 @@ function organizeEditorPanels(){
  }
  // Preset/library sidebar is long too: split the library's bulk operations into clear categories.
  const presets=document.querySelector('[data-side-panel="presets"]');
- if(presets)groupChildrenBySection(presets,true);
+ if(presets){groupChildrenBySection(presets,true);const custom=Array.from(presets.querySelectorAll('details.ui-group')).find(d=>d.textContent.includes('MY PRESETS'));if(custom)custom.open=true;}
  const lib=document.querySelector('[data-side-panel="library"]');
  if(lib){
   const ops=lib.querySelector('.preset-tools');
