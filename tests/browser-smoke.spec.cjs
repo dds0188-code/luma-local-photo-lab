@@ -430,6 +430,8 @@ test('mask regression: visible overlays, editable individual shapes, non-destruc
   await page.locator('#maskOverlayToggle').click();
   await expect(page.locator('#maskOverlayToggle')).toContainText('표시');
   await page.locator('[data-mask-view="layers"]').click();
+  const splitGroup = page.locator('[data-tool-panel="mask"] details.ui-group').filter({ hasText: '마스크 분할 도구' });
+  if (!(await splitGroup.evaluate(el => el.open))) await splitGroup.locator('summary').click();
   await page.locator('#maskSplit2H').click();
   await expect(page.locator('#maskLayerSelect option')).toHaveCount(2);
   await expect(page.locator('#maskSplitAdjust')).toBeVisible();
