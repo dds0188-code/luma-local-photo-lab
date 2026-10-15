@@ -569,7 +569,7 @@ test('individual adjustment resets on double click and mobile preview stays pinn
   await expect(value).toHaveValue('0');
   await expect(page.locator('#stage')).toHaveCSS('position', 'sticky');
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-  await expect.poll(() => page.locator('#stage').evaluate(el => Math.round(el.getBoundingClientRect().top))).toBe(54);
+  await expect.poll(() => page.locator('#stage').evaluate(el => Math.round(el.getBoundingClientRect().top))).toBe(58);
   expect(errors, 'reset and mobile sticky preview errors').toEqual([]);
 });
 
