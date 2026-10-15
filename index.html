@@ -571,6 +571,49 @@ details.ui-group .section{display:block;margin:14px 0 8px;padding-bottom:7px;bor
  details.ui-group .section{margin-top:12px;padding-bottom:7px}
 }
 
+
+
+/* Follow-up UX pass: compact adjustment layout and use horizontal subcategory rails. */
+#togglePanelGroups{display:none!important}
+.panel-subnav{
+ display:flex!important;flex-wrap:nowrap!important;gap:6px!important;
+ margin:0 -12px 12px!important;padding:7px 12px!important;
+ overflow-x:auto!important;overflow-y:hidden!important;
+ white-space:nowrap!important;scrollbar-width:none!important;
+ border-bottom:1px solid #293342!important;background:#11161e!important;
+ position:relative!important;top:auto!important;z-index:2!important;
+}
+.panel-subnav::-webkit-scrollbar{display:none!important}
+.panel-subnav button{
+ flex:0 0 auto!important;min-height:39px!important;padding:8px 12px!important;
+ border:1px solid #293342!important;border-radius:10px!important;
+ background:#1b222d!important;color:#c4cedb!important;
+ font-size:12px!important;font-weight:700!important;white-space:nowrap!important;
+}
+.panel-subnav button[aria-current="location"]{
+ background:#c9f27a!important;color:#17200c!important;
+ border-color:#c9f27a!important;box-shadow:none!important;
+}
+details.ui-group{display:block!important;overflow:visible!important;padding:0!important;margin:8px 0!important;border:0!important;border-radius:0!important;background:transparent!important}
+details.ui-group>summary,details.ui-group[open]>summary{display:none!important}
+details.ui-group:not([open])>*:not(summary),details.ui-group[open]>*:not(summary){display:block!important}
+details.ui-group .section{margin:10px 0 7px!important;padding:0 0 6px!important;border-bottom:1px solid #293342!important}
+.adjust-utility-panel{margin:0!important;padding:0!important;min-height:0!important}
+#basicControls{margin:0!important;padding:0!important}
+#basicControls .adjust-group{margin:0!important;padding:0!important;min-height:0!important}
+#basicControls .control{margin:0 0 12px!important;padding:0!important}
+#basicControls .controlhead{margin-bottom:4px!important}
+#basicSubnav{margin-top:0!important;margin-bottom:10px!important}
+.histogram-panel{margin-top:10px!important}
+.toolpane[data-tool-panel="adjust"] .section{margin-top:12px!important}
+.toolpane[data-tool-panel="adjust"] .subtle{margin-top:4px!important;margin-bottom:8px!important}
+@media(max-width:760px){
+ .panel-subnav{margin:0 -13px 10px!important;padding:7px 13px!important}
+ .panel-subnav button{min-height:40px!important;padding:8px 11px!important}
+ #basicControls .control{margin-bottom:11px!important}
+ .toolpane[data-tool-panel="adjust"] .controlhead{grid-template-columns:minmax(0,1fr) 27px 70px!important}
+}
+
 </style>
 </head>
 <body>
