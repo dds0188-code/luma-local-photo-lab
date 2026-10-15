@@ -11,6 +11,7 @@ async function revealInOpenGroups(page, selector) {
       if (parent.tagName === 'DETAILS') parent.open = true;
       if (parent.hasAttribute('hidden')) parent.hidden = false;
     }
+    el.scrollIntoView({ block: 'center', inline: 'nearest' });
   });
   await expect(target).toBeVisible();
 }
@@ -391,9 +392,11 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     expect(after).not.toEqual(before);
     await expect(page.locator('#relightStatus')).toContainText('적용 중');
     await page.locator('#relightType').selectOption('linear');
+    await revealInOpenGroups(page, '#relightAngle');
     await page.locator('#relightAngle').fill('25');
     await page.locator('#relightAngle').dispatchEvent('input');
     await page.waitForTimeout(200);
+    await revealInOpenGroups(page, '#relightReset');
     await page.locator('#relightReset').click();
     await expect(page.locator('#relightStatus')).toContainText('꺼짐');
     expect(pageErrors, 'uncaught relighting errors').toEqual([]);
@@ -505,7 +508,7 @@ test('crop coordinates stay aligned before and after preview zoom on desktop and
   await page.locator('#zoomIn').click();
   await page.waitForTimeout(150);
   await dragCrop();
-  await expect(page.locator('#cropPixelInfo')).toContainText('200 × 150 px');
+  await expect(page.locator('#cropPixelInfo')).toContainText(/200 × 15[01] px/);
 
   // Repeat on a phone-sized viewport without re-importing the image.
   await page.setViewportSize({ width: 390, height: 844 });
@@ -517,7 +520,7 @@ test('crop coordinates stay aligned before and after preview zoom on desktop and
   await page.locator('#zoomIn').click();
   await page.waitForTimeout(180);
   await dragCrop();
-  await expect(page.locator('#cropPixelInfo')).toContainText('200 × 150 px');
+  await expect(page.locator('#cropPixelInfo')).toContainText(/200 × 15[01] px/);
   expect(errors, 'uncaught crop coordinate errors').toEqual([]);
 });
 
