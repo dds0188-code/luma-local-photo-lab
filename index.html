@@ -126,20 +126,20 @@ kbd{font:600 10px/1.2 ui-monospace,SFMono-Regular,monospace;padding:5px 7px;bord
  #toolNav::-webkit-scrollbar{display:none}#toolNav button{flex:0 0 auto;min-width:68px;max-width:96px;min-height:46px;padding:6px 9px;border:1px solid transparent;border-radius:8px;background:transparent;color:#c3c4c9;font-size:11px;white-space:nowrap}
  #toolNav button.active{background:#303238;color:#fff;border-color:#484a52;font-weight:750}#toolNav button::before{display:block;font-size:17px;line-height:1.2;margin-bottom:2px;color:inherit}#toolNav button[data-tool="adjust"]::before{content:'☼'}#toolNav button[data-tool="ai"]::before{content:'✧'}#toolNav button[data-tool="color"]::before{content:'◉'}#toolNav button[data-tool="crop"]::before{content:'⛶'}#toolNav button[data-tool="area"]::before{content:'◌'}#toolNav button[data-tool="mask"]::before{content:'◍'}#toolNav button[data-tool="relight"]::before{content:'☼'}#toolNav button[data-tool="cutout"]::before{content:'◩'}#toolNav button[data-tool="presets"]::before{content:'◈'}#toolNav button[data-tool="library"]::before{content:'▦'}#toolNav button[data-tool="files"]::before{content:'⚙'}
  .left,.controls{order:3;width:100%;min-width:0;padding:12px 14px calc(22px + env(safe-area-inset-bottom));border:0;border-top:1px solid #282a30;overflow:visible;background:#17181b}
- .left{order:3}.controls{order:3}.panelhead{position:sticky;top:0;z-index:5;background:#17181b;padding:3px 0 9px;margin-bottom:8px}
+ .left{order:3}.controls{order:3}.panelhead{position:relative;top:auto;z-index:1;background:transparent;padding:3px 0 9px;margin-bottom:8px}
  .panelhead h2{font-size:15px;margin:0}
- .subnav{gap:0;padding:4px 0 8px;margin:0 -14px 10px;padding-left:14px;padding-right:14px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x}
+ .subnav{position:relative;top:auto;z-index:1;gap:0;padding:4px 0 8px;margin:0 -14px 10px;padding-left:14px;padding-right:14px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x}
  .subnav::-webkit-scrollbar{display:none}.subnav button{flex:0 0 auto;min-width:62px;min-height:58px;padding:7px 10px;border:0;border-radius:0;background:transparent;font-size:11px}
  .subnav button.active{background:#2a2c31;color:#fff;border-bottom:2px solid #d9f36b}
  .preset-tools{gap:6px}.control{margin-bottom:14px}.controlhead{font-size:13px;grid-template-columns:minmax(0,1fr) 28px 72px}.num{width:72px;font-size:12px}.range{height:5px}
  .presets{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.swatch{height:40px}
  .toolpane[hidden],.sidepane[hidden]{display:none!important}
- .controls{scroll-margin-top:8px}
+ .controls{scroll-margin-top:8px}.adjust-subnav,.panel-subnav{position:relative!important;top:auto!important;z-index:1!important}.toolpane .section,.toolpane details,.toolpane .area-card{scroll-margin-top:12px}
 }
 @media(min-width:761px){#toolNav{position:relative}}
 
 /* Editor information architecture: quick subcategory rail, grouped panels and touch-friendly navigation */
-.panel-subnav{display:flex;gap:6px;position:sticky;top:0;z-index:6;margin:0 -2px 12px;padding:8px 2px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x}
+.panel-subnav{display:flex;gap:6px;position:relative;top:auto;z-index:1;margin:0 -2px 12px;padding:8px 2px;background:transparent;border-bottom:1px solid var(--line);overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x}
 .panel-subnav::-webkit-scrollbar{display:none}
 .panel-subnav button{flex:0 0 auto;white-space:nowrap;padding:8px 12px;border-radius:9px;font-size:12px;background:var(--panel2);border-color:transparent}
 .panel-subnav button[aria-current="location"]{background:var(--accent);color:var(--accentText);font-weight:800}
@@ -1116,9 +1116,9 @@ function organizeAdjustSubcategories(){
   return button;
  };
  // Put these in the SAME horizontal subcategory rail as light/color/effects/detail.
- addTab('basic','기본 보정','start');
  addTab('auto','자동 보정','start');
- nav.insertBefore(nav.querySelector('[data-adjust-view="basic"]'),nav.firstChild);
+ // The legacy '기본 보정' tab duplicated the light/tone controls. Keep one source of truth: 빛·톤.
+ const legacyBasic=nav.querySelector('[data-adjust-view="basic"]');if(legacyBasic)legacyBasic.remove();
  addTab('quick','빠른 보정');
  const utility=document.createElement('section');utility.className='adjust-utility-panel';utility.dataset.adjustUtility='auto';utility.hidden=true;utility.setAttribute('aria-label','자동 보정');
  const autoRow=document.createElement('div');autoRow.className='preset-tools adjust-auto-actions';
@@ -1159,8 +1159,9 @@ function organizeAdjustSubcategories(){
   const group=button.dataset.adjustGroup;
   button.addEventListener('click',()=>selectAdjustView(group,button));
  });
- // Replace the default light tab with the dedicated Basic tab on initial entry.
- selectAdjustView('basic',nav.querySelector('[data-adjust-view="basic"]'));
+ // Start in light/tone; do not show a duplicate Basic tab.
+ const lightTab=nav.querySelector('[data-adjust-group="light"]');
+ if(lightTab)selectAdjustView('light',lightTab);else selectAdjustView('auto',nav.querySelector('[data-adjust-view="auto"]'));
 }
 organizeAdjustSubcategories();
 function activateTool(name){if(name!=='mask')maskPainting=false;document.querySelectorAll('[data-tool]').forEach(b=>{const active=b.dataset.tool===name;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});document.querySelectorAll('[data-tool-panel]').forEach(p=>p.hidden=p.dataset.toolPanel!==name);document.querySelectorAll('[data-side-panel]').forEach(p=>p.hidden=p.dataset.sidePanel!==name);const side=['presets','library'].includes(name);$('toolTitle').textContent=({adjust:'기본 보정',ai:'AI 사진 분석',color:'색상·커브',crop:'자르기·회전',area:'대상별 부분 보정',mask:'마스크 도구',relight:'라이팅 편집',cutout:'누끼 선택·배경 제거',presets:'프리셋',library:'사진 라이브러리',files:'설정 파일'})[name]||'편집';document.querySelector('.left').hidden=!side;document.querySelector('.controls').hidden=side;document.querySelector('.layout').classList.toggle('side-view',side);document.querySelector('.layout').classList.toggle('edit-view',!side);if(window.matchMedia('(max-width:760px)').matches){document.querySelector('.left').style.order=side?'3':'5';document.querySelector('.controls').style.order='5'}if(name==='color')requestAnimationFrame(()=>{drawCurve();buildCurvePointInputs()});if(name==='area'){document.querySelectorAll('[data-area-view]').forEach(b=>b.classList.toggle('active',b.dataset.areaView==='select'));document.querySelectorAll('[data-area-panel]').forEach(p=>p.hidden=p.dataset.areaPanel!=='select')}if(name==='area')updateAreaCorrectionControls();drawMaskOverlay();updateMaskUI();drawCropOverlay();if(typeof updateRelightUI==='function')updateRelightUI();refreshPanelGroupToggle(name)}
