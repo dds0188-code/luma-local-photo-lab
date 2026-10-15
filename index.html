@@ -1038,10 +1038,11 @@ async function loadSamRuntime(){
  if(samModel&&samProcessor&&samModule)return samModule;
  if(!samRuntimePromise)samRuntimePromise=(async()=>{
   const mod=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.2');
-  const opts={dtype:'q4',device:'wasm'};
   const modelId='Xenova/slimsam-77-uniform';
   const processor=await mod.AutoProcessor.from_pretrained(modelId);
-  const model=await mod.SamModel.from_pretrained(modelId,opts);
+  // Use the model's supported default precision/provider first. Forcing q4 + WASM
+  // can fail on some mobile browsers even though the model files load.
+  const model=await mod.SamModel.from_pretrained(modelId);
   samProcessor=processor;samModel=model;samModule=mod;return mod;
  })().catch(err=>{samRuntimePromise=null;samModule=null;throw err});
  return samRuntimePromise;
@@ -1085,16 +1086,23 @@ async function runAISmartLasso(){
   const inputs=await samProcessor(raw,{input_points:[[prompts.points]],input_labels:[[prompts.labels]]});
   const outputs=await samModel(inputs);
   const masks=await samProcessor.post_process_masks(outputs.pred_masks,inputs.original_sizes,inputs.reshaped_input_sizes);
-  const maskBatch=masks[0],dims=maskBatch.dims||[];
+  const maskBatch=masks?.[0],dims=maskBatch?.dims||[];
+  if(!maskBatch?.data||dims.length<3)throw new Error('AI 마스크 출력 형식이 예상과 다릅니다.');
+  // Transformers.js returns [batch, candidates, height, width] (usually [1,3,H,W]).
   const maskW=dims[dims.length-1]||iw,maskH=dims[dims.length-2]||ih;
+  const plane=maskW*maskH,rawData=maskBatch.data;
+  const candidateCount=Math.max(1,Math.floor(rawData.length/plane));
   const scores=outputs.iou_scores?.data;
   let candidate=0,best=-Infinity;
-  if(scores)for(let i=0;i<scores.length;i++){if(Number(scores[i])>best){best=Number(scores[i]);candidate=i}}
-  const plane=maskW*maskH,rawData=maskBatch.data;
+  for(let i=0;i<Math.min(candidateCount,scores?.length||candidateCount);i++){
+   const score=scores?Number(scores[i]):-Infinity;
+   if(score>best){best=score;candidate=i}
+  }
+  const threshold=maskBatch.type==='bool'?0:0.5;
   const out=document.createElement('canvas');out.width=preview.width;out.height=preview.height;
   const ctx=out.getContext('2d',{willReadFrequently:true}),id=ctx.createImageData(out.width,out.height);
   let count=0;
-  for(let y=0;y<out.height;y++){const sy=Math.min(maskH-1,Math.floor(y*maskH/out.height));for(let x=0;x<out.width;x++){const sx=Math.min(maskW-1,Math.floor(x*maskW/out.width)),srcIndex=candidate*plane+sy*maskW+sx,v=rawData[srcIndex],i=(y*out.width+x)*4;if(v){id.data[i]=id.data[i+1]=id.data[i+2]=255;id.data[i+3]=255;count++}}}
+  for(let y=0;y<out.height;y++){const sy=Math.min(maskH-1,Math.floor(y*maskH/out.height));for(let x=0;x<out.width;x++){const sx=Math.min(maskW-1,Math.floor(x*maskW/out.width)),srcIndex=candidate*plane+sy*maskW+sx,v=rawData[srcIndex],i=(y*out.width+x)*4;if(Number(v)>threshold){id.data[i]=id.data[i+1]=id.data[i+2]=255;id.data[i+3]=255;count++}}}
   if(!count)throw new Error('AI가 선택 영역을 만들지 못했습니다. 올가미를 더 넓게 그려 다시 시도해 주세요.');
   ctx.putImageData(id,0,0);
   // Let the model refine the silhouette beyond the rough lasso boundary.
