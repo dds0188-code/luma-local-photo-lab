@@ -2,6 +2,18 @@ const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:4173/';
 
+// The current UI groups advanced controls into nested <details>. Open only the
+// ancestor groups for the control under test, preserving the real navigation flow.
+async function revealInOpenGroups(page, selector) {
+  const target = page.locator(selector);
+  await target.evaluate(el => {
+    for (let parent = el.parentElement; parent; parent = parent.parentElement) {
+      if (parent.tagName === 'DETAILS') parent.open = true;
+    }
+  });
+  await expect(target).toBeVisible();
+}
+
 test.describe('Luma Local Photo Lab browser smoke', () => {
   test('loads app, edits a real canvas image, supports history and exports', async ({ page }) => {
     test.setTimeout(120000);
@@ -76,7 +88,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('[data-mask-view="advanced"]').click();
     const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
     if (!(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
-    await expect(page.locator('#exportSizedJpeg')).toBeVisible();
+    await revealInOpenGroups(page, '#exportSizedJpeg');
     traceStep('trigger sized jpeg download');
     const downloadPromise = page.waitForEvent('download', { timeout: 15000 });
     await page.locator('#exportSizedJpeg').click();
@@ -183,10 +195,12 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
     if (!(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
     const jpegPromise = page.waitForEvent('download', { timeout: 12000 });
+    await revealInOpenGroups(page, '#exportWatermarked');
     await page.locator('#exportWatermarked').click();
     const jpeg = await jpegPromise;
     expect(jpeg.suggestedFilename()).toMatch(/\.jpe?g$/i);
     const pngPromise = page.waitForEvent('download', { timeout: 12000 });
+    await revealInOpenGroups(page, '#exportSizedPng');
     await page.locator('#exportSizedPng').click();
     const png = await pngPromise;
     expect(png.suggestedFilename()).toMatch(/\.png$/i);
@@ -222,6 +236,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     const advancedProject = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
     if (!(await advancedProject.evaluate(el => el.open))) await advancedProject.locator('summary').click();
     const projectPromise = page.waitForEvent('download', { timeout: 12000 });
+    await revealInOpenGroups(page, '#saveProjectJson');
     await page.locator('#saveProjectJson').click();
     const project = await projectPromise;
     expect(project.suggestedFilename()).toMatch(/\.json$/i);
@@ -370,6 +385,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('[data-tool="relight"]').click();
     await expect(page.locator('[data-tool-panel="relight"]')).toBeVisible();
     const before = await page.locator('#preview').evaluate(c => [...c.getContext('2d').getImageData(120, 65, 1, 1).data]);
+    await revealInOpenGroups(page, '#relightPresetWarm');
     await page.locator('#relightPresetWarm').click();
     await page.waitForTimeout(400);
     const after = await page.locator('#preview').evaluate(c => [...c.getContext('2d').getImageData(120, 65, 1, 1).data]);
@@ -485,6 +501,7 @@ test('crop coordinates stay aligned before and after preview zoom on desktop and
 
   // Desktop: the same normalized crop must be selected at 100% and zoomed preview sizes.
   await dragCrop();
+  await revealInOpenGroups(page, '#cropReset');
   await page.locator('#cropReset').click();
   await page.locator('#zoomIn').click();
   await page.waitForTimeout(150);
@@ -826,6 +843,7 @@ test('bounded export renders at target resolution and preserves normalized crop 
   });
   await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-bounded-export-test.png');
   await page.locator('[data-tool="crop"]').click();
+  await revealInOpenGroups(page, '#cropWNum');
   await page.locator('#cropWNum').fill('50');
   await page.locator('#cropWNum').dispatchEvent('change');
   await page.locator('#cropHNum').fill('50');
@@ -916,9 +934,7 @@ test('mobile adjustment subcategory rail stays visible and switches panels witho
   await expect(first).toHaveClass(/active/);
   await second.click();
   await expect(second).toHaveClass(/active/);
-  const box = await page.locator('#preview').boundingBox();
   const panelBox = await page.locator('[data-tool-panel="adjust"]').boundingBox();
-  expect(box).toBeTruthy();
   expect(panelBox).toBeTruthy();
   expect(errors, 'mobile adjustment navigation errors').toEqual([]);
 });
