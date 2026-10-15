@@ -1046,52 +1046,46 @@ function combineMagicSelection(next){if(!next)return magicSelection;if(!magicSel
  const img=src.getContext('2d',{willReadFrequently:true}).getImageData(0,0,w,h).data;
  const total=w*h,inside=new Uint8Array(total),seen=new Uint8Array(total),queue=new Int32Array(total);
  for(let p=0;p<total;p++)inside[p]=pd[p*4+3]>0?1:0;
- const tol=Math.max(10,Number($('magicTolerance').value)||34);
- const colorDist=(a,b)=>{const dr=img[a*4]-img[b*4],dg=img[a*4+1]-img[b*4+1],db=img[a*4+2]-img[b*4+2];return dr*dr+dg*dg+db*db};
- // Seed only where the drawn boundary touches a similarly coloured outside pixel.
- // This avoids treating subject-coloured parts of the lasso edge as background.
- let head=0,tail=0,edgeSeeds=0;
- const edgeThreshold=tol*tol*3*1.15;
+ const tol=Math.max(8,Number($('magicTolerance').value)||34);
+ const colorDist=(a,b)=>{const ia=a*4,ib=b*4,dr=img[ia]-img[ib],dg=img[ia+1]-img[ib+1],db=img[ia+2]-img[ib+2];return dr*dr+dg*dg+db*db};
+ const neighbors=p=>{const x=p%w,y=(p/w)|0;return [x>0?p-1:-1,x<w-1?p+1:-1,y>0?p-w:-1,y<h-1?p+w:-1,x>0&&y>0?p-w-1:-1,x<w-1&&y>0?p-w+1:-1,x>0&&y<h-1?p+w-1:-1,x<w-1&&y<h-1?p+w+1:-1]};
+ // Collect a reference palette from pixels just outside the hand-drawn lasso.
+ const bgSamples=[],boundary=[];
  for(let p=0;p<total;p++){
   if(!inside[p])continue;
-  const x=p%w,y=(p/w)|0;
-  const ns=[x>0?p-1:-1,x<w-1?p+1:-1,y>0?p-w:-1,y<h-1?p+w:-1];
-  let boundary=false;
-  for(const q of ns)if(q<0||!inside[q]){boundary=true;break}
-  if(!boundary)continue;
-  for(const q of ns){
-   if(q<0||inside[q])continue;
-   if(colorDist(p,q)<=edgeThreshold&&!seen[p]){seen[p]=1;queue[tail++]=p;edgeSeeds++;break}
-  }
+  const ns=neighbors(p);let edge=false;
+  for(const q of ns)if(q>=0&&!inside[q]){edge=true;bgSamples.push(q)}
+  if(edge)boundary.push(p);
  }
- // Flood through connected background using both similarity to local neighbours
- // and a looser reference to edge colours. Keep strong colour edges as barriers.
- const localThreshold=tol*tol*3*0.72;
- const maxRefThreshold=tol*tol*3*2.1;
- const edgeRefs=[];
- for(let k=0;k<tail;k++){const p=queue[k];edgeRefs.push([img[p*4],img[p*4+1],img[p*4+2]])}
- const bgLike=p=>{
-  const i=p*4,r=img[i],g=img[i+1],b=img[i+2];let best=Infinity;
-  const stride=Math.max(1,Math.ceil(edgeRefs.length/96));
-  for(let k=0;k<edgeRefs.length;k+=stride){const c=edgeRefs[k],dr=r-c[0],dg=g-c[1],db=b-c[2],d=dr*dr+dg*dg+db*db;if(d<best)best=d;if(best<maxRefThreshold*.2)break}
-  return best<=maxRefThreshold;
- };
+ if(!boundary.length){$('magicSelectStatus').textContent='올가미 경계를 찾지 못했습니다. 피사체 주위를 닫힌 선으로 다시 그려 주세요.';return poly}
+ const stride=Math.max(1,Math.ceil(bgSamples.length/240)),palette=[];
+ for(let k=0;k<bgSamples.length;k+=stride){const q=bgSamples[k],i=q*4;palette.push([img[i],img[i+1],img[i+2]])}
+ const refLimit=tol*tol*3*3.6,localLimit=tol*tol*3*1.65,seedLimit=tol*tol*3*2.8;
+ const bgLike=p=>{const i=p*4,r=img[i],g=img[i+1],b=img[i+2];let best=Infinity;for(const c of palette){const dr=r-c[0],dg=g-c[1],db=b-c[2],d=dr*dr+dg*dg+db*db;if(d<best)best=d;if(best<refLimit*.12)break}return best<=refLimit};
+ let head=0,tail=0,seedCount=0;
+ // Seed the background from the inside edge where the pixel resembles the outside ring.
+ for(const p of boundary){
+  const ns=neighbors(p);let best=Infinity;
+  for(const q of ns)if(q>=0&&!inside[q])best=Math.min(best,colorDist(p,q));
+  if(best<=seedLimit){seen[p]=1;queue[tail++]=p;seedCount++}
+ }
+ // Grow only connected background; local colour continuity and the outside palette
+ // jointly prevent a single background colour from erasing disconnected subject areas.
  while(head<tail){
-  const p=queue[head++],x=p%w,y=(p/w)|0;
-  const ns=[x>0?p-1:-1,x<w-1?p+1:-1,y>0?p-w:-1,y<h-1?p+w:-1];
-  for(const q of ns){
+  const p=queue[head++];
+  for(const q of neighbors(p)){
    if(q<0||!inside[q]||seen[q])continue;
-   if(colorDist(p,q)>localThreshold||!bgLike(q))continue;
+   if(colorDist(p,q)>localLimit||!bgLike(q))continue;
    seen[q]=1;queue[tail++]=q;
   }
  }
  const out=document.createElement('canvas');out.width=w;out.height=h;
- const oc=out.getContext('2d'),od=oc.createImageData(w,h);let kept=0,removed=0;
+ const oc=out.getContext('2d',{willReadFrequently:true}),od=oc.createImageData(w,h);let kept=0,removed=0;
  for(let p=0;p<total;p++){const i=p*4;if(inside[p]&&!seen[p]){od.data[i]=od.data[i+1]=od.data[i+2]=255;od.data[i+3]=255;kept++}else if(inside[p])removed++}
  oc.putImageData(od,0,0);
  const feather=Math.max(0,Number($('magicFeather').value)||0);
  if(feather>0){const soft=document.createElement('canvas');soft.width=w;soft.height=h;const fc=soft.getContext('2d');fc.filter='blur('+feather+'px)';fc.drawImage(out,0,0);oc.clearRect(0,0,w,h);oc.drawImage(soft,0,0)}
- $('magicSelectStatus').textContent='올가미 스마트 보정 · 경계 접촉 기준 '+edgeSeeds.toLocaleString()+'곳 · 배경 후보 '+removed.toLocaleString()+'px 제거 · 피사체 후보 '+kept.toLocaleString()+'px 유지. 가장자리 허용 범위를 조절해 다시 그려 보세요.';
+ $('magicSelectStatus').textContent='스마트 올가미 · 배경 기준 색상 '+palette.length+'개 · 경계 시작점 '+seedCount.toLocaleString()+'개 · 배경 후보 '+removed.toLocaleString()+'px 제거 · 피사체 후보 '+kept.toLocaleString()+'px 유지. 색이 비슷한 영역은 허용 범위를 낮추고 다시 그려 보세요.';
  return out
 }function drawLassoDraft(){drawMaskOverlay();if(lassoDraft.length<1)return;const c=$('maskOverlay').getContext('2d');c.save();c.strokeStyle='#00d5ff';c.lineWidth=2.5;c.setLineDash([7,4]);c.lineJoin='round';c.beginPath();c.moveTo(lassoDraft[0].x,lassoDraft[0].y);for(let i=1;i<lassoDraft.length;i++)c.lineTo(lassoDraft[i].x,lassoDraft[i].y);c.stroke();c.fillStyle='#fff';for(const p of [lassoDraft[0],lassoDraft[lassoDraft.length-1]]){c.beginPath();c.arc(p.x,p.y,4,0,Math.PI*2);c.fill()}c.restore()}function selectGlobalColorRange(p){const preview=$('preview'),w=preview.width,h=preview.height;if(!w||!h)return;const ctx=preview.getContext('2d',{willReadFrequently:true}),data=ctx.getImageData(0,0,w,h).data,sx=Math.max(0,Math.min(w-1,Math.floor(p.x))),sy=Math.max(0,Math.min(h-1,Math.floor(p.y))),seed=(sy*w+sx)*4,r=data[seed],g=data[seed+1],b=data[seed+2],tol=Number($('magicTolerance').value)||34,limit=tol*tol*3,mask=document.createElement('canvas');mask.width=w;mask.height=h;const mc=mask.getContext('2d'),out=mc.createImageData(w,h);let count=0;for(let i=0;i<data.length;i+=4){const dr=data[i]-r,dg=data[i+1]-g,db=data[i+2]-b,dist=dr*dr+dg*dg+db*db;if(dist<=limit){out.data[i]=out.data[i+1]=out.data[i+2]=255;out.data[i+3]=255;count++}}mc.putImageData(out,0,0);const feather=Number($('magicFeather').value)||0;if(feather>0){const soft=document.createElement('canvas');soft.width=w;soft.height=h;const fc=soft.getContext('2d');fc.filter='blur('+feather+'px)';fc.drawImage(mask,0,0);mask.getContext('2d').clearRect(0,0,w,h);mask.getContext('2d').drawImage(soft,0,0)}if(areaPickMode){areaSelection=combineAreaSelection(areaSelection,mask);areaSelections[currentAreaTarget()]=areaSelection;drawMaskOverlay();$('areaStatus').textContent='부분 보정 영역에 '+count.toLocaleString()+' 픽셀을 추가했습니다. 보정 결과를 미리 볼 수 있습니다.';$('areaApplySelection').disabled=!areaSelection;render()}else{magicSelection=combineMagicSelection(mask);drawMaskOverlay();$('magicSelectStatus').textContent='전체 색상 범위 선택 · '+count.toLocaleString()+'개 픽셀을 추가했습니다';updateMagicSelectionUI()}}
 function selectSkyRegion(){
@@ -1743,6 +1737,4 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
 })();
 </script>
 
-<script>
-</script>
 </body></html>
