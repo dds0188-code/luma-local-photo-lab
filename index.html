@@ -915,6 +915,7 @@ function organizeAdjustSubcategories(){
  // Put these in the SAME horizontal subcategory rail as light/color/effects/detail.
  addTab('basic','기본 보정','start');
  addTab('auto','자동 보정','start');
+ nav.insertBefore(nav.querySelector('[data-adjust-view="basic"]'),nav.firstChild);
  addTab('quick','빠른 보정');
  const utility=document.createElement('section');utility.className='adjust-utility-panel';utility.dataset.adjustUtility='auto';utility.hidden=true;utility.setAttribute('aria-label','자동 보정');
  const autoRow=document.createElement('div');autoRow.className='preset-tools adjust-auto-actions';
@@ -948,6 +949,7 @@ function organizeAdjustSubcategories(){
   if(id==='basic'){controls.hidden=false;activateAdjustGroup('light')}
   else if(['light','color','effects','detail'].includes(id)){controls.hidden=false;activateAdjustGroup(id)}
   if(id==='auto'||id==='quick'){/* keep the selected utility panel compact and visible */}
+  nav.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===button));
   button.scrollIntoView({block:'nearest',inline:'nearest',behavior:'auto'});
  }
  nav.querySelectorAll('[data-adjust-group]').forEach(button=>{
