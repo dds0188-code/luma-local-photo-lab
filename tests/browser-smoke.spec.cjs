@@ -592,7 +592,7 @@ test('light/tone and auto adjustment tabs sit beside color, effects and detail w
   await expect(nav.locator('button').nth(3)).toHaveText('효과');
   await expect(nav.locator('button').nth(4)).toHaveText('디테일');
   await expect(page.locator('.adjust-subnav')).not.toHaveCSS('position', 'sticky');
-  await expect(page.locator('.panel-subnav')).not.toHaveCSS('position', 'sticky');
+  expect(await page.locator('.panel-subnav').evaluateAll(els => els.every(el => getComputedStyle(el).position !== 'sticky'))).toBeTruthy();
   await nav.locator('button').filter({ hasText: '자동 보정' }).click();
   await expect(page.locator('.adjust-utility-panel[data-adjust-utility="auto"] #autoToneQuick')).toBeAttached();
   await expect(page.locator('.adjust-utility-panel[data-adjust-utility="auto"] #autoWhiteBalanceQuick')).toBeAttached();
