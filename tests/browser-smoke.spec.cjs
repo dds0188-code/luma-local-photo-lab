@@ -842,3 +842,38 @@ test('bounded export renders at target resolution and preserves normalized crop 
   expect(height).toBe(900);
   expect(errors, 'uncaught bounded export errors').toEqual([]);
 });
+
+
+test('photo library recovers when IndexedDB rejects Blob values', async ({ page }) => {
+  test.setTimeout(45000);
+  page.setDefaultTimeout(10000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.addInitScript(() => {
+    const originalPut = IDBObjectStore.prototype.put;
+    let failBlobOnce = true;
+    IDBObjectStore.prototype.put = function(value, ...args) {
+      if (failBlobOnce && this.name === 'photos' && value && value.blob instanceof Blob) {
+        failBlobOnce = false;
+        throw new DOMException('Simulated Blob persistence failure', 'DataCloneError');
+      }
+      return originalPut.call(this, value, ...args);
+    };
+  });
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 96; c.height = 72;
+    const x = c.getContext('2d'); x.fillStyle = '#6483a1'; x.fillRect(0, 0, c.width, c.height);
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({
+    name: 'luma-blob-fallback.png', mimeType: 'image/png',
+    buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+  });
+  await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-blob-fallback.png');
+  await page.locator('[data-tool="library"]').click();
+  await page.locator('#saveToLibrary').click();
+  await expect(page.locator('#libraryItems .library-row')).toHaveCount(1, { timeout: 15000 });
+  await expect(page.locator('#libraryItems .library-row')).toContainText('luma-blob-fallback.png');
+  expect(errors, 'uncaught Blob fallback errors').toEqual([]);
+});
