@@ -621,7 +621,7 @@ test('all editor tools expose compact functional subgroups instead of one long c
     ['cutout', '[data-tool-panel="cutout"] details.ui-group > summary'],
     ['relight', '[data-tool-panel="relight"] details.ui-group > summary'],
     ['ai', '[data-tool-panel="ai"] details.ui-group > summary'],
-    ['library', '[data-side-panel="library"] details.ui-group > summary']
+    ['library', '[data-side-panel="library"] details.library-action-group > summary']
   ];
   for (const [tool, selector] of checks) {
     await page.locator('[data-tool="' + tool + '"]').click();
