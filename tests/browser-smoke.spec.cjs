@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('fs');
 const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:4173/';
 
 test.describe('Luma Local Photo Lab browser smoke', () => {
@@ -793,4 +794,50 @@ test('library imports multiple originals with progress and skips duplicate name-
   await expect(page.locator('#libraryImportText')).toContainText('추가 0장 / 중복 1장', { timeout: 15000 });
   await expect(page.locator('#libraryItems .library-row')).toHaveCount(2);
   expect(errors, 'uncaught multi-photo import errors').toEqual([]);
+});
+
+
+test('bounded export renders at target resolution and preserves normalized crop coordinates', async ({ page }) => {
+  test.setTimeout(60000);
+  page.setDefaultTimeout(10000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 3200; c.height = 2400;
+    const x = c.getContext('2d');
+    x.fillStyle = '#234f91'; x.fillRect(0, 0, c.width, c.height);
+    x.fillStyle = '#f0c66c'; x.fillRect(640, 480, 1600, 1200);
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({
+    name: 'luma-bounded-export-test.png', mimeType: 'image/png',
+    buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+  });
+  await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-bounded-export-test.png');
+  await page.locator('#cropXNum').fill('20');
+  await page.locator('#cropXNum').dispatchEvent('change');
+  await page.locator('#cropYNum').fill('20');
+  await page.locator('#cropYNum').dispatchEvent('change');
+  await page.locator('#cropWNum').fill('50');
+  await page.locator('#cropWNum').dispatchEvent('change');
+  await page.locator('#cropHNum').fill('50');
+  await page.locator('#cropHNum').dispatchEvent('change');
+  await expect(page.locator('#cropPixelInfo')).toContainText('1600 × 1200 px');
+  const answers = ['png', '100', '1200', '', 'bounded-output'];
+  page.on('dialog', async dialog => {
+    const answer = answers.shift();
+    await dialog.accept(answer === undefined ? '' : answer);
+  });
+  const downloadPromise = page.waitForEvent('download', { timeout: 20000 });
+  await page.locator('#exportBtn').click();
+  const download = await downloadPromise;
+  const path = await download.path();
+  expect(path).toBeTruthy();
+  const bytes = fs.readFileSync(path);
+  expect(bytes.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10]))).toBeTruthy();
+  const width = bytes.readUInt32BE(16), height = bytes.readUInt32BE(20);
+  expect(width).toBe(1200);
+  expect(height).toBe(900);
+  expect(errors, 'uncaught bounded export errors').toEqual([]);
 });
