@@ -793,7 +793,7 @@ function organizeEditorPanels(){
   const intensity=rel.querySelector('#relightIntensity'),feather=rel.querySelector('#relightFeather');
   wrapSiblingRange(rel,intensity,feather,'위치·범위·부드러움',true);
   const layerTools=rel.querySelector('.relight-layer-tools')?.parentElement;
-  if(layerTools){const end=rel.querySelector('#relightReset');wrapSiblingRange(rel,layerTools,end,'라이팅 레이어·프리셋',false)}
+  if(layerTools&&layerTools.parentElement===rel){const d=document.createElement('details');d.className='ui-group';d.open=false;rel.insertBefore(d,layerTools);d.appendChild(layerTools);const title=document.createElement('summary');title.textContent='라이팅 레이어·프리셋';d.prepend(title)}
   const useMask=rel.querySelector('#relightUseMask'),status=rel.querySelector('#relightStatus');
   wrapSiblingRange(rel,useMask,status,'마스크·영역 제한',false);
  }
