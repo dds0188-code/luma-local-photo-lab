@@ -284,6 +284,7 @@ kbd{font:600 10px/1.2 ui-monospace,SFMono-Regular,monospace;padding:5px 7px;bord
   .panel-subnav{position:sticky;top:0;z-index:6}
   #basicSubnav.adjust-subnav{position:relative!important;top:auto!important;z-index:1!important}
 }
+@media(max-width:760px){#luma-update-banner{left:12px!important;right:12px!important;top:auto!important;bottom:calc(72px + env(safe-area-inset-bottom,0px))!important;width:auto!important}}
 </style>
 </head>
 <body>
@@ -1103,7 +1104,7 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
       banner = document.createElement("div");
       banner.id = "luma-update-banner";
       banner.setAttribute("role", "status");
-      banner.style.cssText = "position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;border:1px solid #d9f36b;border-radius:12px;background:#17181b;color:#f4f4f5;box-shadow:0 8px 32px #0009;font:13px/1.4 system-ui,sans-serif;pointer-events:none";
+      banner.style.cssText = "position:fixed;left:auto;right:12px;top:76px;bottom:auto;width:min(380px,calc(100vw - 24px));z-index:9999;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;border:1px solid #d9f36b;border-radius:12px;background:#17181b;color:#f4f4f5;box-shadow:0 8px 32px #0009;font:13px/1.4 system-ui,sans-serif;pointer-events:none";
       document.body.appendChild(banner);
     }
     banner.replaceChildren();

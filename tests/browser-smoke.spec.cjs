@@ -530,6 +530,7 @@ test('full library ZIP backup restores original photos and metadata without dele
   const keywords = page.locator('#libraryItems .library-row input[type="text"]');
   await keywords.fill('zip-test, metadata-roundtrip');
   await keywords.dispatchEvent('change');
+  await expect(page.locator('#toast')).toContainText('키워드를 저장했습니다', { timeout: 10000 });
 
   page.once('dialog', dialog => dialog.accept());
   const downloadPromise = page.waitForEvent('download', { timeout: 15000 });
