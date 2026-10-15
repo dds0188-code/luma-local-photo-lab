@@ -547,6 +547,33 @@ test('full library ZIP backup restores original photos and metadata without dele
   expect(errors, 'uncaught library ZIP restore errors').toEqual([]);
 });
 
+test('all editor tools expose compact functional subgroups instead of one long control dump', async ({ page }) => {
+  test.setTimeout(45000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const checks = [
+    ['presets', '[data-side-panel="presets"] details.ui-group > summary'],
+    ['crop', '[data-tool-panel="crop"] details.ui-group > summary'],
+    ['color', '[data-tool-panel="color"] .panel-subnav'],
+    ['area', '[data-tool-panel="area"] details.ui-group > summary'],
+    ['mask', '[data-tool-panel="mask"] details.ui-group > summary'],
+    ['cutout', '[data-tool-panel="cutout"] details.ui-group > summary'],
+    ['relight', '[data-tool-panel="relight"] details.ui-group > summary'],
+    ['ai', '[data-tool-panel="ai"] details.ui-group > summary'],
+    ['library', '[data-side-panel="library"] details.ui-group > summary']
+  ];
+  for (const [tool, selector] of checks) {
+    await page.locator('[data-tool="' + tool + '"]').click();
+    await expect(page.locator(selector).first(), tool + ' has navigable subgroups').toBeAttached();
+  }
+  await page.locator('[data-tool="relight"]').click();
+  await expect(page.locator('[data-tool-panel="relight"] details.ui-group > summary')).toContainText(['광원 유형·색상']);
+  await expect(page.locator('[data-tool-panel="relight"] details.ui-group > summary')).toContainText(['위치·범위·부드러움']);
+  expect(errors, 'panel grouping should not create runtime errors').toEqual([]);
+});
+
 test('press-and-hold preview compares original and release restores edits; mobile tool strip scrolls horizontally', async ({ page }) => {
   test.setTimeout(45000);
   page.setDefaultTimeout(8000);
