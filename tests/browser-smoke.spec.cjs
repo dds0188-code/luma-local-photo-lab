@@ -898,7 +898,7 @@ test('photo library recovers when IndexedDB rejects Blob values', async ({ page 
 });
 
 
-test('active editor panel can expand and collapse all detail groups', async ({ page }) => {
+test('mobile adjustment subcategory rail stays visible and switches panels without overlay', async ({ page }) => {
   test.setTimeout(30000);
   page.setDefaultTimeout(8000);
   const errors = [];
@@ -906,19 +906,72 @@ test('active editor panel can expand and collapse all detail groups', async ({ p
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
   await page.locator('[data-tool="adjust"]').click();
-  const toggle = page.locator('#togglePanelGroups');
-  await expect(toggle).toBeVisible();
-  await expect(toggle).toBeEnabled();
-  const details = page.locator('[data-tool-panel="adjust"] details:visible').first();
-  await toggle.click();
-  await expect(toggle).toHaveText('모두 접기');
-  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-  await expect(details).toHaveAttribute('open', '');
-  await toggle.click();
-  await expect(toggle).toHaveText('모두 펼치기');
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  await expect(details).not.toHaveAttribute('open', '');
-  expect(errors, 'panel group toggle browser errors').toEqual([]);
+  const rail = page.locator('[data-tool-panel="adjust"] .panel-subnav').first();
+  await expect(rail).toBeVisible();
+  const tabs = rail.locator('button');
+  expect(await tabs.count()).toBeGreaterThanOrEqual(4);
+  const first = tabs.nth(0);
+  const second = tabs.nth(1);
+  await first.click();
+  await expect(first).toHaveClass(/active/);
+  await second.click();
+  await expect(second).toHaveClass(/active/);
+  const box = await page.locator('#preview').boundingBox();
+  const panelBox = await page.locator('[data-tool-panel="adjust"]').boundingBox();
+  expect(box).toBeTruthy();
+  expect(panelBox).toBeTruthy();
+  expect(errors, 'mobile adjustment navigation errors').toEqual([]);
+});
+
+
+test('preview rendering is bounded and responds to adjustment and rotation changes', async ({ page }) => {
+  test.setTimeout(60000);
+  page.setDefaultTimeout(10000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 2400; c.height = 1800;
+    const x = c.getContext('2d');
+    const g = x.createLinearGradient(0, 0, c.width, c.height);
+    g.addColorStop(0, '#174c88'); g.addColorStop(.5, '#e5b66b'); g.addColorStop(1, '#2f7048');
+    x.fillStyle = g; x.fillRect(0, 0, c.width, c.height);
+    x.fillStyle = '#f3d0b7'; x.beginPath(); x.arc(1200, 650, 260, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#20252c'; x.fillRect(900, 900, 600, 650);
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({
+    name: 'luma-performance-test.png', mimeType: 'image/png',
+    buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+  });
+  await expect.poll(() => page.locator('#preview').evaluate(c => c.width)).toBeGreaterThan(0);
+  await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-performance-test.png');
+  const dims = await page.locator('#preview').evaluate(c => [c.width, c.height]);
+  expect(Math.max(...dims)).toBeLessThanOrEqual(640);
+
+  await page.locator('[data-tool="adjust"]').click();
+  const before = await page.locator('#preview').evaluate(c => [...c.getContext('2d').getImageData(Math.floor(c.width / 2), Math.floor(c.height / 2), 1, 1).data]);
+  const startAdjust = Date.now();
+  await page.locator('#exposureRange').evaluate(el => {
+    el.value = '35'; el.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  await expect.poll(async () => page.locator('#preview').evaluate(c => [...c.getContext('2d').getImageData(Math.floor(c.width / 2), Math.floor(c.height / 2), 1, 1).data]), { timeout: 5000 }).not.toEqual(before);
+  const adjustMs = Date.now() - startAdjust;
+  console.log('[PERF] mobile exposure preview updated in ' + adjustMs + 'ms');
+  expect(adjustMs).toBeLessThan(3500);
+
+  await page.locator('[data-tool="crop"]').click();
+  const beforeRotate = await page.locator('#preview').evaluate(c => [c.width, c.height]);
+  const startRotate = Date.now();
+  await page.locator('#angleRange').evaluate(el => {
+    el.value = '15'; el.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  await expect.poll(async () => page.locator('#preview').evaluate(c => [c.width, c.height]), { timeout: 5000 }).not.toEqual(beforeRotate);
+  const rotateMs = Date.now() - startRotate;
+  console.log('[PERF] mobile rotation preview updated in ' + rotateMs + 'ms');
+  expect(rotateMs).toBeLessThan(3500);
+  expect(errors, 'preview performance regression browser errors').toEqual([]);
 });
 
 
