@@ -547,6 +547,23 @@ test('full library ZIP backup restores original photos and metadata without dele
   expect(errors, 'uncaught library ZIP restore errors').toEqual([]);
 });
 
+test('adjustment subtabs remain in layout flow and never overlay the photo preview', async ({ page }) => {
+  test.setTimeout(45000);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-tool="adjust"]').click();
+  const nav = page.locator('#basicSubnav');
+  await expect(nav).toBeVisible();
+  expect(await nav.evaluate(el => getComputedStyle(el).position)).not.toBe('sticky');
+  expect(await nav.evaluate(el => el.getBoundingClientRect().height)).toBeGreaterThan(0);
+  const preview = page.locator('#preview');
+  const navBox = await nav.boundingBox();
+  const previewBox = await preview.boundingBox();
+  expect(navBox.y + navBox.height <= previewBox.y || navBox.y >= previewBox.y + previewBox.height).toBeTruthy();
+  await nav.locator('button').filter({ hasText: '자동 보정' }).click();
+  expect(await nav.evaluate(el => getComputedStyle(el).position)).not.toBe('sticky');
+});
+
 test('basic and auto adjustment tabs sit beside light, color, effects and detail', async ({ page }) => {
   test.setTimeout(45000);
   const errors = [];
