@@ -547,6 +547,35 @@ test('full library ZIP backup restores original photos and metadata without dele
   expect(errors, 'uncaught library ZIP restore errors').toEqual([]);
 });
 
+test('press-and-hold preview compares original and release restores edits; mobile tool strip scrolls horizontally', async ({ page }) => {
+  test.setTimeout(45000);
+  page.setDefaultTimeout(8000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 160; c.height = 120;
+    const x = c.getContext('2d'); x.fillStyle = '#527da9'; x.fillRect(0, 0, 160, 120);
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({ name: 'luma-compare-test.png', mimeType: 'image/png', buffer: Buffer.from(dataUrl.split(',')[1], 'base64') });
+  await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-compare-test.png');
+  await page.locator('#exposureNum').fill('35');
+  await page.locator('#exposureNum').dispatchEvent('change');
+  await page.waitForTimeout(250);
+  const preview = page.locator('#preview');
+  await preview.dispatchEvent('pointerdown', { pointerId: 42, pointerType: 'touch', button: 0, clientX: 180, clientY: 220, isPrimary: true });
+  await expect(page.locator('#compareLabel')).not.toHaveClass(/hidden/);
+  await preview.dispatchEvent('pointerup', { pointerId: 42, pointerType: 'touch', button: 0, clientX: 180, clientY: 220, isPrimary: true });
+  await expect(page.locator('#compareLabel')).toHaveClass(/hidden/);
+  await expect(page.locator('#exposureNum')).toHaveValue('35');
+  const nav = page.locator('#toolNav');
+  expect(await nav.evaluate(el => el.scrollWidth > el.clientWidth)).toBeTruthy();
+  expect(await nav.evaluate(el => getComputedStyle(el).position)).toBe('fixed');
+  expect(errors, 'press-and-hold compare and mobile toolbar errors').toEqual([]);
+});
+
 test('individual adjustment resets on double click and mobile preview stays pinned while controls scroll', async ({ page }) => {
   test.setTimeout(45000);
   page.setDefaultTimeout(8000);
