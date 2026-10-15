@@ -889,3 +889,27 @@ test('photo library recovers when IndexedDB rejects Blob values', async ({ page 
   await expect(page.locator('#libraryItems .library-row')).toContainText('luma-blob-fallback.png');
   expect(errors, 'uncaught Blob fallback errors').toEqual([]);
 });
+
+
+test('active editor panel can expand and collapse all detail groups', async ({ page }) => {
+  test.setTimeout(30000);
+  page.setDefaultTimeout(8000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-tool="adjust"]').click();
+  const toggle = page.locator('#togglePanelGroups');
+  await expect(toggle).toBeVisible();
+  await expect(toggle).toBeEnabled();
+  const details = page.locator('[data-tool-panel="adjust"] details:visible').first();
+  await toggle.click();
+  await expect(toggle).toHaveText('모두 접기');
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(details).toHaveAttribute('open', '');
+  await toggle.click();
+  await expect(toggle).toHaveText('모두 펼치기');
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(details).not.toHaveAttribute('open', '');
+  expect(errors, 'panel group toggle browser errors').toEqual([]);
+});
