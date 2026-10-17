@@ -1028,6 +1028,68 @@ details>summary,summary{color:#2c4055}
   .toast{background:#d8fbef;color:#12594e;border-color:#9ce5d5}
 }
 
+
+/* LUMA STUDIO 2026 — refined color, hierarchy and usable desktop workspace */
+:root{--bg:#10141b;--panel:#19212c;--panel2:#222c39;--surface:#253140;--line:#354354;--text:#f2f6fb;--muted:#a1afc0;--accent:#70e1d1;--accentText:#10211f;--focus:#9bc8ff;--danger:#ffaaa8;--shadow-panel:0 18px 42px #03070d55}
+html,body{background:var(--bg);color:var(--text)}
+body{background:radial-gradient(ellipse at 52% -18%,#293b50 0,transparent 53%),linear-gradient(135deg,#111720,#0f141b 72%);letter-spacing:.005em}
+button,input,select,textarea{font-family:inherit}
+button{border-color:#3a4a5d;background:linear-gradient(180deg,#283545,#202b39);color:#edf5fc;box-shadow:0 1px 0 #fff08 inset}
+button:hover:not(:disabled){background:#33465a;border-color:#607b91}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.primary{background:linear-gradient(135deg,#9af0df,#65d9c9);border-color:#82e8d9;color:#10221f;box-shadow:0 7px 22px #50cdbb24}
+.primary:hover:not(:disabled){background:#b5f7e9;border-color:#b5f7e9;color:#10221f}
+.top{background:#111923f2;border-bottom-color:#ffffff17;box-shadow:0 10px 32px #050a1250}
+.logo{background:linear-gradient(135deg,#9af0df,#65d9c9);color:#10221f;box-shadow:0 5px 20px #65d9c933}
+.brand small{color:#9aabbd}.privacy{color:#8ee9dc;border-color:#70e1d14a;background:#70e1d110}
+.layout{background:transparent}
+aside,.controls{background:linear-gradient(180deg,#1a2431,#171f2a);scrollbar-color:#53677c transparent}
+.left{border-right-color:#ffffff14}.controls{border-left-color:#ffffff14;position:relative}
+.workspace{background:#111720}.workhead,.toolnav,.bottom{background:#151e29;border-color:#ffffff12}
+.filename{color:#f1f6fc}.meta,.status{color:#a5b4c5}
+.toolnav{display:flex!important;flex-wrap:nowrap!important;min-width:0;max-width:100%;overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important;overscroll-behavior-x:contain!important;scrollbar-width:thin!important;scrollbar-color:#5d758c #1c2734!important;-webkit-overflow-scrolling:touch;touch-action:pan-x!important;cursor:grab;user-select:none;-webkit-user-select:none}
+.toolnav button{flex:0 0 auto!important;white-space:nowrap!important;color:#c2cfdd;border-color:transparent;background:transparent;box-shadow:none}
+.toolnav button:hover:not(:disabled){background:#29394a;border-color:#40556a;color:#fff}
+.toolnav button.active,.toolnav button[aria-current="page"]{background:linear-gradient(135deg,#9af0df,#65d9c9)!important;color:#10221f!important;border-color:transparent!important;box-shadow:0 5px 16px #65d9c927!important}
+.toolnav.luma-scrollable{cursor:grab}
+.toolnav.luma-dragging,.subnav.luma-dragging,.panel-subnav.luma-dragging,.adjust-subnav.luma-dragging,#basicSubnav.luma-dragging,.mask-subnav.luma-dragging,.curve-channels.luma-dragging,.area-targets.luma-dragging{cursor:grabbing!important;scroll-behavior:auto!important;scroll-snap-type:none!important}
+.toolnav.luma-dragging *,.subnav.luma-dragging *,.panel-subnav.luma-dragging *,.adjust-subnav.luma-dragging *,#basicSubnav.luma-dragging *,.mask-subnav.luma-dragging *,.curve-channels.luma-dragging *,.area-targets.luma-dragging *{cursor:grabbing!important;user-select:none!important;-webkit-user-select:none!important}
+.subnav,.panel-subnav,.adjust-subnav,#basicSubnav,.mask-subnav,.curve-channels{min-width:0;max-width:100%;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important;overscroll-behavior-x:contain!important;scrollbar-width:thin!important;scrollbar-color:#5d758c #1c2734!important;-webkit-overflow-scrolling:touch;touch-action:pan-x!important}
+.subnav button,.panel-subnav button,.adjust-subnav button,#basicSubnav button,.mask-subnav button,.curve-channels button{flex:0 0 auto!important;white-space:nowrap!important}
+.subnav button.active,.panel-subnav button[aria-current="location"],.adjust-subnav button.active,.mask-subnav button.active{background:#24423f!important;border-color:#70e1d1!important;color:#8debdc!important;box-shadow:inset 0 -2px #70e1d1!important}
+.stage{background:radial-gradient(ellipse at center,#2b394a 0,#171f2a 63%,#111720 100%)}
+.empty{background:linear-gradient(145deg,#202d3b,#18222e);border-color:#52677d;box-shadow:var(--shadow-panel)}.empty strong{color:#f5f8fc}
+.section{color:#a7b8ca}.panelhead{border-bottom-color:#ffffff16}
+.area-card,.histogram-panel,.wheel-card,.library-action-group,.ui-group,.quick-action-details,.toolpane details{border-color:#3a4b5e;background:#1d2836}
+.histogram-stat{background:#263445;border-color:#3a4b5e}
+.num,.transform-number,.crop-number-grid input,.curve-point-numbers input,.preset-tools input,.textinput{background:#121a24;border-color:#3b4d61;color:#f1f6fc}.num{color:#8debdc}
+.range,.transform-control input[type=range]{accent-color:#70e1d1}
+details{border-color:#3a4b5e;background:#1b2633}summary{color:#eaf2fa}
+.preset{background:#202c3a;border-color:#3a4b5e}.preset.selected{border-color:#70e1d1;box-shadow:0 0 0 1px #70e1d133}
+.preset.selected span:last-child,.categories button.active{color:#8debdc}.categories button.active{background:#70e1d116;border-color:#70e1d166}
+#curveCanvas{background:#121a24;border-color:#3a4b5e}.toast{background:#9af0df;color:#10221f}
+@media(min-width:1201px){
+ .layout{--luma-right-width:clamp(410px,28vw,540px);grid-template-columns:clamp(230px,17vw,285px) minmax(420px,1fr) var(--luma-right-width);min-height:calc(100dvh - 70px)}
+ .top{height:70px;padding-inline:26px}.left,.controls{height:calc(100dvh - 70px);max-height:calc(100dvh - 70px);padding:22px 20px 28px}
+ .workspace{min-height:calc(100dvh - 70px)}.toolnav{padding:12px 18px 10px;gap:8px}
+ #toolNav button{min-height:44px;min-width:88px;padding:10px 14px}.controls{padding-left:22px;padding-right:22px}.controls::before{left:-6px;width:12px}
+}
+@media(min-width:761px) and (max-width:1200px){.layout{--luma-right-width:clamp(330px,32vw,400px);grid-template-columns:200px minmax(320px,1fr) var(--luma-right-width);min-height:calc(100dvh - 64px)}.left,.controls{padding:14px 12px}#toolNav button{min-height:40px;padding:8px 10px}}
+@media(min-width:761px){
+ .controls::before{content:"";position:absolute;left:-6px;top:0;bottom:0;width:12px;z-index:12;cursor:col-resize;background:transparent}
+ .controls::after{content:"";position:absolute;left:-2px;top:45%;height:52px;width:4px;border-radius:8px;background:#70e1d1;opacity:.7;pointer-events:none;transition:opacity .15s}
+ .controls:hover::after{opacity:1}
+}
+@media(max-width:760px){
+ .top{background:linear-gradient(105deg,#172536,#203348);border-bottom-color:#3a5068}.layout{background:#121b27}
+ .left,.controls{background:linear-gradient(180deg,#1b2735,#17212e)}
+ .toolnav{cursor:auto;scrollbar-width:none!important}.toolnav::-webkit-scrollbar{display:none}
+ .toolnav button.active,.toolnav button[aria-current="page"]{background:#29443f!important;color:#91f0e1!important;border-color:#476d66!important;box-shadow:inset 0 -2px #70e1d1!important}
+ .subnav,.panel-subnav,.adjust-subnav,#basicSubnav,.mask-subnav,.curve-channels{scrollbar-width:none!important}
+ .subnav::-webkit-scrollbar,.panel-subnav::-webkit-scrollbar,.adjust-subnav::-webkit-scrollbar,#basicSubnav::-webkit-scrollbar,.mask-subnav::-webkit-scrollbar,.curve-channels::-webkit-scrollbar{display:none}
+ .controls::before,.controls::after{display:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -2190,84 +2252,72 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
 
 
 <script>
-/* LUMA navigation input: reliable desktop drag + wheel scrolling for every horizontal rail. */
+/* LUMA navigation input: desktop mouse-wheel and click-drag for all horizontal rails.
+   RAF-coalesced measurement keeps dynamic tool panels from triggering repeated full scans. */
 (() => {
-  const desktop = window.matchMedia('(min-width: 761px)');
-  const railSelector = '#toolNav, .toolnav, .subnav, .panel-subnav, .adjust-subnav, #basicSubnav, .mask-subnav, .curve-channels, .area-targets';
-  let drag = null, suppressClickUntil = 0;
-  const isRail = el => el instanceof HTMLElement && el.matches(railSelector);
-  const canScroll = el => el.scrollWidth > el.clientWidth + 3;
-  const railFrom = target => target instanceof Element ? target.closest(railSelector) : null;
+  const desktop=window.matchMedia('(min-width: 761px)');
+  const railSelector='#toolNav, .toolnav, .subnav, .panel-subnav, .adjust-subnav, #basicSubnav, .mask-subnav, .curve-channels, .area-targets';
+  let drag=null,suppressClickUntil=0,syncQueued=false;
+  const railFrom=target=>target instanceof Element?target.closest(railSelector):null;
+  const canScroll=el=>!!el&&el.scrollWidth>el.clientWidth+3;
   function syncRails(){
+    syncQueued=false;
     document.querySelectorAll(railSelector).forEach(el=>{
-      el.classList.toggle('luma-scrollable', canScroll(el));
-      el.dataset.lumaScrollRail = '1';
+      const scrollable=canScroll(el);
+      el.classList.toggle('luma-scrollable',scrollable);
+      el.dataset.lumaScrollRail='1';
+      if(!el.hasAttribute('aria-label'))el.setAttribute('aria-label','좌우로 스크롤할 수 있는 메뉴');
     });
   }
-  document.addEventListener('wheel', ev => {
-    if (!desktop.matches) return;
-    const rail = railFrom(ev.target);
-    if (!isRail(rail) || !canScroll(rail)) return;
-    const delta = Math.abs(ev.deltaX) > Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY;
-    if (!delta) return;
-    ev.preventDefault();
-    rail.scrollLeft += delta;
-  }, {passive:false});
-  document.addEventListener('pointerdown', ev => {
-    if (!desktop.matches || ev.button !== 0) return;
-    const rail = railFrom(ev.target);
-    if (!isRail(rail) || !canScroll(rail)) return;
-    drag = {rail, pointerId:ev.pointerId, x:ev.clientX, y:ev.clientY, scrollLeft:rail.scrollLeft, moved:false};
-  });
-  document.addEventListener('pointermove', ev => {
-    if (!drag || !desktop.matches || ev.pointerId !== drag.pointerId) return;
-    const dx=ev.clientX-drag.x, dy=ev.clientY-drag.y;
-    if (!drag.moved && Math.abs(dx)>4 && Math.abs(dx)>Math.abs(dy)*1.12) {
-      drag.moved=true;
-      drag.rail.classList.add('luma-dragging');
-      drag.rail.setPointerCapture?.(ev.pointerId);
+  function queueSync(){if(syncQueued)return;syncQueued=true;requestAnimationFrame(syncRails)}
+  document.addEventListener('wheel',ev=>{
+    if(!desktop.matches)return;
+    const rail=railFrom(ev.target);if(!canScroll(rail))return;
+    const delta=Math.abs(ev.deltaX)>Math.abs(ev.deltaY)?ev.deltaX:ev.deltaY;
+    if(!delta)return;ev.preventDefault();rail.scrollLeft+=delta;
+  },{passive:false});
+  document.addEventListener('pointerdown',ev=>{
+    if(!desktop.matches||ev.button!==0||!ev.isPrimary)return;
+    const rail=railFrom(ev.target);if(!canScroll(rail))return;
+    drag={rail,pointerId:ev.pointerId,x:ev.clientX,y:ev.clientY,scrollLeft:rail.scrollLeft,moved:false};
+  },true);
+  document.addEventListener('pointermove',ev=>{
+    if(!drag||!desktop.matches||ev.pointerId!==drag.pointerId)return;
+    const dx=ev.clientX-drag.x,dy=ev.clientY-drag.y;
+    if(!drag.moved&&Math.abs(dx)>5&&Math.abs(dx)>Math.abs(dy)*1.1){
+      drag.moved=true;drag.rail.classList.add('luma-dragging');
+      try{drag.rail.setPointerCapture(ev.pointerId)}catch{}
     }
-    if (drag.moved) {
-      drag.rail.scrollLeft=drag.scrollLeft-dx;
-      ev.preventDefault();
-    }
-  }, {passive:false});
-  const endDrag = ev => {
-    if (!drag || (ev && ev.pointerId !== drag.pointerId)) return;
-    if (drag.moved) suppressClickUntil=Date.now()+280;
-    drag.rail.classList.remove('luma-dragging');
-    drag=null;
-  };
-  document.addEventListener('pointerup', endDrag);
-  document.addEventListener('pointercancel', endDrag);
-  document.addEventListener('click', ev => {
-    if (Date.now()<suppressClickUntil) {
-      const rail=railFrom(ev.target);
-      if (rail) { ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation(); }
-    }
-  }, true);
-  document.addEventListener('dragstart', ev => {
-    if (desktop.matches && railFrom(ev.target)) ev.preventDefault();
+    if(drag.moved){drag.rail.scrollLeft=drag.scrollLeft-dx;ev.preventDefault()}
+  },{passive:false});
+  function endDrag(ev){
+    if(!drag||(ev&&ev.pointerId!==drag.pointerId))return;
+    if(drag.moved)suppressClickUntil=Date.now()+220;
+    drag.rail.classList.remove('luma-dragging');drag=null;
+  }
+  document.addEventListener('pointerup',endDrag);document.addEventListener('pointercancel',endDrag);
+  document.addEventListener('click',ev=>{
+    if(Date.now()>=suppressClickUntil)return;
+    const rail=railFrom(ev.target);if(rail){ev.preventDefault();ev.stopPropagation();ev.stopImmediatePropagation()}
+  },true);
+  document.addEventListener('dragstart',ev=>{if(desktop.matches&&railFrom(ev.target))ev.preventDefault()});
+  document.addEventListener('keydown',ev=>{
+    if(!desktop.matches||!['ArrowLeft','ArrowRight','Home','End'].includes(ev.key))return;
+    const rail=railFrom(ev.target);if(!canScroll(rail)||ev.target.closest('button,input,select'))return;
+    rail.scrollLeft=ev.key==='ArrowLeft'?rail.scrollLeft-100:ev.key==='ArrowRight'?rail.scrollLeft+100:ev.key==='Home'?0:rail.scrollWidth;ev.preventDefault();
   });
-  document.addEventListener('keydown', ev => {
-    if (!desktop.matches || !['ArrowLeft','ArrowRight','Home','End'].includes(ev.key)) return;
-    const rail=railFrom(ev.target);
-    if (!isRail(rail) || ev.target.closest('button,input,select')) return;
-    if (ev.key==='ArrowLeft') rail.scrollLeft-=100;
-    else if (ev.key==='ArrowRight') rail.scrollLeft+=100;
-    else if (ev.key==='Home') rail.scrollLeft=0;
-    else rail.scrollLeft=rail.scrollWidth;
-    ev.preventDefault();
-  });
-  syncRails();
-  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',syncRails,{once:true});
-  const observer=new MutationObserver(syncRails);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',queueSync,{once:true});
+  queueSync();
+  const observer=new MutationObserver(queueSync);
   observer.observe(document.documentElement,{childList:true,subtree:true});
-  window.addEventListener('resize',syncRails,{passive:true});
-  desktop.addEventListener?.('change',syncRails);
+  if(typeof ResizeObserver!=='undefined'){
+    const resizeObserver=new ResizeObserver(queueSync);
+    const observeRails=()=>document.querySelectorAll(railSelector).forEach(el=>resizeObserver.observe(el));
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',observeRails,{once:true});else observeRails();
+  }
+  window.addEventListener('resize',queueSync,{passive:true});desktop.addEventListener?.('change',queueSync);
 })();
-
-
+</script>
 
 <script>
 /* LUMA desktop workspace ergonomics: resizable right controls panel.
@@ -2279,12 +2329,12 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
   if (!layout || !controls) return;
   const storageKey = 'luma-desktop-right-panel-width-v1';
   const bounds = () => window.innerWidth <= 1100
-    ? { min: Math.min(300, Math.max(270, window.innerWidth * .29)), max: Math.min(360, Math.max(300, window.innerWidth * .33)) }
-    : { min: 360, max: Math.min(560, Math.max(390, window.innerWidth * .44)) };
+    ? { min: Math.min(310, Math.max(285, window.innerWidth * .29)), max: Math.min(400, Math.max(330, window.innerWidth * .39)) }
+    : { min: 400, max: Math.min(640, Math.max(440, window.innerWidth * .42)) };
   const readSaved = () => {
     try {
       const value = Number(localStorage.getItem(storageKey));
-      if (Number.isFinite(value) && value >= 270 && value <= 560) {
+      if (Number.isFinite(value) && value >= 285 && value <= 640) {
         const b = bounds();
         layout.style.setProperty('--luma-right-width', Math.round(Math.max(b.min, Math.min(b.max, value))) + 'px');
       }
@@ -2303,10 +2353,15 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
     controls.setPointerCapture?.(ev.pointerId);
     ev.preventDefault();
   });
+  let resizeFrame = 0, pendingWidth = null;
   controls.addEventListener('pointermove', ev => {
     if (!drag || ev.pointerId !== drag.id) return;
-    const width = Math.max(drag.min, Math.min(drag.max, drag.startWidth + drag.startX - ev.clientX));
-    layout.style.setProperty('--luma-right-width', Math.round(width) + 'px');
+    pendingWidth = Math.round(Math.max(drag.min, Math.min(drag.max, drag.startWidth + drag.startX - ev.clientX)));
+    if (resizeFrame) return;
+    resizeFrame = requestAnimationFrame(() => {
+      resizeFrame = 0;
+      if (pendingWidth != null) layout.style.setProperty('--luma-right-width', pendingWidth + 'px');
+    });
   });
   const finish = ev => {
     if (!drag || (ev && ev.pointerId !== drag.id)) return;
