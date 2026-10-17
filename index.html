@@ -988,11 +988,11 @@ details>summary,summary{color:#2c4055}
   .stage{padding:28px}
 }
 @media(min-width:1101px) and (max-width:1439px){
-  .layout{grid-template-columns:235px minmax(320px,1fr) var(--luma-right-width,400px);min-height:calc(100dvh - 64px)}
+  .layout{--luma-right-width:clamp(380px,30vw,430px);grid-template-columns:235px minmax(320px,1fr) var(--luma-right-width,400px);min-height:calc(100dvh - 64px)}
   .left,.controls{padding:17px 15px}
 }
 @media(min-width:761px) and (max-width:1100px){
-  .layout{grid-template-columns:200px minmax(240px,1fr) var(--luma-right-width,320px);min-height:calc(100dvh - 64px)}
+  .layout{--luma-right-width:clamp(300px,33vw,360px);grid-template-columns:200px minmax(240px,1fr) var(--luma-right-width,320px);min-height:calc(100dvh - 64px)}
   .left,.controls{padding:13px 11px}
   .toolnav{gap:4px;padding:8px}
   .toolnav button{padding:7px 9px;font-size:11px}
@@ -2278,20 +2278,20 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
   const controls = document.querySelector('.controls');
   if (!layout || !controls) return;
   const storageKey = 'luma-desktop-right-panel-width-v1';
+  const bounds = () => window.innerWidth <= 1100
+    ? { min: Math.min(300, Math.max(270, window.innerWidth * .29)), max: Math.min(360, Math.max(300, window.innerWidth * .33)) }
+    : { min: 360, max: Math.min(560, Math.max(390, window.innerWidth * .44)) };
   const readSaved = () => {
     try {
       const value = Number(localStorage.getItem(storageKey));
-      if (Number.isFinite(value) && value >= 320 && value <= 560) {
-        layout.style.setProperty('--luma-right-width', value + 'px');
+      if (Number.isFinite(value) && value >= 270 && value <= 560) {
+        const b = bounds();
+        layout.style.setProperty('--luma-right-width', Math.round(Math.max(b.min, Math.min(b.max, value))) + 'px');
       }
     } catch {}
   };
   readSaved();
   let drag = null;
-  const bounds = () => ({
-    min: Math.min(360, Math.max(300, window.innerWidth * .30)),
-    max: Math.min(560, Math.max(390, window.innerWidth * .44))
-  });
   controls.addEventListener('pointerdown', ev => {
     if (!mq.matches || ev.button !== 0 || ev.target.closest('button,input,select,textarea,a,summary')) return;
     const rect = controls.getBoundingClientRect();
