@@ -825,6 +825,91 @@ details.ui-group .section{margin:10px 0 7px!important;padding:0 0 6px!important;
   }
 }
 
+
+/* LUMA POLISHED WORKSPACE v2 — responsive visual refresh and wider editing inspector */
+:root{
+ --bg:#101722;--panel:#1a2432;--panel2:#222f40;--line:#344356;
+ --text:#f4f7fc;--muted:#a7b4c6;--accent:#79f0d0;--accentText:#10211f;
+ --surface:#202c3b;--focus:#a5c8ff;
+}
+html,body{background:#101722;color:#f4f7fc}
+body{background:radial-gradient(ellipse at 48% -18%,#2b3a50 0,#141d2a 42%,#101722 78%)}
+.top{background:linear-gradient(105deg,#141d2a,#1b293a 50%,#141d2a);border-bottom:1px solid #3a4b60}
+.logo{background:linear-gradient(135deg,#9bffe8,#65d9ff);color:#10211f;box-shadow:0 5px 20px #65d9ff30}
+.brand{letter-spacing:.12em}
+.privacy{color:#a7ffeb;border-color:#79f0d044;background:#79f0d00d}
+button{border-color:#405168;background:linear-gradient(180deg,#2b394b,#222e3e);color:#f4f7fc}
+button:hover:not(:disabled){background:#35465b;border-color:#7890ad}
+.primary{background:linear-gradient(135deg,#a0ffe8,#69d8f6);border-color:#9bffea;color:#10211f;box-shadow:0 6px 22px #65d9ff25}
+.primary:hover:not(:disabled){background:#bafff0;border-color:#bafff0}
+.layout{background:#111a27}
+.left,.controls{background:linear-gradient(180deg,#1c2838,#172231);border-color:#354458}
+.workspace{background:#121b28}
+.workhead,.bottom{background:#172231;border-color:#344458}
+.workhead{box-shadow:0 1px 0 #ffffff05}
+.meta{background:#253447;color:#c4d0df;border:1px solid #34465b}
+.toolnav{background:linear-gradient(180deg,#1c2939,#172231);border-color:#344458;box-shadow:0 7px 20px #07101c55}
+.toolnav button{background:#253447;border-color:#3b4c62;color:#d4deea}
+.toolnav button.active,.toolnav button[aria-current="page"]{background:linear-gradient(135deg,#a0ffe8,#69d8f6);border-color:#a0ffe8;color:#10211f;box-shadow:0 5px 20px #65d9ff20}
+.stage{background:radial-gradient(ellipse at 50% 42%,#35465b 0,#1a2737 48%,#121b28 100%)}
+.empty{border-color:#64758a;background:linear-gradient(145deg,#253449d9,#1a2737d9);color:#c3cfde}
+.empty strong{color:#f6f9ff}
+.panelhead{border-color:#354458}
+.section{color:#a9bad0}
+.subnav,.panel-subnav,.adjust-subnav{border-color:#344458}
+.subnav button,.panel-subnav button,.adjust-subnav button{background:#243347;border-color:#3b4e65;color:#d5dfec}
+.subnav button.active,.panel-subnav button.active,.panel-subnav button[aria-current="location"],.adjust-subnav button[aria-selected="true"]{background:#79f0d01c!important;border-color:#79f0d080!important;color:#9bffe8!important;box-shadow:inset 0 -2px #79f0d0!important}
+.area-card,.histogram-panel,.wheel-card,details{background:linear-gradient(145deg,#202e40,#1a2636);border-color:#394c63}
+details>summary{color:#f1f6fd}
+.controlhead label{color:#e0e8f3}
+.num,.textinput,.preset-tools input,.crop-number-grid input,.curve-point-numbers input{background:#111c2a;border-color:#3b4d63;color:#f4f7fc}
+.num{color:#9bffe8}
+.range,.transform-control input{accent-color:#79f0d0}
+.preset{background:#243347;border-color:#40536b}
+.preset.selected{border-color:#79f0d0;box-shadow:0 0 0 1px #79f0d033}
+.preset.selected span:last-child{color:#9bffe8}
+.histogram-stat{background:#26364a}
+.histogram-stat strong{color:#f4f7fc}
+.toast{background:#a0ffe8;color:#10211f;box-shadow:0 12px 40px #0005}
+#toolNav,.toolnav,.subnav,.panel-subnav,.adjust-subnav,.mask-subnav,.curve-channels,.area-targets{
+ scrollbar-width:thin;scrollbar-color:#617c98 transparent;overscroll-behavior-x:contain;
+}
+#toolNav::-webkit-scrollbar,.toolnav::-webkit-scrollbar,.subnav::-webkit-scrollbar,.panel-subnav::-webkit-scrollbar,.adjust-subnav::-webkit-scrollbar,.mask-subnav::-webkit-scrollbar,.curve-channels::-webkit-scrollbar,.area-targets::-webkit-scrollbar{height:6px;display:block}
+#toolNav::-webkit-scrollbar-thumb,.toolnav::-webkit-scrollbar-thumb,.subnav::-webkit-scrollbar-thumb,.panel-subnav::-webkit-scrollbar-thumb,.adjust-subnav::-webkit-scrollbar-thumb,.mask-subnav::-webkit-scrollbar-thumb,.curve-channels::-webkit-scrollbar-thumb,.area-targets::-webkit-scrollbar-thumb{background:#526a83;border-radius:99px}
+.luma-scrollable{cursor:grab!important;user-select:none;-webkit-user-select:none}
+.luma-scrollable.luma-dragging{cursor:grabbing!important;scroll-behavior:auto!important;scroll-snap-type:none!important}
+.luma-scrollable.luma-dragging *{cursor:grabbing!important;user-select:none!important;-webkit-user-select:none!important}
+@media(min-width:761px){
+ .top{height:70px;padding-inline:26px}
+ .layout{grid-template-columns:clamp(225px,19vw,280px) minmax(360px,1fr) clamp(390px,30vw,470px);min-height:calc(100dvh - 70px)}
+ .left,.controls{height:calc(100dvh - 70px);max-height:calc(100dvh - 70px);padding:22px 20px 28px}
+ .workspace{min-height:calc(100dvh - 70px)}
+ .workhead{height:50px;flex-basis:50px}
+ .toolnav{padding:12px 18px 10px;gap:8px}
+ #toolNav button{min-height:46px;min-width:88px;padding:10px 15px}
+ .stage{padding:clamp(22px,2.5vw,38px)}
+ .bottom{min-height:50px;padding:9px 16px}
+ .toolpane .panel-subnav,.toolpane .subnav,.toolpane .mask-subnav{padding:8px 0 10px;gap:7px}
+ .toolpane .panel-subnav button,.toolpane .subnav button,.toolpane .mask-subnav button{min-height:39px;padding:8px 13px;font-size:12px}
+ .control{margin-bottom:18px}
+ .controlhead{grid-template-columns:minmax(0,1fr) 30px 78px;gap:8px}
+ .num{width:78px;min-height:32px}
+ .range{height:7px}
+ .area-targets{gap:8px}
+}
+@media(max-width:760px){
+ /* Preserve the existing mobile information architecture; only refresh its finish. */
+ .top{background:linear-gradient(105deg,#141d2a,#1b293a);border-bottom-color:#35465b}
+ .layout{background:#111a27}
+ .left,.controls{background:linear-gradient(180deg,#1c2838,#172231);border-color:#354458}
+ .stage{background:radial-gradient(ellipse at 50% 42%,#35465b 0,#1a2737 58%,#121b28 100%)}
+ .toolnav{padding:8px 10px;background:#172231}
+ .toolnav button{min-height:40px;padding:8px 10px}
+ .panel-subnav,.subnav,.mask-subnav{scrollbar-width:none!important}
+ .panel-subnav::-webkit-scrollbar,.subnav::-webkit-scrollbar,.mask-subnav::-webkit-scrollbar{display:none!important}
+ .control{margin-bottom:12px}
+ .section{margin-top:16px}
+}
 </style>
 </head>
 <body>
@@ -1987,62 +2072,82 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
 
 
 <script>
-/* Desktop-only menu navigation: drag-to-scroll and mouse-wheel horizontal scrolling. */
+/* LUMA navigation input: reliable desktop drag + wheel scrolling for every horizontal rail. */
 (() => {
   const desktop = window.matchMedia('(min-width: 761px)');
-  const rails = '#toolNav,.toolnav,.subnav,#basicSubnav.adjust-subnav,.mask-subnav,.curve-channels';
-  let active = null, lastDraggedAt = 0;
-  const canScroll = el => el && el.scrollWidth > el.clientWidth + 2;
-  function bindRails() {
-    if (!desktop.matches) { active = null; document.querySelectorAll(rails).forEach(el => el.classList.remove('luma-dragging')); return; }
-    document.querySelectorAll(rails).forEach(el => {
-      if (el.dataset.lumaMouseScrollBound === '1') return;
-      el.dataset.lumaMouseScrollBound = '1';
-      el.addEventListener('wheel', ev => {
-        if (!desktop.matches || !canScroll(el)) return;
-        const horizontal = Math.abs(ev.deltaX) > Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY;
-        if (Math.abs(horizontal) < 1) return;
-        ev.preventDefault();
-        el.scrollLeft += horizontal;
-      }, { passive: false });
-      el.addEventListener('pointerdown', ev => {
-        if (!desktop.matches || ev.button !== 0 || !canScroll(el)) return;
-        active = { el, x: ev.clientX, y: ev.clientY, left: el.scrollLeft, moved: false, pointerId: ev.pointerId };
-      });
-      el.addEventListener('click', ev => {
-        if (Date.now() - lastDraggedAt < 420) { ev.preventDefault(); ev.stopPropagation(); }
-      }, true);
-      el.addEventListener('dragstart', ev => { if (desktop.matches) ev.preventDefault(); });
+  const railSelector = '#toolNav, .toolnav, .subnav, .panel-subnav, .adjust-subnav, #basicSubnav, .mask-subnav, .curve-channels, .area-targets';
+  let drag = null, suppressClickUntil = 0;
+  const isRail = el => el instanceof HTMLElement && el.matches(railSelector);
+  const canScroll = el => el.scrollWidth > el.clientWidth + 3;
+  const railFrom = target => target instanceof Element ? target.closest(railSelector) : null;
+  function syncRails(){
+    document.querySelectorAll(railSelector).forEach(el=>{
+      el.classList.toggle('luma-scrollable', canScroll(el));
+      el.dataset.lumaScrollRail = '1';
     });
   }
+  document.addEventListener('wheel', ev => {
+    if (!desktop.matches) return;
+    const rail = railFrom(ev.target);
+    if (!isRail(rail) || !canScroll(rail)) return;
+    const delta = Math.abs(ev.deltaX) > Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY;
+    if (!delta) return;
+    ev.preventDefault();
+    rail.scrollLeft += delta;
+  }, {passive:false});
+  document.addEventListener('pointerdown', ev => {
+    if (!desktop.matches || ev.button !== 0 || ev.target.closest('button,input,select,a,[role="button"]')) return;
+    const rail = railFrom(ev.target);
+    if (!isRail(rail) || !canScroll(rail)) return;
+    drag = {rail, pointerId:ev.pointerId, x:ev.clientX, y:ev.clientY, scrollLeft:rail.scrollLeft, moved:false};
+  });
   document.addEventListener('pointermove', ev => {
-    if (!active || !desktop.matches || ev.pointerId !== active.pointerId) return;
-    const dx = ev.clientX - active.x, dy = ev.clientY - active.y;
-    if (!active.moved && Math.abs(dx) > 5 && Math.abs(dx) > Math.abs(dy) * 1.15) {
-      active.moved = true; active.el.classList.add('luma-dragging');
-      active.el.style.cursor = 'grabbing';
+    if (!drag || !desktop.matches || ev.pointerId !== drag.pointerId) return;
+    const dx=ev.clientX-drag.x, dy=ev.clientY-drag.y;
+    if (!drag.moved && Math.abs(dx)>4 && Math.abs(dx)>Math.abs(dy)*1.12) {
+      drag.moved=true;
+      drag.rail.classList.add('luma-dragging');
+      drag.rail.setPointerCapture?.(ev.pointerId);
     }
-    if (active.moved) {
-      active.el.scrollLeft = active.left - dx;
+    if (drag.moved) {
+      drag.rail.scrollLeft=drag.scrollLeft-dx;
       ev.preventDefault();
     }
-  }, { passive: false });
+  }, {passive:false});
   const endDrag = ev => {
-    if (!active || (ev && ev.pointerId !== active.pointerId)) return;
-    if (active.moved) lastDraggedAt = Date.now();
-    active.el.classList.remove('luma-dragging');
-    active.el.style.cursor = '';
-    active = null;
+    if (!drag || (ev && ev.pointerId !== drag.pointerId)) return;
+    if (drag.moved) suppressClickUntil=Date.now()+280;
+    drag.rail.classList.remove('luma-dragging');
+    drag=null;
   };
   document.addEventListener('pointerup', endDrag);
   document.addEventListener('pointercancel', endDrag);
-  bindRails();
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindRails, { once: true });
-  const observer = new MutationObserver(() => bindRails());
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-  desktop.addEventListener?.('change', bindRails);
-  window.addEventListener('resize', bindRails, { passive: true });
+  document.addEventListener('click', ev => {
+    if (Date.now()<suppressClickUntil) {
+      const rail=railFrom(ev.target);
+      if (rail) { ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation(); }
+    }
+  }, true);
+  document.addEventListener('dragstart', ev => {
+    if (desktop.matches && railFrom(ev.target)) ev.preventDefault();
+  });
+  document.addEventListener('keydown', ev => {
+    if (!desktop.matches || !['ArrowLeft','ArrowRight','Home','End'].includes(ev.key)) return;
+    const rail=railFrom(ev.target);
+    if (!isRail(rail) || ev.target.closest('button,input,select')) return;
+    if (ev.key==='ArrowLeft') rail.scrollLeft-=100;
+    else if (ev.key==='ArrowRight') rail.scrollLeft+=100;
+    else if (ev.key==='Home') rail.scrollLeft=0;
+    else rail.scrollLeft=rail.scrollWidth;
+    ev.preventDefault();
+  });
+  syncRails();
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',syncRails,{once:true});
+  const observer=new MutationObserver(syncRails);
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+  window.addEventListener('resize',syncRails,{passive:true});
+  desktop.addEventListener?.('change',syncRails);
 })();
-</script>
+
 
 </body></html>
