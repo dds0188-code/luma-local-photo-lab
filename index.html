@@ -910,6 +910,124 @@ details>summary{color:#f1f6fd}
  .control{margin-bottom:12px}
  .section{margin-top:16px}
 }
+
+
+/* LUMA STUDIO UI REFRESH — responsive visual system, v2026.10 */
+:root{
+  color-scheme:light;
+  --bg:#eef2f7;--panel:#ffffff;--panel2:#f4f7fb;--surface:#f7f9fc;
+  --line:#dce4ee;--text:#1e2938;--muted:#68778a;
+  --accent:#27b6a4;--accentText:#062b28;--focus:#438cff;
+  --danger:#c94b61;--shadow-panel:0 12px 34px #1c344b0d;
+}
+html,body{background:var(--bg);color:var(--text)}
+body{background:radial-gradient(ellipse at 48% -24%,#d9e8f5 0,transparent 55%),#eef2f7}
+.top{background:#ffffffed;border-bottom:1px solid #dce4ee;box-shadow:0 5px 24px #24364b0a;backdrop-filter:blur(18px)}
+.logo{background:linear-gradient(135deg,#35d1b6,#149c9d);color:#fff;box-shadow:0 5px 15px #27b6a42a}
+.brand{color:#1c2b3c}.brand small{color:#78879a}
+.privacy{background:#e8faf6;border-color:#b9eee3;color:#137c70}
+.actions button{background:#fff;border-color:#d8e1ec;color:#344458}
+.actions button:hover:not(:disabled){background:#f0f7fb;border-color:#9db7ca}
+button{background:#fff;color:#27374a;border-color:#d5dfeb;box-shadow:0 1px 2px #21364b08}
+button:hover:not(:disabled){background:#f1f7fa;border-color:#8eb6c5;color:#152d3c;box-shadow:0 4px 12px #1c52640d}
+button:disabled{opacity:.48}
+.primary{background:linear-gradient(135deg,#36cbb2,#20a99e);border-color:#20a99e;color:#fff;box-shadow:0 5px 15px #20a99e25}
+.primary:hover:not(:disabled){background:#15998f;border-color:#15998f;color:#fff}
+.quiet{background:transparent}
+.layout{--luma-right-width:clamp(390px,30vw,500px);background:transparent}
+aside,.controls{background:linear-gradient(180deg,#fff,#f8fafd);box-shadow:var(--shadow-panel);scrollbar-color:#c5d2df transparent}
+.left{border-right:1px solid #dce4ee}
+.controls{position:relative;border-left:1px solid #dce4ee}
+.workspace{background:#edf2f7}
+.workhead{background:#f9fbfd;border-bottom:1px solid #dce4ee}
+.filename{color:#25364a}.meta{background:#eaf0f6;color:#65768a}
+.stage{background:radial-gradient(ellipse at center,#344253 0,#1e2937 60%,#151d28 100%);box-shadow:inset 0 1px #ffffff0a}
+.stage canvas:not(#cropOverlay):not(#maskOverlay):not(#relightOverlay){box-shadow:0 22px 60px #0005}
+.empty{background:#f9fbfd;border-color:#b7c7d8;color:#68778a;box-shadow:0 18px 45px #1c344b12}
+.empty strong{color:#203249}
+.bottom{background:#f9fbfd;border-top:1px solid #dce4ee}
+.status{color:#68778a}
+.section{color:#74869a}
+.panelhead{border-bottom-color:#e2e8f0}
+.panelhead h2{color:#1f3045}
+.panel-group-toggle{background:#f5f8fb;border-color:#dce4ee;color:#68778a}
+.panel-group-toggle:hover:not(:disabled){background:#eaf7f5;border-color:#8ed9cd;color:#177f74}
+.toolnav{background:#f9fbfd;border-bottom-color:#dce4ee;scrollbar-color:#b8c8d8 #edf2f7}
+.toolnav button{background:transparent;color:#53657a;border-color:transparent}
+.toolnav button:hover:not(:disabled){background:#eaf2f7;border-color:#d2e0e9;color:#1f3347}
+.toolnav button.active,.toolnav button[aria-current="page"]{background:linear-gradient(135deg,#d5faf1,#a8eee0);border-color:#81ddce;color:#12675e;box-shadow:0 4px 12px #27b6a418}
+.subnav,.panel-subnav,.adjust-subnav{border-bottom-color:#e1e8f0}
+.subnav button,.panel-subnav button,.adjust-subnav button{background:#f1f5f9;border-color:#e0e7ef;color:#5b6b7e}
+.subnav button.active,.panel-subnav button[aria-current="location"],.adjust-subnav button[aria-selected="true"]{background:#dcf8f2!important;border-color:#9be2d6!important;color:#11796e!important;box-shadow:inset 0 -2px #27b6a4}
+.toolpane details,details,.area-card,.histogram-panel,.wheel-card,.library-action-group,.ui-group,.quick-action-details{background:#fff;border-color:#dce4ee;box-shadow:0 2px 8px #24364b05}
+details>summary,summary{color:#2c4055}
+.controlhead label,.transform-control label{color:#34475b}
+.num,.transform-number,.crop-number-grid input,.curve-point-numbers input,.preset-tools input,.textinput,.toolpane input:not([type=range]):not([type=checkbox]),.toolpane select,.toolpane textarea{background:#f8fafc;border-color:#d4deea;color:#22354a}
+.num{color:#087f73}
+.range,.transform-control input[type=range]{accent-color:#1ba997}
+.histogram-panel{background:#f7f9fc}.histogram-stat{background:#edf2f7;border-color:#dce4ee}
+.histogram-stat span,.histogram-help,.xmp-note,.subtle,.footer{color:#6d7d90}
+.area-targets button,.area-target-presets button{background:#f5f8fb}
+.area-targets button.active,.area-target-presets button.active{background:#dcf8f2;border-color:#80d8cb;color:#087c70}
+.preset{background:#f7f9fc;border-color:#dbe4ee}
+.preset span:last-child{color:#34475b}
+.preset.selected{border-color:#27b6a4;box-shadow:0 0 0 2px #27b6a418}
+.preset.selected span:last-child{color:#087c70}
+.categories button{background:#f5f8fb;color:#596b7f;border-color:#dce4ee}
+.categories button.active{background:#dcf8f2;border-color:#a3e4d9;color:#11796e}
+.library-action-group>summary{color:#2c4055}
+.library-action-grid>button{background:#f7f9fc}
+.library-delete{color:#b93e54}
+.toast{background:#d8fbef;color:#12594e;border:1px solid #9ce5d5;box-shadow:0 12px 35px #173d3b24}
+#curveCanvas{background:#f8fafc;border-color:#d4deea}
+.compare-label{background:#13202ddd;color:#fff}
+.toolpane[data-tool-panel="mask"] details>summary{background:#fff}
+@media(min-width:1440px){
+  .layout{grid-template-columns:clamp(245px,18vw,290px) minmax(420px,1fr) var(--luma-right-width,clamp(390px,30vw,500px));min-height:calc(100dvh - 64px)}
+  .left,.controls{padding:22px 20px}
+  .stage{padding:28px}
+}
+@media(min-width:1101px) and (max-width:1439px){
+  .layout{grid-template-columns:235px minmax(320px,1fr) var(--luma-right-width,400px);min-height:calc(100dvh - 64px)}
+  .left,.controls{padding:17px 15px}
+}
+@media(min-width:761px) and (max-width:1100px){
+  .layout{grid-template-columns:200px minmax(240px,1fr) var(--luma-right-width,320px);min-height:calc(100dvh - 64px)}
+  .left,.controls{padding:13px 11px}
+  .toolnav{gap:4px;padding:8px}
+  .toolnav button{padding:7px 9px;font-size:11px}
+}
+@media(min-width:761px){
+  .controls::before{content:"";position:absolute;left:-5px;top:0;bottom:0;width:10px;z-index:8;cursor:col-resize;background:transparent}
+  .controls::after{content:"";position:absolute;left:-2px;top:45%;height:44px;width:3px;border-radius:9px;background:#b8c9d8;opacity:.7;pointer-events:none;transition:background .15s,opacity .15s}
+  .controls:hover::after{background:#27b6a4;opacity:1}
+  body.luma-panel-resizing,body.luma-panel-resizing *{cursor:col-resize!important;user-select:none!important}
+  #toolNav,.toolnav,.subnav,.panel-subnav,.adjust-subnav,#basicSubnav,.mask-subnav,.curve-channels,.area-targets{cursor:grab;scrollbar-width:thin;scrollbar-color:#a9bccd #edf2f7}
+  #toolNav.luma-dragging,.toolnav.luma-dragging,.subnav.luma-dragging,.panel-subnav.luma-dragging,.adjust-subnav.luma-dragging,#basicSubnav.luma-dragging,.mask-subnav.luma-dragging,.curve-channels.luma-dragging,.area-targets.luma-dragging{cursor:grabbing;scroll-behavior:auto;user-select:none}
+  #toolNav::-webkit-scrollbar,.toolnav::-webkit-scrollbar,.subnav::-webkit-scrollbar,.panel-subnav::-webkit-scrollbar,.adjust-subnav::-webkit-scrollbar,#basicSubnav::-webkit-scrollbar,.mask-subnav::-webkit-scrollbar,.curve-channels::-webkit-scrollbar,.area-targets::-webkit-scrollbar{height:7px;display:block}
+  #toolNav::-webkit-scrollbar-thumb,.toolnav::-webkit-scrollbar-thumb,.subnav::-webkit-scrollbar-thumb,.panel-subnav::-webkit-scrollbar-thumb,.adjust-subnav::-webkit-scrollbar-thumb,#basicSubnav::-webkit-scrollbar-thumb,.mask-subnav::-webkit-scrollbar-thumb,.curve-channels::-webkit-scrollbar-thumb,.area-targets::-webkit-scrollbar-thumb{background:#b5c7d8;border-radius:99px;border:2px solid #edf2f7}
+}
+@media(max-width:760px){
+  :root{--bg:#edf2f7;--panel:#fff;--panel2:#f4f7fb;--surface:#f8fafc;--line:#dce4ee;--text:#1e2938;--muted:#68778a;--accent:#27b6a4;--accentText:#062b28}
+  .top{background:#ffffffed;border-bottom-color:#dce4ee;box-shadow:0 4px 18px #1c344b0a}
+  .brand{color:#1c2b3c}.logo{background:linear-gradient(135deg,#35d1b6,#149c9d);color:#fff}
+  .actions button{background:#fff;border-color:#d8e1ec;color:#344458}
+  .workhead,.bottom{background:#f9fbfd;border-color:#dce4ee}
+  .workspace{background:#edf2f7}
+  .left,.controls{background:linear-gradient(180deg,#fff,#f8fafd);border-color:#dce4ee}
+  .stage{background:radial-gradient(ellipse at center,#344253 0,#1e2937 60%,#151d28 100%)}
+  .toolnav{background:#f9fbfd;border-bottom-color:#dce4ee}
+  .toolnav button{color:#53657a}
+  .toolnav button.active,.toolnav button[aria-current="page"]{background:#dcf8f2;color:#11796e;border-color:#9be2d6}
+  .subnav,.panel-subnav,.adjust-subnav{background:#f9fbfd;border-color:#dce4ee}
+  .subnav button,.panel-subnav button,.adjust-subnav button{background:#f1f5f9;color:#5b6b7e}
+  .subnav button.active,.panel-subnav button[aria-current="location"],.adjust-subnav button[aria-selected="true"]{background:#dcf8f2!important;color:#11796e!important;border-color:#9be2d6!important}
+  .toolpane details,details,.area-card,.histogram-panel,.wheel-card,.library-action-group,.ui-group,.quick-action-details{background:#fff;border-color:#dce4ee}
+  .num,.transform-number,.crop-number-grid input,.curve-point-numbers input,.preset-tools input,.textinput,.toolpane input:not([type=range]):not([type=checkbox]),.toolpane select,.toolpane textarea{background:#f8fafc;border-color:#d4deea;color:#22354a}
+  .preset{background:#f7f9fc;border-color:#dbe4ee}
+  .toast{background:#d8fbef;color:#12594e;border-color:#9ce5d5}
+}
+
 </style>
 </head>
 <body>
@@ -2149,5 +2267,57 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
   desktop.addEventListener?.('change',syncRails);
 })();
 
+
+
+<script>
+/* LUMA desktop workspace ergonomics: resizable right controls panel.
+   Mobile layout is deliberately untouched by this interaction. */
+(() => {
+  const mq = window.matchMedia('(min-width: 761px)');
+  const layout = document.querySelector('.layout');
+  const controls = document.querySelector('.controls');
+  if (!layout || !controls) return;
+  const storageKey = 'luma-desktop-right-panel-width-v1';
+  const readSaved = () => {
+    try {
+      const value = Number(localStorage.getItem(storageKey));
+      if (Number.isFinite(value) && value >= 320 && value <= 560) {
+        layout.style.setProperty('--luma-right-width', value + 'px');
+      }
+    } catch {}
+  };
+  readSaved();
+  let drag = null;
+  const bounds = () => ({
+    min: Math.min(360, Math.max(300, window.innerWidth * .30)),
+    max: Math.min(560, Math.max(390, window.innerWidth * .44))
+  });
+  controls.addEventListener('pointerdown', ev => {
+    if (!mq.matches || ev.button !== 0 || ev.target.closest('button,input,select,textarea,a,summary')) return;
+    const rect = controls.getBoundingClientRect();
+    if (ev.clientX - rect.left > 9) return;
+    const b = bounds();
+    const current = Math.round(rect.width);
+    drag = { id: ev.pointerId, startX: ev.clientX, startWidth: current, min: b.min, max: b.max };
+    document.body.classList.add('luma-panel-resizing');
+    controls.setPointerCapture?.(ev.pointerId);
+    ev.preventDefault();
+  });
+  controls.addEventListener('pointermove', ev => {
+    if (!drag || ev.pointerId !== drag.id) return;
+    const width = Math.max(drag.min, Math.min(drag.max, drag.startWidth + drag.startX - ev.clientX));
+    layout.style.setProperty('--luma-right-width', Math.round(width) + 'px');
+  });
+  const finish = ev => {
+    if (!drag || (ev && ev.pointerId !== drag.id)) return;
+    try { localStorage.setItem(storageKey, String(Math.round(controls.getBoundingClientRect().width))); } catch {}
+    drag = null;
+    document.body.classList.remove('luma-panel-resizing');
+  };
+  controls.addEventListener('pointerup', finish);
+  controls.addEventListener('pointercancel', finish);
+  window.addEventListener('resize', () => { if (!mq.matches) document.body.classList.remove('luma-panel-resizing'); }, {passive:true});
+})();
+</script>
 
 </body></html>
