@@ -1153,6 +1153,101 @@ button:hover:not(:disabled){transform:none;box-shadow:0 3px 10px rgba(24,50,72,.
  .controls{width:100%;max-width:100%}
 }
 
+
+/* LUMA UI FOUNDATION REDESIGN · restrained graphite theme, stable workspace sizing */
+:root{
+ color-scheme:dark;
+ --bg:#101216;--panel:#171a20;--panel2:#1e222a;--surface:#1a1e25;
+ --line:#303640;--text:#e7eaf0;--muted:#9ba4b2;
+ --accent:#8fb8ad;--accentText:#101a18;--focus:#a7c8ee;
+ --luma-right-width:clamp(430px,34vw,560px);
+}
+html,body{background:var(--bg)!important;color:var(--text)!important}
+body{background:linear-gradient(180deg,#15191f 0,#101216 260px)!important;letter-spacing:0}
+.top{height:64px;background:#13161bf2!important;border-bottom:1px solid #343a45!important;box-shadow:0 4px 18px #0003;padding-inline:20px}
+.logo{background:#8fb8ad!important;color:#14201d!important;box-shadow:none;border-radius:8px}
+.brand{letter-spacing:.08em;font-size:14px}.brand small{color:#929dac!important;letter-spacing:.04em}
+.privacy{color:#a9c9bf!important;background:#8fb8ad0c!important;border-color:#8fb8ad30!important}
+button{background:#252a33!important;color:#dce2eb!important;border:1px solid #3a414d!important;border-radius:8px!important;box-shadow:none!important;font-weight:550}
+button:hover:not(:disabled){background:#303743!important;border-color:#596575!important;transform:none!important}
+button:active:not(:disabled){background:#343d49!important}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #9bbeb4!important;outline-offset:2px}
+.primary,.toolnav button.active,.toolnav button[aria-current="page"]{background:#8fb8ad!important;color:#12201c!important;border-color:#8fb8ad!important;box-shadow:none!important;font-weight:750}
+.primary:hover:not(:disabled){background:#a4c9be!important;border-color:#a4c9be!important}
+.layout{--luma-right-width:clamp(430px,34vw,560px);grid-template-columns:clamp(220px,17vw,270px) minmax(300px,1fr) var(--luma-right-width)!important;gap:0;background:#101216!important;min-height:calc(100dvh - 64px)}
+aside,.controls{background:#171a20!important;color:var(--text)!important;scrollbar-color:#3b424e transparent!important}
+.left{border-right:1px solid #2e343e!important}
+.controls{border-left:1px solid #2e343e!important;position:relative;overflow:auto!important}
+.workspace{background:#101216!important;min-width:0}
+.workhead,.toolnav,.bottom{background:#14171d!important;border-color:#2c323c!important}
+.workhead{height:44px}
+.toolnav{gap:6px;padding:9px 12px;scrollbar-width:thin!important;scrollbar-color:#444d5a transparent!important}
+.toolnav button{background:transparent!important;color:#aeb7c4!important;border-color:transparent!important;border-radius:7px!important;padding:8px 10px;font-size:12px}
+.toolnav button:hover:not(:disabled){background:#252b34!important;color:#e7eaf0!important}
+.toolnav button.active{background:#8fb8ad!important;color:#12201c!important}
+.stage{background:radial-gradient(ellipse at center,#242932 0,#15181e 68%)!important;padding:20px}
+.stage canvas:not(#cropOverlay):not(#maskOverlay):not(#relightOverlay){box-shadow:0 12px 36px #0007!important;border-radius:3px}
+.empty{background:#191e26!important;border:1px dashed #46505f!important;color:#a5afbd!important;border-radius:14px!important;box-shadow:none!important;padding:28px 24px}
+.empty strong{color:#e7eaf0!important;font-size:18px}
+.section{color:#9aa6b5!important;letter-spacing:.12em;margin:19px 0 10px}
+.panelhead{border-bottom:1px solid #2d333d!important;padding-bottom:10px;margin-bottom:13px}
+.panelhead h2{color:#e7eaf0!important;font-size:15px;letter-spacing:0}
+.subnav,.panel-subnav,.adjust-subnav,#basicSubnav,.mask-subnav,.curve-channels{background:transparent!important;border-color:#2e343e!important;scrollbar-width:thin!important;scrollbar-color:#444d5a transparent!important}
+.subnav button,.panel-subnav button,.adjust-subnav button,#basicSubnav button,.mask-subnav button,.curve-channels button{background:#20242c!important;color:#b9c2cf!important;border-color:#343b47!important}
+.subnav button.active,.panel-subnav button.active,.adjust-subnav button.active,#basicSubnav button.active,.mask-subnav button.active,.curve-channels button.active{background:#8fb8ad20!important;color:#b8d9d0!important;border-color:#71998e!important}
+.area-card,.histogram-panel,.wheel-card,.toolpane[data-tool-panel="cutout"] .transform-control,details{background:#1b1f27!important;border-color:#343b47!important;border-radius:10px!important}
+details{padding:10px 11px}
+details>summary{color:#dce2eb!important}
+details>summary:after{color:#9ca8b8!important}
+.controlhead label,.transform-control label{color:#d2d8e2!important}
+.num,.transform-number,.crop-number-grid input,.curve-point-numbers input,.preset-tools input,.textinput,.toolpane input:not([type=range]):not([type=checkbox]),.toolpane select,.toolpane textarea{background:#11151b!important;border-color:#3a424f!important;color:#e1e6ee!important}
+.num,.controlhead .num{color:#b8d9d0!important}
+.range,.transform-control input[type=range]{accent-color:#8fb8ad!important}
+.range-step{background:#20252d!important;border-color:#3a424f!important;color:#dce2eb!important}
+.range-step:active{background:#8fb8ad!important;color:#12201c!important}
+.area-targets button.active,.crop button.active{background:#8fb8ad20!important;color:#b8d9d0!important;border-color:#71998e!important}
+.preset,.histogram-stat{background:#20242c!important;border-color:#343b47!important}
+.preset.selected{border-color:#8fb8ad!important;box-shadow:0 0 0 1px #8fb8ad30!important}
+.preset.selected span:last-child,.hslname,.view-zoom span,.transform-control output{color:#b8d9d0!important}
+.preset-fav,.resetone{color:#b8d9d0!important}
+.histogram-panel canvas,#curveCanvas{background:#11151b!important;border-color:#343b47!important}
+.empty p,.subtle,.xmp-note,.histogram-help,.footer,.status{color:#98a3b2!important}
+.toast{background:#26342f!important;color:#d7eee5!important;border:1px solid #56786d}
+.luma-scrollable{cursor:grab!important}
+.luma-scrollable.luma-dragging{cursor:grabbing!important}
+.luma-scrollable::-webkit-scrollbar{height:7px}
+.luma-scrollable::-webkit-scrollbar-thumb{background:#46505d;border:2px solid #171a20;border-radius:99px}
+@media(min-width:761px){
+ .layout{grid-template-columns:clamp(220px,17vw,270px) minmax(300px,1fr) var(--luma-right-width)!important;min-height:calc(100dvh - 64px)}
+ .left,.controls{height:calc(100dvh - 64px);max-height:calc(100dvh - 64px);padding:17px 15px 26px!important}
+ .workspace{min-height:calc(100dvh - 64px)}
+ .controls::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;cursor:col-resize;z-index:20;background:transparent;touch-action:none}
+ .controls::after{content:"";position:absolute;left:2px;top:calc(50% - 24px);height:48px;width:3px;border-radius:4px;background:#53635f;pointer-events:none;opacity:.85}
+ .controls:hover::after{background:#8fb8ad}
+ body.luma-panel-resizing,body.luma-panel-resizing *{cursor:col-resize!important;user-select:none!important}
+ body.luma-panel-resizing .controls{border-left-color:#8fb8ad!important}
+}
+@media(min-width:1101px) and (max-width:1439px){
+ .layout{--luma-right-width:clamp(430px,35vw,500px);grid-template-columns:225px minmax(300px,1fr) var(--luma-right-width)!important}
+}
+@media(min-width:761px) and (max-width:1100px){
+ .layout{--luma-right-width:clamp(350px,37vw,410px);grid-template-columns:190px minmax(250px,1fr) var(--luma-right-width)!important}
+ .left,.controls{padding:13px 10px!important}
+}
+@media(max-width:760px){
+ :root{--bg:#101216;--panel:#171a20;--panel2:#1e222a;--line:#303640;--text:#e7eaf0;--muted:#9ba4b2;--accent:#8fb8ad;--accentText:#101a18}
+ .top{height:54px;background:#13161bf2!important;padding:0 9px}
+ .layout{display:flex!important;flex-direction:column;min-height:calc(100dvh - 54px);width:100%;max-width:100%;overflow-x:clip}
+ .left,.controls{background:#171a20!important;border-color:#2e343e!important;padding:13px!important}
+ .toolnav{background:#14171d!important;scrollbar-width:none!important}
+ .toolnav button{background:transparent!important;color:#aeb7c4!important}
+ .toolnav button.active{background:#8fb8ad!important;color:#12201c!important}
+ .controls{width:100%;max-width:100%}
+ .stage{background:radial-gradient(ellipse at center,#242932 0,#15181e 68%)!important}
+ .subnav,.panel-subnav,.adjust-subnav,#basicSubnav,.mask-subnav,.curve-channels{scrollbar-width:none!important}
+ .subnav::-webkit-scrollbar,.panel-subnav::-webkit-scrollbar,.adjust-subnav::-webkit-scrollbar,#basicSubnav::-webkit-scrollbar,.mask-subnav::-webkit-scrollbar,.curve-channels::-webkit-scrollbar{display:none!important}
+}
+
 </style>
 </head>
 <body>
