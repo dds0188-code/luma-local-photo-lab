@@ -2096,7 +2096,7 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
     rail.scrollLeft += delta;
   }, {passive:false});
   document.addEventListener('pointerdown', ev => {
-    if (!desktop.matches || ev.button !== 0 || ev.target.closest('button,input,select,a,[role="button"]')) return;
+    if (!desktop.matches || ev.button !== 0) return;
     const rail = railFrom(ev.target);
     if (!isRail(rail) || !canScroll(rail)) return;
     drag = {rail, pointerId:ev.pointerId, x:ev.clientX, y:ev.clientY, scrollLeft:rail.scrollLeft, moved:false};
