@@ -1138,8 +1138,8 @@ button:hover:not(:disabled){transform:none;box-shadow:0 3px 10px rgba(24,50,72,.
  .toolpane .panel-subnav,.toolpane .subnav,.toolpane .mask-subnav{padding-block:8px 10px;gap:7px}
  .toolpane .panel-subnav button,.toolpane .subnav button,.toolpane .mask-subnav button{min-height:40px;padding:8px 13px}
 }
-@media(min-width:1101px) and (max-width:1439px){.layout{grid-template-columns:235px minmax(330px,1fr) clamp(420px,32vw,470px)}}
-@media(min-width:761px) and (max-width:1100px){.layout{grid-template-columns:205px minmax(260px,1fr) clamp(350px,36vw,410px)}.left,.controls{padding:15px 12px}}
+@media(min-width:1101px) and (max-width:1439px){.layout{--luma-right-width:clamp(420px,32vw,470px);grid-template-columns:235px minmax(330px,1fr) var(--luma-right-width,clamp(420px,32vw,470px))}}
+@media(min-width:761px) and (max-width:1100px){.layout{--luma-right-width:clamp(350px,36vw,410px);grid-template-columns:205px minmax(260px,1fr) var(--luma-right-width,clamp(350px,36vw,410px))}.left,.controls{padding:15px 12px}}
 @media(max-width:760px){
  :root{--bg:#eef3f7;--panel:#fff;--panel2:#f3f7fa;--line:#dbe4ed;--text:#1d2c3b;--muted:#66798c;--accent:#13a895;--accentText:#fff}
  .top{background:#ffffffed;border-bottom:1px solid #dce5ee}
