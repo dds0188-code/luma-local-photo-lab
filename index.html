@@ -1405,6 +1405,62 @@ details>summary:after{color:#9ca8b8!important}
   .controls{padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}
 }
 
+
+/* LUMA MOBILE STABLE EDITOR V2 · fixed preview + independently scrolling controls + horizontal submenu rails */
+@media(max-width:760px){
+  :root{--mobile-header-h:48px;--mobile-workhead-h:25px;--mobile-preview-h:210px;--mobile-zoom-h:38px;--mobile-dock-h:72px}
+  html,body,.app{width:100%!important;height:100%!important;min-height:100%!important;max-height:100%!important;overflow:hidden!important;overscroll-behavior:none!important}
+  body{position:relative!important}
+  .top{position:fixed!important;left:0!important;right:0!important;top:0!important;height:var(--mobile-header-h)!important;min-height:var(--mobile-header-h)!important;z-index:120!important}
+  .layout{display:block!important;position:static!important;width:100%!important;height:100%!important;min-height:100%!important;max-height:100%!important;overflow:hidden!important;padding:0!important;margin:0!important;contain:none!important}
+  .left{display:none!important}
+  .workspace{display:contents!important}
+  .workhead{position:fixed!important;left:0!important;right:0!important;top:var(--mobile-header-h)!important;height:var(--mobile-workhead-h)!important;min-height:var(--mobile-workhead-h)!important;max-height:var(--mobile-workhead-h)!important;padding:0 10px!important;z-index:110!important;box-sizing:border-box!important}
+  #stage.stage{display:flex!important;position:fixed!important;left:0!important;right:0!important;top:calc(var(--mobile-header-h) + var(--mobile-workhead-h))!important;
+    height:var(--mobile-preview-h)!important;min-height:var(--mobile-preview-h)!important;max-height:var(--mobile-preview-h)!important;
+    width:100%!important;min-width:0!important;max-width:100%!important;flex:none!important;order:initial!important;
+    margin:0!important;padding:5px!important;box-sizing:border-box!important;overflow:hidden!important;z-index:100!important;
+    transform:none!important;contain:layout paint!important;align-items:center!important;justify-content:center!important;background:#090a0d!important}
+  #stage #preview,#stage canvas:not(.hidden){display:block!important;width:auto!important;height:auto!important;max-width:100%!important;max-height:calc(var(--mobile-preview-h) - 10px)!important;object-fit:contain!important;flex:none!important}
+  #stage canvas.hidden{display:none!important}
+  #stage #previewFullscreenBtn{z-index:3!important}
+  .bottom{display:flex!important;position:fixed!important;left:0!important;right:0!important;top:calc(var(--mobile-header-h) + var(--mobile-workhead-h) + var(--mobile-preview-h))!important;
+    height:var(--mobile-zoom-h)!important;min-height:var(--mobile-zoom-h)!important;max-height:var(--mobile-zoom-h)!important;
+    box-sizing:border-box!important;margin:0!important;padding:3px 8px!important;overflow-x:auto!important;overflow-y:hidden!important;flex-wrap:nowrap!important;z-index:105!important}
+  .bottom .status{display:none!important}
+  .controls{display:block!important;position:fixed!important;left:0!important;right:0!important;
+    top:calc(var(--mobile-header-h) + var(--mobile-workhead-h) + var(--mobile-preview-h) + var(--mobile-zoom-h))!important;
+    bottom:calc(var(--mobile-dock-h) + env(safe-area-inset-bottom))!important;
+    width:100%!important;max-width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
+    overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;
+    padding:0 12px 20px!important;margin:0!important;box-sizing:border-box!important;border:0!important;z-index:20!important;background:var(--panel,#17191f)!important}
+  .panelhead{display:none!important}
+  .toolpane{width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
+    margin:0!important;padding:0!important;overflow:visible!important}
+  .toolpane[hidden]{display:none!important}
+  /* Eliminate the oversized blank strip above the secondary adjustment navigation. */
+  #basicSubnav,.controls .subnav,.controls .panel-subnav,.controls .adjust-subnav,.controls .mask-subnav,.controls .curve-channels,
+  #colorWorkspaceTabs,#hslColorRail{position:relative!important;top:auto!important;max-width:100%!important;min-width:0!important;
+    margin-top:0!important;padding-top:5px!important;padding-bottom:7px!important}
+  #basicSubnav{margin-left:-12px!important;margin-right:-12px!important;padding-left:12px!important;padding-right:12px!important}
+  .controls .subnav,.controls .panel-subnav,.controls .adjust-subnav,.controls .mask-subnav,.controls .curve-channels,#colorWorkspaceTabs,#hslColorRail{
+    display:flex!important;flex-wrap:nowrap!important;gap:7px!important;overflow-x:auto!important;overflow-y:hidden!important;
+    overscroll-behavior-x:contain!important;scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-x!important;white-space:nowrap!important}
+  .controls .subnav::-webkit-scrollbar,.controls .panel-subnav::-webkit-scrollbar,.controls .adjust-subnav::-webkit-scrollbar,
+  .controls .mask-subnav::-webkit-scrollbar,.controls .curve-channels::-webkit-scrollbar,#colorWorkspaceTabs::-webkit-scrollbar,#hslColorRail::-webkit-scrollbar{display:none!important}
+  .controls .subnav>button,.controls .panel-subnav>button,.controls .adjust-subnav>button,.controls .mask-subnav>button,
+  .controls .curve-channels>button,#colorWorkspaceTabs>button,#hslColorRail>button{flex:0 0 auto!important;white-space:nowrap!important}
+  .controls .subnav button,.controls .panel-subnav button,.controls .adjust-subnav button{min-width:max-content!important}
+  #toolNav{position:fixed!important;left:0!important;right:0!important;top:auto!important;bottom:0!important;z-index:130!important;
+    height:calc(var(--mobile-dock-h) + env(safe-area-inset-bottom))!important;min-height:calc(var(--mobile-dock-h) + env(safe-area-inset-bottom))!important;
+    max-height:calc(var(--mobile-dock-h) + env(safe-area-inset-bottom))!important;box-sizing:border-box!important;
+    display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important}
+  .toolpane .control,.toolpane details,.toolpane .ui-group{scroll-margin-top:8px!important;scroll-margin-bottom:12px!important}
+  .toolpane .control:last-child,.toolpane details:last-child,.toolpane .ui-group:last-child{margin-bottom:12px!important}
+  .toolpane .section:first-child,.toolpane>.subtle:first-child{margin-top:0!important}
+  .controls .subnav+*,.controls .panel-subnav+*,.controls .adjust-subnav+*{margin-top:0!important}
+}
+
 </style>
 </head>
 <body>
