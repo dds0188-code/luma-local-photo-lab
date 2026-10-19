@@ -1248,6 +1248,24 @@ details>summary:after{color:#9ca8b8!important}
  .subnav::-webkit-scrollbar,.panel-subnav::-webkit-scrollbar,.adjust-subnav::-webkit-scrollbar,#basicSubnav::-webkit-scrollbar,.mask-subnav::-webkit-scrollbar,.curve-channels::-webkit-scrollbar{display:none!important}
 }
 
+
+/* LUMA RESPONSIVE FIX · prevent desktop three-column grid on narrow browser/tablet viewports */
+@media(max-width:900px){
+ .layout{display:flex!important;flex-direction:column!important;grid-template-columns:minmax(0,1fr)!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow-x:clip!important;gap:0!important}
+ .left,.workspace,.controls{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+ .left{height:auto!important;max-height:none!important;border-right:0!important;border-bottom:1px solid #303640!important}
+ .workspace{height:auto!important;min-height:48vh!important;max-height:none!important}
+ .controls{height:auto!important;max-height:none!important;overflow:visible!important;border-left:0!important;border-top:1px solid #303640!important}
+ .controls::before,.controls::after{display:none!important}
+ .stage{min-height:38vh!important;max-height:62vh!important;width:100%!important;box-sizing:border-box!important}
+ .stage canvas{max-width:100%!important;max-height:100%!important;object-fit:contain!important}
+ .toolnav{max-width:100%!important;overflow-x:auto!important}
+}
+@media(min-width:901px){
+ .layout{display:grid!important;grid-template-columns:clamp(220px,17vw,270px) minmax(300px,1fr) var(--luma-right-width,clamp(430px,34vw,560px))!important}
+ .controls{width:auto!important;max-width:none!important}
+}
+
 </style>
 </head>
 <body>
