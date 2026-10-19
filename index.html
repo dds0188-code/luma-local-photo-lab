@@ -1266,6 +1266,22 @@ details>summary:after{color:#9ca8b8!important}
  .controls{width:auto!important;max-width:none!important}
 }
 
+
+/* LUMA MOBILE PC-WORKSPACE SCROLL FIX · allow vertical touch scrolling through controls */
+@media(max-width:760px){
+ html,body{height:auto!important;min-height:100%!important;overflow-y:auto!important;overscroll-behavior-y:auto!important}
+ body{touch-action:pan-y!important}
+ .layout{height:auto!important;min-height:calc(100dvh - 54px)!important;overflow:visible!important;overflow-x:clip!important}
+ .workspace{display:contents!important}
+ .stage{position:relative!important;top:auto!important;z-index:1!important;flex:none!important}
+ .left,.controls{position:relative!important;height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;overscroll-behavior:contain!important;touch-action:pan-y!important}
+ .controls{padding-bottom:calc(28px + env(safe-area-inset-bottom))!important}
+ .controls *{touch-action:pan-y}
+ .controls input[type=range],.controls canvas,.controls .subnav,.controls .panel-subnav,.controls .adjust-subnav,.controls .mask-subnav,.controls .curve-channels,.controls .toolnav{touch-action:pan-x!important}
+ .controls .toolpane{min-height:0!important;overflow:visible!important}
+ .toolpane[hidden]{display:none!important}
+}
+
 </style>
 </head>
 <body>
