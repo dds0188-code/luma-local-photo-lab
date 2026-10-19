@@ -1334,6 +1334,19 @@ details>summary:after{color:#9ca8b8!important}
   .toolpane[data-tool-panel="color"] #curveDetails,.toolpane[data-tool-panel="color"] #gradeDetails{margin-top:8px!important}
 }
 
+
+/* LUMA COLOR WORKSPACE TABS · mixer, curve and grading as separate views */
+@media(max-width:760px){
+ #colorWorkspaceTabs{display:flex;gap:7px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;margin:0 0 8px;padding:2px 0 8px;scrollbar-width:none;touch-action:pan-x}
+ #colorWorkspaceTabs::-webkit-scrollbar{display:none}
+ #colorWorkspaceTabs button{flex:0 0 auto;min-height:42px;padding:8px 15px;border-radius:12px!important;background:#1e222a!important;color:#b9c2cf!important;border-color:#343b47!important;font-size:12px}
+ #colorWorkspaceTabs button[aria-selected="true"]{background:#8fb8ad20!important;color:#c2e0d8!important;border-color:#71998e!important;box-shadow:inset 0 -3px #8fb8ad!important}
+ .toolpane[data-tool-panel="color"] #curveDetails,.toolpane[data-tool-panel="color"] #gradeDetails{display:none!important}
+ .toolpane[data-tool-panel="color"][data-color-view="curve"] #curveDetails,
+ .toolpane[data-tool-panel="color"][data-color-view="grading"] #gradeDetails{display:block!important}
+ .toolpane[data-tool-panel="color"][data-color-view="mix"] #hslDetails{display:block!important}
+}
+
 </style>
 </head>
 <body>
