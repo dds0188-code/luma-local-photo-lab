@@ -1387,6 +1387,24 @@ details>summary:after{color:#9ca8b8!important}
   .stage{height:210px!important;min-height:210px!important;max-height:210px!important}
 }
 
+
+/* LUMA MOBILE PREVIEW PIN FIX · preserve bottom clearance and prevent scroll resizing */
+@media(max-width:760px){
+  /* Do not clip the ancestor chain: sticky positioning fails inside some overflow containers. */
+  html,body{overflow-x:hidden!important;overflow-y:visible!important}
+  .layout{overflow:visible!important;overflow-x:visible!important;overflow-y:visible!important;contain:none!important}
+  .workspace{overflow:visible!important;overflow-x:visible!important;overflow-y:visible!important;contain:none!important}
+  #stage.stage{
+    position:-webkit-sticky!important;position:sticky!important;
+    top:52px!important;z-index:35!important;
+    align-self:stretch!important;
+    flex:0 0 210px!important;height:210px!important;min-height:210px!important;max-height:210px!important;
+    transform:none!important;contain:layout paint!important;
+  }
+  #stage #preview{max-height:194px!important;max-width:100%!important;object-fit:contain!important}
+  .controls{padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}
+}
+
 </style>
 </head>
 <body>
