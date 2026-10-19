@@ -1347,6 +1347,46 @@ details>summary:after{color:#9ca8b8!important}
  .toolpane[data-tool-panel="color"][data-color-view="mix"] #hslDetails{display:block!important}
 }
 
+
+/* LUMA MOBILE FINAL LAYOUT FIX · stable preview size, compact controls, unobscured last slider */
+@media(max-width:760px){
+  /* The mobile editor has one page scroller; fixed tool navigation must not cover controls. */
+  html,body{min-height:100%!important;height:auto!important;overflow-x:hidden!important;overflow-y:auto!important}
+  .layout{display:flex!important;flex-direction:column!important;gap:0!important;min-height:0!important;height:auto!important;overflow:visible!important;overflow-x:clip!important}
+  .workspace{display:contents!important;min-height:0!important;height:auto!important;max-height:none!important;overflow:visible!important}
+  .workhead{order:0!important;position:sticky!important;top:0!important;z-index:25!important;flex:0 0 auto!important}
+  /* Stop browser toolbar changes from resizing the preview as the page scrolls. */
+  #stage.stage{order:1!important;position:sticky!important;top:54px!important;z-index:18!important;
+    height:210px!important;min-height:210px!important;max-height:210px!important;flex:0 0 210px!important;
+    box-sizing:border-box!important;padding:8px!important;margin:0!important;overflow:hidden!important;
+    align-self:stretch!important}
+  #stage #preview{display:block;max-width:100%!important;max-height:194px!important;width:auto;height:auto;object-fit:contain!important}
+  #stage #preview.hidden{display:none!important}
+  .left{display:none!important}
+  .controls{order:2!important;display:block!important;width:100%!important;max-width:100%!important;
+    height:auto!important;min-height:0!important;max-height:none!important;flex:0 0 auto!important;
+    overflow:visible!important;position:relative!important;padding:6px 12px calc(150px + env(safe-area-inset-bottom))!important;
+    margin:0!important;box-sizing:border-box!important;border-left:0!important;border-top:1px solid #2e343e!important;
+    scroll-margin-bottom:150px!important}
+  .panelhead{margin:0 0 6px!important;padding:0 0 6px!important;min-height:0!important}
+  .toolpane{margin-top:0!important;padding-top:0!important;min-height:0!important;overflow:visible!important}
+  .toolpane>.section:first-child,.toolpane>.subtle:first-child{margin-top:0!important}
+  .toolpane .subnav,.toolpane .panel-subnav,.toolpane .adjust-subnav,.toolpane #basicSubnav,.toolpane .mask-subnav,.toolpane .curve-channels{
+    margin-top:0!important;margin-bottom:6px!important;padding-top:2px!important;padding-bottom:4px!important}
+  .toolpane .control{scroll-margin-bottom:155px!important}
+  .toolpane .control:last-child,.toolpane details:last-child,.toolpane .ui-group:last-child{margin-bottom:150px!important;scroll-margin-bottom:155px!important}
+  #toolNav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;z-index:100!important;
+    margin:0!important;padding:6px 8px calc(6px + env(safe-area-inset-bottom))!important;
+    min-height:62px!important;max-height:calc(72px + env(safe-area-inset-bottom))!important;
+    box-sizing:border-box!important;overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important}
+  /* Keep zoom buttons from influencing stage sizing or scroll layout. */
+  .bottom{position:relative!important;z-index:5!important;min-height:0!important;flex-wrap:nowrap!important;margin:0!important}
+  .bottom .view-zoom{flex:0 0 auto!important}
+  .bottom button{flex:0 0 auto!important}
+  /* Avoid dynamic viewport units on mobile; they change as browser chrome collapses. */
+  .stage{height:210px!important;min-height:210px!important;max-height:210px!important}
+}
+
 </style>
 </head>
 <body>
