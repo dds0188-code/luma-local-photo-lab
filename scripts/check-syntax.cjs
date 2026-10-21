@@ -33,6 +33,8 @@ const requiredMarkers = [
   ["relighting position overlay", "function drawRelightOverlay()"],
   ["AI smart-lasso implementation", "async function runAISmartLasso()"],
   ["AI area-lasso button binding", "querySelectorAll('[data-area-ai-lasso]')"],
+  ["pattern-based cutout preview checkerboard", "ctx.createPattern(tile,'repeat')"],
+  ["direct mask-boundary rendering", "drawSelectionBoundary(maskCanvas,'rgba(217,243,107,.24)')"],
 ];
 for (const [label, marker] of requiredMarkers) {
   if (!html.includes(marker)) throw new Error("Missing required editor wiring: " + label);
