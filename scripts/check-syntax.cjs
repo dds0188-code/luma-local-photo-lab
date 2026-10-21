@@ -22,4 +22,19 @@ for (const file of ["desktop/main.cjs", "scripts/build-web.cjs"]) {
 for (const file of ["package.json", "capacitor.config.json", "manifest.webmanifest"]) {
   JSON.parse(fs.readFileSync(file, "utf8"));
 }
-console.log("Luma inline scripts, desktop shell, and configuration checks passed.");
+// Guard the regressions repeatedly reported during mobile editing reviews.
+// These checks verify the required wiring exists; they do not replace real-device testing.
+const requiredMarkers = [
+  ["fixed mobile photo preview", "#stage.stage{display:flex!important;position:fixed!important"],
+  ["independently scrolling mobile controls", ".controls{display:block!important;position:fixed!important"],
+  ["horizontal mobile submenu rails", "touch-action:pan-x!important;white-space:nowrap!important"],
+  ["crop pointer-down handler", "cropOverlay.addEventListener('pointerdown'"],
+  ["crop pointer-move handler", "cropOverlay.addEventListener('pointermove'"],
+  ["relighting position overlay", "function drawRelightOverlay()"],
+  ["AI smart-lasso implementation", "async function runAISmartLasso()"],
+  ["AI area-lasso button binding", "querySelectorAll('[data-area-ai-lasso]')"],
+];
+for (const [label, marker] of requiredMarkers) {
+  if (!html.includes(marker)) throw new Error("Missing required editor wiring: " + label);
+}
+console.log("Luma syntax, static IDs, configuration, and editor regression-guard checks passed.");
