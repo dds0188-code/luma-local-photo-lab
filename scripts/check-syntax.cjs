@@ -33,7 +33,7 @@ const requiredMarkers = [
   ["relighting position overlay", "function drawRelightOverlay()"],
   ["AI smart-lasso implementation", "async function runAISmartLasso()"],
   ["AI area-lasso button binding", "querySelectorAll('[data-area-ai-lasso]')"],
-  ["pattern-based cutout preview checkerboard", "ctx.createPattern(tile,'repeat')"],
+  ["cached pattern-based cutout preview checkerboard", "ctx.createPattern(checkerboardTile,'repeat')"],
   ["direct mask-boundary rendering", "drawSelectionBoundary(maskCanvas,'rgba(217,243,107,.24)')"],
   ["precomputed relight layer position", "_x:Number(layer.x||0)/100,_y:Number(layer.y||0)/100"],
   ["precomputed relight intensity", "_strength:Number(layer.intensity||0)/100*.85"],
