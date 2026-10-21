@@ -39,6 +39,7 @@ const requiredMarkers = [
   ["precomputed relight intensity", "_strength:Number(layer.intensity||0)/100*.85"],
   ["per-pixel relight coordinate reuse", "const relightX=activeRelightLayers.length?x/Math.max(1,w-1):0"],
   ["image loading pipeline", "function loadFile(file,savedRecipe=null)"],
+  ["asynchronous image decode hint", "img.decoding='async';img.onload=async()=>"],
   ["non-destructive export pipeline", "function exportImage(type,quality=94,scale=100,options={})"],
   ["crop-aware output pipeline", "function cropProcessedCanvas(source)"],
   ["undo/redo wiring", "$('undo').onclick=()=>travelEditorHistory('undo')"],
