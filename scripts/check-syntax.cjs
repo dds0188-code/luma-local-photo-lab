@@ -36,6 +36,7 @@ const requiredMarkers = [
   ["cached pattern-based cutout preview checkerboard", "ctx.createPattern(checkerboardTile,'repeat')"],
   ["checkerboard tile alignment", "tileCtx.fillRect(12,0,12,12);tileCtx.fillRect(0,12,12,12)"],
   ["direct mask-boundary rendering", "drawSelectionBoundary(maskCanvas,'rgba(217,243,107,.24)')"],
+  ["reused selection boundary canvas", "selectionBoundaryCanvas||(selectionBoundaryCanvas=document.createElement('canvas'))"],
   ["precomputed relight layer position", "_x:Number(layer.x||0)/100,_y:Number(layer.y||0)/100"],
   ["precomputed relight intensity", "_strength:Number(layer.intensity||0)/100*.85"],
   ["per-pixel relight coordinate reuse", "const relightX=activeRelightLayers.length?x/Math.max(1,w-1):0"],
