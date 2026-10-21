@@ -38,6 +38,14 @@ const requiredMarkers = [
   ["precomputed relight layer position", "_x:Number(layer.x||0)/100,_y:Number(layer.y||0)/100"],
   ["precomputed relight intensity", "_strength:Number(layer.intensity||0)/100*.85"],
   ["per-pixel relight coordinate reuse", "const relightX=activeRelightLayers.length?x/Math.max(1,w-1):0"],
+  ["image loading pipeline", "function loadFile(file,savedRecipe=null)"],
+  ["non-destructive export pipeline", "function exportImage(type,quality=94,scale=100,options={})"],
+  ["crop-aware output pipeline", "function cropProcessedCanvas(source)"],
+  ["undo/redo wiring", "$('undo').onclick=()=>travelEditorHistory('undo')"],
+  ["histogram rendering", "function updateHistogram(source)"],
+  ["HSL adjustment pipeline", "function applyHsl("],
+  ["color grading pipeline", "function applyColorGrade("],
+  ["mask layer rendering", "function renderMaskLayer("],
 ];
 for (const [label, marker] of requiredMarkers) {
   if (!html.includes(marker)) throw new Error("Missing required editor wiring: " + label);
