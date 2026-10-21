@@ -16,7 +16,7 @@ scripts.forEach((match, index) => {
     catch (error) { throw new Error("Inline script " + (index + 1) + ": " + error.message); }
   }
 });
-for (const file of ["desktop/main.cjs", "scripts/build-web.cjs"]) {
+for (const file of ["desktop/main.cjs", "scripts/build-web.cjs", "sw.js"]) {
   new Function(fs.readFileSync(file, "utf8"));
 }
 for (const file of ["package.json", "capacitor.config.json", "manifest.webmanifest"]) {
