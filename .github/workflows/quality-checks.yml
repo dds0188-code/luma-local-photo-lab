@@ -1,0 +1,32 @@
+name: Luma quality checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  syntax-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate application scripts and editor wiring
+        run: npm run test:syntax
+      - name: Build web distribution
+        run: npm run build:web
+      - name: Verify built app shell
+        run: |
+          test -s dist/index.html
+          test -s dist/sw.js
+          test -s dist/manifest.webmanifest
+          grep -q 'name="luma-app-version" content="1.0.0"' dist/index.html
