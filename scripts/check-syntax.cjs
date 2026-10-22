@@ -54,3 +54,15 @@ for (const [label, marker] of requiredMarkers) {
   if (!html.includes(marker)) throw new Error("Missing required editor wiring: " + label);
 }
 console.log("Luma syntax, static IDs, configuration, and editor regression-guard checks passed.");
+
+const staticIdSet = new Set(staticIds);
+const dynamicIdSet = new Set(["maskExposure", "maskSaturation"]);
+const optionalIdSet = new Set(["togglePanelGroups"]);
+const idBindingPattern = new RegExp("\\$\\(['\"]([^'\"]+)['\"]\\)", "g");
+const directIdRefs = [...html.matchAll(idBindingPattern)].map(match => match[1]);
+const missingBindings = [...new Set(directIdRefs)].filter(id =>
+  !staticIdSet.has(id) && !dynamicIdSet.has(id) && !optionalIdSet.has(id)
+);
+if (missingBindings.length) {
+  throw new Error("UI references missing DOM IDs: " + missingBindings.join(", "));
+}
