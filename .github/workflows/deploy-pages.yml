@@ -25,8 +25,8 @@ jobs:
           node-version: 22
       - name: Validate source before deployment
         run: npm run test:syntax
-      - name: Build production web app
-        run: npm run build:web
+      - name: Build and validate production web app
+        run: npm run test:build
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
