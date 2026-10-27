@@ -49,6 +49,12 @@ const requiredMarkers = [
   ["HSL adjustment pipeline", "function applyHsl("],
   ["color grading pipeline", "function applyColorGrade("],
   ["mask layer rendering", "function renderMaskLayer("],
+  ["desktop permission denial", "setPermissionRequestHandler"],
+  ["desktop permission checks denied", "setPermissionCheckHandler"],
+  ["desktop navigation guard", "will-navigate"],
+  ["desktop embedded webview guard", "will-attach-webview"],
+  ["desktop context isolation", "contextIsolation: true"],
+  ["desktop renderer sandbox", "sandbox: true"],
 ];
 for (const [label, marker] of requiredMarkers) {
   if (!html.includes(marker)) throw new Error("Missing required editor wiring: " + label);
