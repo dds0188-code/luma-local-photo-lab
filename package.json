@@ -10,7 +10,8 @@
     "test:syntax": "node scripts/check-syntax.cjs",
     "desktop:dir": "npm run build:web && electron-builder --dir",
     "dist:win": "npm run build:web && electron-builder --win nsis",
-    "android:sync": "npm run build:web && cap sync android"
+    "android:sync": "npm run build:web && cap sync android",
+    "test:build": "npm run build:web && node scripts/check-build.cjs"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
