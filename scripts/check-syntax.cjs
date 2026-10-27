@@ -53,7 +53,6 @@ const requiredMarkers = [
 for (const [label, marker] of requiredMarkers) {
   if (!html.includes(marker)) throw new Error("Missing required editor wiring: " + label);
 }
-console.log("Luma syntax, static IDs, configuration, and editor regression-guard checks passed.");
 
 const staticIdSet = new Set(staticIds);
 const dynamicIdSet = new Set(["maskExposure", "maskSaturation"]);
@@ -66,3 +65,4 @@ const missingBindings = [...new Set(directIdRefs)].filter(id =>
 if (missingBindings.length) {
   throw new Error("UI references missing DOM IDs: " + missingBindings.join(", "));
 }
+console.log("Luma syntax, static IDs, UI binding integrity, configuration, and editor regression-guard checks passed.");
