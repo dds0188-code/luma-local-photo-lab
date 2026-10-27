@@ -29,6 +29,20 @@ if (!version || version[1] !== pkg.version) {
 if (!manifest.name || !manifest.start_url || !manifest.display) {
   fail("Web manifest is missing name, start_url, or display");
 }
+if (!manifest.scope || !Array.isArray(manifest.icons) || manifest.icons.length < 1) {
+  fail("Web manifest is missing scope or app icons");
+}
+for (const icon of manifest.icons) {
+  if (!icon.src || !icon.sizes || !icon.type) fail("Manifest icon is missing src, sizes, or type");
+  const iconPath = path.resolve(dist, icon.src);
+  if (!iconPath.startsWith(dist + path.sep) || !fs.existsSync(iconPath)) {
+    fail("Manifest icon does not resolve to a shipped asset: " + icon.src);
+  }
+}
+const startPath = path.resolve(dist, manifest.start_url.split(/[?#]/, 1)[0]);
+if (!startPath.startsWith(dist + path.sep) || !fs.existsSync(startPath)) {
+  fail("Manifest start_url does not resolve to a shipped asset: " + manifest.start_url);
+}
 if (!/const CACHE_NAME = "luma-shell-v\d+"/.test(sw)) {
   fail("Service worker cache version is missing");
 }
