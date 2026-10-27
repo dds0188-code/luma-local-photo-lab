@@ -1,9 +1,16 @@
-const { app, BrowserWindow, shell, dialog } = require("electron");
+const { app, BrowserWindow, shell, dialog, session } = require("electron");
 const path = require("node:path");
 const { autoUpdater } = require("electron-updater");
 
 let mainWindow;
 let updateCheckStarted = false;
+
+// The editor works on local files and does not need browser permissions.
+// Deny permission prompts by default instead of allowing accidental access.
+app.whenReady().then(() => {
+  session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) => callback(false));
+  session.defaultSession.setPermissionCheckHandler(() => false);
+});
 
 autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = true;
@@ -59,11 +66,19 @@ function createWindow() {
     }
   });
 
-  mainWindow.loadFile(path.join(__dirname, "..", "dist", "index.html"));
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith("https://")) shell.openExternal(url);
+    // Only explicitly trusted HTTPS links may leave the app, and never in-app.
+    if (url.startsWith("https://")) shell.openExternal(url).catch(error => {
+      console.warn("[Luma navigation] 외부 링크 열기 실패:", error.message);
+    });
     return { action: "deny" };
   });
+  mainWindow.webContents.on("will-navigate", event => {
+    // Keep remote pages and unexpected file URLs from replacing the editor.
+    event.preventDefault();
+  });
+  mainWindow.webContents.on("will-attach-webview", event => event.preventDefault());
+  mainWindow.loadFile(path.join(__dirname, "..", "dist", "index.html"));
 }
 
 app.whenReady().then(() => {
