@@ -12,6 +12,7 @@ A local-first photo editor for desktop and mobile browsers, with a Korean-langua
 - Browser-based photo library, metadata tools, and batch export utilities
 - Responsive mobile workspace and desktop resizable controls panel
 - Offline app shell through a service worker; AI-assisted tools may require connectivity
+- Desktop renderer hardening: sandboxed renderer, context isolation, no Node integration, denied browser permissions, and blocked in-app navigation
 
 ## Build and checks
 
@@ -24,7 +25,7 @@ npm run test:build
 
 `test:syntax` checks JavaScript syntax, duplicate static IDs, UI element references, and key feature wiring. `test:build` builds `dist/` and verifies production assets, manifest fields, service-worker shell entries, version consistency, local asset references, and inline script syntax.
 
-These automated checks are static/build checks; they do not replace real-device interaction tests for cropping, AI selection, masks, lighting, and export.
+These automated checks are static/build checks; they do not replace real-device interaction tests for cropping, AI selection, masks, lighting, and export. Desktop permission and navigation safeguards are also checked for required source wiring, but still need validation in a packaged Electron build.
 
 ## Privacy and costs
 
