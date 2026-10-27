@@ -22,11 +22,5 @@ jobs:
           node-version: 22
       - name: Validate application scripts and editor wiring
         run: npm run test:syntax
-      - name: Build web distribution
-        run: npm run build:web
-      - name: Verify built app shell
-        run: |
-          test -s dist/index.html
-          test -s dist/sw.js
-          test -s dist/manifest.webmanifest
-          grep -q 'name="luma-app-version" content="1.0.0"' dist/index.html
+      - name: Build and validate production distribution
+        run: npm run test:build
