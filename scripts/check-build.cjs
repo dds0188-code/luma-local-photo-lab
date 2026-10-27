@@ -32,7 +32,7 @@ if (!manifest.name || !manifest.start_url || !manifest.display) {
 if (!/const CACHE_NAME = "luma-shell-v\d+"/.test(sw)) {
   fail("Service worker cache version is missing");
 }
-for (const file of required.slice(1)) {
+for (const file of required.filter(file => file !== "index.html" && file !== "sw.js")) {
   if (!sw.includes("./" + file)) fail("Service worker app shell does not include ./" + file);
 }
 
