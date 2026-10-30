@@ -1839,9 +1839,26 @@ async function runAISmartLasso(){
   const candidateCount=Math.max(1,Math.floor(rawData.length/plane));
   const scores=outputs.iou_scores?.data;
   let candidate=0,best=-Infinity;
+  const promptSamples=prompts.points.map((point,index)=>({
+   x:Math.max(0,Math.min(maskW-1,Math.round(point[0]/Math.max(1,iw-1)*(maskW-1)))),
+   y:Math.max(0,Math.min(maskH-1,Math.round(point[1]/Math.max(1,ih-1)*(maskH-1)))),
+   positive:prompts.labels[index]===1
+  }));
   for(let i=0;i<Math.min(candidateCount,scores?.length||candidateCount);i++){
-   const score=scores?Number(scores[i]):-Infinity;
-   if(score>best){best=score;candidate=i}
+   const score=scores?Number(scores[i]):0;
+   // Prefer masks that agree with the user's positive/negative lasso prompts,
+   // rather than relying on the model's IoU estimate alone.
+   let positiveHits=0,negativeHits=0,positiveTotal=0,negativeTotal=0;
+   const offset=i*plane;
+   for(const point of promptSamples){
+    const inside=Number(rawData[offset+point.y*maskW+point.x])>0;
+    if(point.positive){positiveTotal++;if(inside)positiveHits++}
+    else{negativeTotal++;if(!inside)negativeHits++}
+   }
+   const positiveAgreement=positiveTotal?positiveHits/positiveTotal:1;
+   const negativeAgreement=negativeTotal?negativeHits/negativeTotal:1;
+   const adjusted=score+positiveAgreement*.35+negativeAgreement*.25;
+   if(adjusted>best){best=adjusted;candidate=i}
   }
   // SAM post_process_masks returns foreground logits for float tensors; use the standard SAM cutoff of 0.0.
   const threshold=0;
