@@ -32,6 +32,8 @@ const requiredMarkers = [
   ["crop pointer-move handler", "cropOverlay.addEventListener('pointermove'"],
   ["relighting position overlay", "function drawRelightOverlay()"],
   ["AI smart-lasso implementation", "async function runAISmartLasso()"],
+  ["AI lasso prompt-aware candidate scoring", "positiveAgreement*.35+negativeAgreement*.25"],
+  ["AI lasso prompt coordinate mapping", "point[0]/Math.max(1,iw-1)*(maskW-1)"],
   ["AI area-lasso button binding", "querySelectorAll('[data-area-ai-lasso]')"],
   ["cached pattern-based cutout preview checkerboard", "ctx.createPattern(checkerboardTile,'repeat')"],
   ["checkerboard tile alignment", "tileCtx.fillRect(12,0,12,12);tileCtx.fillRect(0,12,12,12)"],
