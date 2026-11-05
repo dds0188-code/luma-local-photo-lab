@@ -55,6 +55,19 @@ const requiredMarkers = [
   ["HSL adjustment pipeline", "function applyHsl("],
   ["color grading pipeline", "function applyColorGrade("],
   ["mask layer rendering", "function renderMaskLayer("],
+
+
+
+
+
+
+];
+for (const [label, marker] of requiredMarkers) {
+  if (!html.includes(marker)) throw new Error("Missing required editor wiring: " + label);
+}
+
+const desktopSource = fs.readFileSync("desktop/main.cjs", "utf8");
+const desktopMarkers = [
   ["desktop permission denial", "setPermissionRequestHandler"],
   ["desktop permission checks denied", "setPermissionCheckHandler"],
   ["desktop navigation guard", "will-navigate"],
@@ -62,10 +75,9 @@ const requiredMarkers = [
   ["desktop context isolation", "contextIsolation: true"],
   ["desktop renderer sandbox", "sandbox: true"],
 ];
-for (const [label, marker] of requiredMarkers) {
-  if (!html.includes(marker)) throw new Error("Missing required editor wiring: " + label);
+for (const [label, marker] of desktopMarkers) {
+  if (!desktopSource.includes(marker)) throw new Error("Missing desktop security wiring: " + label);
 }
-
 const staticIdSet = new Set(staticIds);
 const dynamicIdSet = new Set(["maskExposure", "maskSaturation"]);
 const optionalIdSet = new Set(["togglePanelGroups"]);
