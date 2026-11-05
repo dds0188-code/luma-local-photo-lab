@@ -40,6 +40,8 @@ const requiredMarkers = [
   ["direct mask-boundary rendering", "drawSelectionBoundary(maskCanvas,'rgba(217,243,107,.24)')"],
   ["bounded-resolution selection boundary", "const maxEdge=720,scale=Math.min(1,maxEdge/Math.max(o.width,o.height))"],
   ["downsampled mask edge tracing", "tc.getImageData(0,0,w,h).data"],
+  ["bounded clipping-warning scan", "const maxEdge=720,scale=Math.min(1,maxEdge/Math.max(canvas.width,canvas.height))"],
+  ["reused clipping-warning buffers", "clippingSampleCanvas||(clippingSampleCanvas=document.createElement('canvas'))"],
   ["reused selection boundary canvas", "selectionBoundaryCanvas||(selectionBoundaryCanvas=document.createElement('canvas'))"],
   ["precomputed relight layer position", "_x:Number(layer.x||0)/100,_y:Number(layer.y||0)/100"],
   ["precomputed relight intensity", "_strength:Number(layer.intensity||0)/100*.85"],
