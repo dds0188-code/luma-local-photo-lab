@@ -9,7 +9,7 @@ A local-first photo editor for desktop and mobile browsers, with a Korean-langua
 - Tone controls, HSL mixer, tone curves, color grading, and histogram
 - Crop/rotate/zoom controls, undo/redo, and original-image comparison
 - Brush/shape/gradient masks, local adjustments, relighting, and AI-assisted selection tools
-- Downsampled selection-boundary rendering to reduce CPU work during large-mask previews
+- Downsampled selection-boundary and clipping-warning rendering to reduce CPU work during large-photo previews
 - Browser-based photo library, metadata tools, and batch export utilities
 - Responsive mobile workspace and desktop resizable controls panel
 - Offline app shell through a service worker; AI-assisted tools may require connectivity
