@@ -1019,3 +1019,33 @@ test('photo library actions are grouped into collapsible task sections', async (
   await expect(page.locator('#batchFormat')).toBeVisible();
   expect(errors, 'library action group browser errors').toEqual([]);
 });
+
+
+test('color sampler reads preview pixels and pins reusable swatches', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 120; c.height = 90;
+    const x = c.getContext('2d'); x.fillStyle = '#336699'; x.fillRect(0, 0, 120, 90);
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({
+    name: 'luma-sampler-test.png', mimeType: 'image/png',
+    buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+  });
+  await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-sampler-test.png');
+  await page.locator('[data-tool="color"]').click();
+  await page.locator('#colorSamplerToggle').click();
+  const rect = await page.locator('#preview').boundingBox();
+  expect(rect).not.toBeNull();
+  await page.mouse.click(rect.x + rect.width / 2, rect.y + rect.height / 2);
+  await expect(page.locator('#samplerHex')).toHaveText('#336699');
+  await expect(page.locator('#samplerRgb')).toContainText('51 · 102 · 153');
+  await page.locator('#samplerPin').click();
+  await expect(page.locator('#samplerSamples .sampler-chip')).toHaveCount(1);
+  await expect(page.locator('#samplerSamples .sampler-chip')).toContainText('#336699');
+  await page.locator('[data-tool="crop"]').click();
+  await expect(page.locator('#colorSamplerToggle')).toHaveAttribute('aria-pressed', 'false');
+  expect(errors, 'color sampler browser errors').toEqual([]);
+});
