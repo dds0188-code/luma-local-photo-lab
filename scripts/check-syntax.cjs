@@ -52,6 +52,8 @@ const requiredMarkers = [
   ["asynchronous image decode hint", "img.decoding='async';img.onload=async()=>"],
   ["non-destructive export pipeline", "function exportImage(type,quality=94,scale=100,options={})"],
   ["crop-aware output pipeline", "function cropProcessedCanvas(source)"],
+  ["selectable crop composition guides", "cropGuideMode==='golden'?[.382,.618]"],
+  ["crop guide is display-only", "구도선은 미리보기에만 표시되며 저장한 사진에는 포함되지 않습니다."],
   ["undo/redo wiring", "$('undo').onclick=()=>travelEditorHistory('undo')"],
   ["histogram rendering", "function updateHistogram(source)"],
   ["on-canvas color sampler", "function samplePreviewColor(event)"],
