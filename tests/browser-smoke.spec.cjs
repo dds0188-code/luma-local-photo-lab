@@ -1049,3 +1049,26 @@ test('color sampler reads preview pixels and pins reusable swatches', async ({ p
   await expect(page.locator('#colorSamplerToggle')).toHaveAttribute('aria-pressed', 'false');
   expect(errors, 'color sampler browser errors').toEqual([]);
 });
+
+
+test('crop composition guides switch without changing crop coordinates', async ({ page }) => {
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 160; c.height = 120;
+    const x = c.getContext('2d'); x.fillStyle = '#6b8caa'; x.fillRect(0, 0, 160, 120);
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({
+    name: 'luma-guides-test.png', mimeType: 'image/png',
+    buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+  });
+  await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-guides-test.png');
+  await page.locator('[data-tool="crop"]').click();
+  const before = await Promise.all(['#cropXNum','#cropYNum','#cropWNum','#cropHNum'].map(sel => page.locator(sel).inputValue()));
+  await page.locator('#cropGuideSelect').selectOption('golden');
+  await expect(page.locator('#cropGuideSelect')).toHaveValue('golden');
+  await page.locator('#cropGuideSelect').selectOption('diagonal');
+  await page.locator('#cropGuideSelect').selectOption('none');
+  const after = await Promise.all(['#cropXNum','#cropYNum','#cropWNum','#cropHNum'].map(sel => page.locator(sel).inputValue()));
+  expect(after).toEqual(before);
+});
