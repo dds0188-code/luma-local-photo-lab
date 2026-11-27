@@ -89,6 +89,11 @@ const requiredMarkers = [
   ["consistent preset panel grid", ".preset-workspace .presets{grid-template-columns:repeat(2,minmax(0,1fr))!important"],
   ["desktop editor inspector remains resizable", "grid-template-columns:minmax(460px,1fr) minmax(380px,var(--luma-right-width,430px))!important"],
   ["new workspace design layer", 'id="luma-workspace-redesign-v3"'],
+  ["export has a dedicated editing tool", 'data-tool-panel="export"'],
+  ["project controls are separated from masking", 'class="project-management"'],
+  ["mask panel no longer hosts export actions", 'data-mask-view="adjust"'],
+  ["task-oriented export panel hierarchy", 'id="luma-task-panels-v4"'],
+
 
 
 
