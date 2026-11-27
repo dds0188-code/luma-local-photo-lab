@@ -1692,6 +1692,21 @@ details>summary:after{color:#9ca8b8!important}
 .toolpane[data-tool-panel="area"] .area-secondary-action{margin-top:10px;width:100%;min-height:36px;background:#222d31!important;border-color:#527365!important;color:#c5e1d4!important}
 .toolpane[data-tool-panel="area"] #areaSubnav{margin:10px 0 12px}
 @media(max-width:760px){.toolpane[data-tool-panel="area"] .area-targets{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.toolpane[data-tool-panel="area"] .area-targets button{font-size:10px;padding:6px 2px;min-height:44px}}
+</style><style id="luma-export-groups-v5">
+.toolpane[data-tool-panel="export"] .export-settings>.panel-subnav{margin:0 -2px 12px;padding:7px 2px;background:#171b21;border-bottom:1px solid #303844}
+.toolpane[data-tool-panel="export"] .export-settings>.panel-subnav button{background:#202630;border:1px solid #303a46;color:#b9c4ce;min-height:36px;font-size:10px;padding:7px 10px}
+.toolpane[data-tool-panel="export"] .export-settings>.panel-subnav button.active{background:#293a34;border-color:#789c8b;color:#d7ebdf}
+.toolpane[data-tool-panel="export"] .export-settings>.ui-group{margin:8px 0!important}
+.toolpane[data-tool-panel="export"] .export-settings>.ui-group>summary{font-size:12px!important}
+.toolpane[data-tool-panel="area"] .area-target button{min-width:0}
+.toolpane[data-tool-panel="area"] .area-target button:not(.primary){background:#202630;border-color:#35404b;color:#c8d1db}
+.toolpane[data-tool-panel="area"] .area-target button.primary{background:#293a34;border-color:#789c8b;color:#d7ebdf}
+.toolpane[data-tool-panel="mask"] .mask-subnav{margin:0 -2px 12px!important}
+.toolpane[data-tool-panel="mask"] .mask-subnav button{min-width:0!important;flex:1 1 0!important}
+@media(max-width:760px){
+ .toolpane[data-tool-panel="export"] .export-settings>.panel-subnav{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}
+ .toolpane[data-tool-panel="export"] .export-settings>.panel-subnav button{flex:0 0 auto!important}
+}
 </style></head>
 <body>
 <div class="app">
@@ -2826,6 +2841,9 @@ function organizeEditorPanels(){
    groups.forEach(([a,b,title,open])=>{const start=ops.querySelector(a),end=ops.querySelector(b);if(start&&end&&start!==end&&start.parentElement===end.parentElement)wrapSiblingRange(start.parentElement,start,end,title,open);});
   }
  }
+ // Export: organize output controls by the task being performed.
+ const exportPane=pane('export');
+ if(exportPane){const exportSettings=exportPane.querySelector('.export-settings');if(exportSettings)groupChildrenBySection(exportSettings,true);}
  // AI assistant groups
  const ai=pane('ai');
  if(ai){
