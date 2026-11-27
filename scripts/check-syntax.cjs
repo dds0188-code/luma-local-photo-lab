@@ -93,6 +93,12 @@ const requiredMarkers = [
   ["project controls are separated from masking", 'class="project-management"'],
   ["mask panel no longer hosts export actions", 'data-mask-view="adjust"'],
   ["task-oriented export panel hierarchy", 'id="luma-task-panels-v4"'],
+  ["area select and adjustment views", 'data-area-view="adjust"'],
+  ["area task-first layout", 'id="luma-area-workspace-v4"'],
+  ["export task groups", 'id="luma-export-groups-v5"'],
+  ["unified professional visual palette", 'id="luma-visual-system-v7"'],
+  ["consistent panel micro-layout", 'id="luma-final-panel-polish-v6"'],
+
 
 
 
