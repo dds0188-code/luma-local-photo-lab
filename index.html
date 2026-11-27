@@ -720,6 +720,7 @@ $('histogramRefresh').onclick=()=>{if(image)updateHistogram($('preview'));else t
 function readCachedMaskPixels(layer,source,w,h){
  const revision=Number(layer._renderRevision)||0,cached=maskPixelCache.get(layer.canvas);
  if(cached&&cached.revision===revision&&cached.width===w&&cached.height===h){maskPixelCache.delete(layer.canvas);maskPixelCache.set(layer.canvas,cached);return cached.data}
+ if(cached){maskPixelCache.delete(layer.canvas);maskPixelCacheBytes-=cached.bytes}
  const data=source.getContext('2d',{willReadFrequently:true}).getImageData(0,0,w,h).data,bytes=data.byteLength;
  if(bytes<=MASK_PIXEL_CACHE_LIMIT){
   while(maskPixelCacheBytes+bytes>MASK_PIXEL_CACHE_LIMIT&&maskPixelCache.size){const first=maskPixelCache.keys().next().value,entry=maskPixelCache.get(first);maskPixelCache.delete(first);maskPixelCacheBytes-=entry.bytes}
