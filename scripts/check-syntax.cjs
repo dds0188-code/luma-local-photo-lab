@@ -63,7 +63,7 @@ const requiredMarkers = [
   ["HSL adjustment pipeline", "function applyHsl("],
   ["color grading pipeline", "function applyColorGrade("],
   ["cinematic bloom and halation pipeline", "function applyOpticalGlow(target)"],
-  ["bloom highlight extraction", "const threshold=kind==='bloom'?.58:.72"],
+  ["bloom highlight extraction", "threshold=kind==='bloom'?.58:.72"],
   ["warm film halation blend", "dst[i]=255*mask;dst[i+1]=Math.round(92*mask);dst[i+2]=Math.round(38*mask)"],
   ["bounded optical effect processing", "maxEdge=1800,scale=Math.min(1,maxEdge/Math.max(w,h))"],
   ["effects controls in adjustment panel", "bloom:'effects',bloomRadius:'effects',halation:'effects',halationRadius:'effects'"],
