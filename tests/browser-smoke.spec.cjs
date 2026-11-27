@@ -197,9 +197,10 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await expect(page.locator('#saveToLibrary')).toBeEnabled();
 
     await page.locator('[data-tool="presets"]').click();
-    await expect(page.locator('[data-side-panel="presets"]')).toBeVisible();
+    await expect(page.locator('[data-tool-panel="presets"]')).toBeVisible();
     await expect(page.locator('.preset').first()).toBeVisible();
     await page.locator('.preset').first().click();
+    await page.locator('.preset-management > summary').click();
     await page.locator('#presetName').fill('CI Test Preset');
     await page.locator('#savePreset').click();
     await expect(page.locator('#customPresets')).toContainText('CI Test Preset');
@@ -674,7 +675,7 @@ test('all editor tools expose compact functional subgroups instead of one long c
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
   const checks = [
-    ['presets', '[data-side-panel="presets"] details.ui-group > summary'],
+    ['presets', '[data-tool-panel="presets"] details.ui-group > summary'],
     ['crop', '[data-tool-panel="crop"] details.ui-group > summary'],
     ['color', '[data-tool-panel="color"] .panel-subnav'],
     ['area', '[data-tool-panel="area"] details.ui-group > summary'],
