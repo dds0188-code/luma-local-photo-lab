@@ -1007,7 +1007,8 @@ test('preview rendering is bounded and responds to adjustment and rotation chang
   await expect.poll(() => page.locator('#preview').evaluate(c => c.width)).toBeGreaterThan(0);
   await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-performance-test.png');
   const dims = await page.locator('#preview').evaluate(c => [c.width, c.height]);
-  expect(Math.max(...dims)).toBeLessThanOrEqual(640);
+  expect(Math.max(...dims)).toBeGreaterThan(640);
+  expect(Math.max(...dims)).toBeLessThanOrEqual(1800);
 
   await page.locator('[data-tool="adjust"]').click();
   const before = await page.locator('#preview').evaluate(c => [...c.getContext('2d').getImageData(Math.floor(c.width / 2), Math.floor(c.height / 2), 1, 1).data]);
