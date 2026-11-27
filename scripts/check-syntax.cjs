@@ -82,6 +82,8 @@ const requiredMarkers = [
   ["mask layer rendering", "function renderMaskLayer("],
 
   ["presets live in the right inspector", 'class="toolpane preset-workspace" data-tool-panel="presets"'],
+  ["photo-aware preset thumbnails", "function getPresetThumbnail()"],
+  ["preset-specific thumbnail rendering", "preset.style.filter=presetThumbnailFilter(p)"],
   ["presets no longer trigger left-side workspace mode", "const side=name==='library';"],
   ["preset browsing and management are separated", 'class="preset-management"'],
   ["preset management does not auto-expand over the preset browser", "name==='presets')return;"],
