@@ -69,6 +69,8 @@ const requiredMarkers = [
   ["lens distortion and chromatic aberration pipeline", "function applyLensCorrections(target)"],
   ["bounded lens correction processing", "maxEdge=2400,scale=Math.min(1,maxEdge/Math.max(w,h))"],
   ["lens controls in effects panel", "lensDistortion:'effects',chromaticAberration:'effects'"],
+  ["desktop canvas-first grid", "grid-template-columns:minmax(480px,1fr) minmax(360px,var(--luma-right-width,420px))!important"],
+  ["desktop panel resize bounds", "max: Math.min(620, Math.max(460, window.innerWidth * .42))"],
   ["effects controls in adjustment panel", "bloom:'effects',bloomRadius:'effects',halation:'effects',halationRadius:'effects'"],
   ["mask layer rendering", "function renderMaskLayer("],
 
