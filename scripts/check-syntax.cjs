@@ -26,7 +26,7 @@ for (const file of ["package.json", "capacitor.config.json", "manifest.webmanife
 // These checks verify the required wiring exists; they do not replace real-device testing.
 const requiredMarkers = [
   ["fixed mobile photo preview", "--mobile-preview-h:clamp(160px,25dvh,210px)"],
-  ["independently scrolling mobile controls", "position:fixed;left:0;right:0;top:calc(var(--mobile-header-h) + var(--mobile-workhead-h) + var(--mobile-preview-h) + var(--mobile-zoom-h))"],
+  ["independently scrolling mobile controls", "-webkit-overflow-scrolling:touch;touch-action:pan-y"],
   ["horizontal mobile submenu rails", "overscroll-behavior-x:contain;scrollbar-width:none"],
   ["crop pointer-down handler", "cropOverlay.addEventListener('pointerdown'"],
   ["crop pointer-move handler", "cropOverlay.addEventListener('pointermove'"],
