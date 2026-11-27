@@ -122,8 +122,8 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await expect(page.locator('#compareLabel')).not.toHaveClass(/hidden/);
     await page.locator('#compareBtn').click();
 
-    // Sized export is inside the advanced section of the Mask tool, so reveal it first.
-    traceStep('open advanced export panel');
+    // Sized export is grouped in the dedicated Export workspace.
+    traceStep('open dedicated export panel');
     await page.locator('[data-tool="export"]').click();
     const exportSettings = page.locator('details.export-settings');
     await expect(exportSettings).toBeVisible();
@@ -201,6 +201,9 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await expect(page.locator('.controls')).toBeVisible();
     await expect(page.locator('.left')).toBeHidden();
     await expect(page.locator('#favoriteOnly')).toHaveAttribute('aria-label', '즐겨찾기만 보기');
+    await page.locator('#favoriteOnly').click();
+    await expect(page.locator('#favoriteOnly')).toHaveAttribute('aria-label', '즐겨찾기 표시 중');
+    await page.locator('#favoriteOnly').click();
     await expect(page.locator('.preset').first()).toBeVisible();
     await page.locator('.preset').first().click();
     await page.locator('.preset-management > summary').click();
@@ -221,6 +224,11 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('#aiAuto').click();
 
     await page.locator('[data-tool="area"]').click();
+    await expect(page.locator('[data-area-panel="select"]')).toBeVisible();
+    await page.locator('[data-area-view="adjust"]').click();
+    await expect(page.locator('[data-area-panel="adjust"]')).toBeVisible();
+    await page.locator('[data-area-view="select"]').click();
+    await expect(page.locator('#areaSkyRun')).toBeVisible();
     await page.locator('#areaSkyRun').click();
     await expect(page.locator('#areaStatus')).not.toBeEmpty();
 
