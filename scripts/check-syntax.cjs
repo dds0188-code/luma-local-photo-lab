@@ -26,7 +26,7 @@ for (const file of ["package.json", "capacitor.config.json", "manifest.webmanife
 // These checks verify the required wiring exists; they do not replace real-device testing.
 const requiredMarkers = [
   ["fixed mobile photo preview", "--mobile-preview-h:clamp(160px,25dvh,210px)"],
-  ["independently scrolling mobile controls", "overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch"],
+  ["independently scrolling mobile controls", "position:fixed;left:0;right:0;top:calc(var(--mobile-header-h) + var(--mobile-workhead-h) + var(--mobile-preview-h) + var(--mobile-zoom-h))"],
   ["horizontal mobile submenu rails", "overscroll-behavior-x:contain;scrollbar-width:none"],
   ["crop pointer-down handler", "cropOverlay.addEventListener('pointerdown'"],
   ["crop pointer-move handler", "cropOverlay.addEventListener('pointermove'"],
@@ -78,7 +78,7 @@ const requiredMarkers = [
   ["seven-color HSL selector", "const palette=[\n      {key:'red',label:'빨강',color:'#ef3340'}"],
   ["single active HSL group", "#hslControls .hslgroup[data-active=\"true\"]{display:block!important}"],
   ["visible seven-color HSL labels", "chip.textContent=item.label"],
-  ["desktop canvas-first grid", "grid-template-columns:minmax(0,1fr) minmax(390px,var(--inspector-w))"],
+  ["desktop canvas-first grid", "grid-template-columns:minmax(0,1fr) minmax(390px,var(--luma-right-width,430px))"],
   ["desktop panel resize bounds", "max: Math.min(620, Math.max(460, window.innerWidth * .42))"],
   ["effects controls in adjustment panel", "bloom:'effects',bloomRadius:'effects',halation:'effects',halationRadius:'effects'"],
   ["mask layer rendering", "function renderMaskLayer("],
