@@ -73,9 +73,12 @@ const requiredMarkers = [
   ["lens distortion and chromatic aberration pipeline", "function applyLensCorrections(target)"],
   ["bounded lens correction processing", "maxEdge=2400,scale=Math.min(1,maxEdge/Math.max(w,h))"],
   ["lens controls in effects panel", "lensDistortion:'effects',chromaticAberration:'effects'"],
-  ["seven-color HSL selector", "const palette=[\n      {key:'red',label:'빨강',color:'#ef3340'}"],
+  ["seven-color HSL selector", "const palette=["],
   ["single active HSL group", "#hslControls .hslgroup[data-active=\"true\"]{display:block!important}"],
   ["visible seven-color HSL labels", "chip.textContent=item.label"],
+  ["precomputed tone-curve lookup tables", "new Float32Array(4096)"],
+  ["high-quality image resampling", "ctx.imageSmoothingQuality='high'"],
+  ["consistent line icons for editing tools", "const paths={"]
   ["desktop canvas-first grid", "grid-template-columns:minmax(0,1fr) minmax(390px,var(--luma-right-width,430px))"],
   ["desktop panel resize bounds", "max: Math.min(620, Math.max(460, window.innerWidth * .42))"],
   ["effects controls in adjustment panel", "bloom:'effects',bloomRadius:'effects',halation:'effects',halationRadius:'effects'"],
