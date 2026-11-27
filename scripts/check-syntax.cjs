@@ -83,6 +83,9 @@ const requiredMarkers = [
   ["desktop panel resize bounds", "max: Math.min(620, Math.max(460, window.innerWidth * .42))"],
   ["effects controls in adjustment panel", "bloom:'effects',bloomRadius:'effects',halation:'effects',halationRadius:'effects'"],
   ["mask layer rendering", "function renderMaskLayer("],
+  ["revision-aware mask pixel cache", "function readCachedMaskPixels(layer,source,w,h)"],
+  ["bounded mask pixel cache memory", "const MASK_PIXEL_CACHE_LIMIT=48*1024*1024"],
+  ["mask cache invalidation on rebuild", "layer._renderRevision=(Number(layer._renderRevision)||0)+1"],
 
   ["presets live in the right inspector", 'class="toolpane preset-workspace" data-tool-panel="presets"'],
   ["photo-aware preset thumbnails", "function getPresetThumbnail()"],
