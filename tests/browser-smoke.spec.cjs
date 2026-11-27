@@ -244,6 +244,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('#exportWatermarked').click();
     const jpeg = await jpegPromise;
     expect(jpeg.suggestedFilename()).toMatch(/\.jpe?g$/i);
+    await page.locator('[data-tool-panel="export"] .panel-subnav button').filter({ hasText: '이미지 품질 도구' }).click();
     const pngPromise = page.waitForEvent('download', { timeout: 12000 });
     await revealInOpenGroups(page, '#exportSizedPng');
     await page.locator('#exportSizedPng').click();
