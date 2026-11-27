@@ -17,6 +17,29 @@ async function revealInOpenGroups(page, selector) {
 }
 
 test.describe('Luma Local Photo Lab browser smoke', () => {
+  test('desktop editor gives photo canvas the main width and divider resizes both columns', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+    await page.locator('[data-tool="adjust"]').click();
+    const layout = page.locator('.layout');
+    const workspace = page.locator('.workspace');
+    const controls = page.locator('.controls');
+    await expect(layout).toHaveClass(/edit-view/);
+    const initial = await page.evaluate(() => {
+      const l=document.querySelector('.layout'),w=document.querySelector('.workspace'),c=document.querySelector('.controls');
+      const lr=l.getBoundingClientRect(),wr=w.getBoundingClientRect(),cr=c.getBoundingClientRect();
+      return {layoutWidth:lr.width,workspaceWidth:wr.width,controlsWidth:cr.width,controlsLeft:cr.left};
+    });
+    expect(initial.workspaceWidth).toBeGreaterThan(initial.controlsWidth);
+    expect(initial.controlsLeft + initial.controlsWidth).toBeLessThanOrEqual(initial.layoutWidth + 1);
+    await page.mouse.move(initial.controlsLeft + 2, 500);
+    await page.mouse.down();
+    await page.mouse.move(initial.controlsLeft + 82, 500, { steps: 8 });
+    await page.mouse.up();
+    await expect.poll(async () => controls.evaluate(el => el.getBoundingClientRect().width)).toBeLessThan(initial.controlsWidth - 35);
+    await expect.poll(async () => workspace.evaluate(el => el.getBoundingClientRect().width)).toBeGreaterThan(initial.workspaceWidth + 35);
+  });
+
   test('loads app, edits a real canvas image, supports history and exports', async ({ page }) => {
     test.setTimeout(120000);
     page.setDefaultTimeout(7000);
