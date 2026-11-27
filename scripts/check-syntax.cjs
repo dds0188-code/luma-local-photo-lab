@@ -66,6 +66,9 @@ const requiredMarkers = [
   ["bloom highlight extraction", "threshold=kind==='bloom'?.58:.72"],
   ["warm film halation blend", "dst[i]=255*mask;dst[i+1]=Math.round(92*mask);dst[i+2]=Math.round(38*mask)"],
   ["bounded optical effect processing", "maxEdge=1800,scale=Math.min(1,maxEdge/Math.max(w,h))"],
+  ["lens distortion and chromatic aberration pipeline", "function applyLensCorrections(target)"],
+  ["bounded lens correction processing", "maxEdge=2400,scale=Math.min(1,maxEdge/Math.max(w,h))"],
+  ["lens controls in effects panel", "lensDistortion:'effects',chromaticAberration:'effects'"],
   ["effects controls in adjustment panel", "bloom:'effects',bloomRadius:'effects',halation:'effects',halationRadius:'effects'"],
   ["mask layer rendering", "function renderMaskLayer("],
 
