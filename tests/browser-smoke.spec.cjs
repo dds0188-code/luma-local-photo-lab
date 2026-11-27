@@ -1105,3 +1105,36 @@ test('cinematic bloom and film halation create highlight glow in rendered photo'
   expect(after[0] + after[1] + after[2]).toBeGreaterThan(before[0] + before[1] + before[2]);
   expect(errors, 'optical effect browser errors').toEqual([]);
 });
+
+
+test('lens distortion and chromatic aberration alter image pixels without browser errors', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 180; c.height = 120;
+    const x = c.getContext('2d');
+    x.fillStyle = '#ffffff'; x.fillRect(0, 0, 180, 120);
+    for (let i = 0; i < 9; i++) { x.fillStyle = i % 2 ? '#111111' : '#dddddd'; x.fillRect(i * 20, 0, 10, 120); }
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({
+    name: 'luma-lens-test.png', mimeType: 'image/png',
+    buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+  });
+  await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-lens-test.png');
+  await page.locator('[data-tool="adjust"]').click();
+  await page.locator('[data-adjust-group="effects"]').click();
+  const snapshot = () => page.locator('#preview').evaluate(c => Array.from(c.getContext('2d').getImageData(0, 0, c.width, c.height).data).filter((_,i)=>i%4!==3).slice(0,12000));
+  const before = await snapshot();
+  await page.locator('#lensDistortion').evaluate(el => { el.value = '100'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.waitForTimeout(350);
+  const distorted = await snapshot();
+  expect(distorted).not.toEqual(before);
+  await page.locator('#lensDistortion').evaluate(el => { el.value = '0'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.locator('#chromaticAberration').evaluate(el => { el.value = '100'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.waitForTimeout(350);
+  const corrected = await snapshot();
+  expect(corrected).not.toEqual(before);
+  expect(errors, 'lens correction browser errors').toEqual([]);
+});
