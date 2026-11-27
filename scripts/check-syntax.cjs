@@ -61,6 +61,7 @@ const requiredMarkers = [
   ["pinned color sample collection", "samplerSamples.length>=8"],
   ["5x5 average color extraction", "Math.max(0,x-2),y0=Math.max(0,y-2)"],
   ["HSL adjustment pipeline", "function applyHsl("],
+  ["stable preview resolution while adjusting", "/* Keep preview pixel dimensions stable while sliders are dragged; fastPreview may throttle scheduling but must never downsample the displayed photo. */return base"],
   ["color grading pipeline", "function applyColorGrade("],
   ["cinematic bloom and halation pipeline", "function applyOpticalGlow(target)"],
   ["bloom highlight extraction", "threshold=kind==='bloom'?.58:.72"],
