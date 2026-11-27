@@ -1072,3 +1072,36 @@ test('crop composition guides switch without changing crop coordinates', async (
   const after = await Promise.all(['#cropXNum','#cropYNum','#cropWNum','#cropHNum'].map(sel => page.locator(sel).inputValue()));
   expect(after).toEqual(before);
 });
+
+
+test('cinematic bloom and film halation create highlight glow in rendered photo', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  const dataUrl = await page.evaluate(() => {
+    const c = document.createElement('canvas'); c.width = 160; c.height = 120;
+    const x = c.getContext('2d'); x.fillStyle = '#080808'; x.fillRect(0, 0, 160, 120);
+    x.fillStyle = '#ffffff'; x.fillRect(60, 35, 40, 50);
+    return c.toDataURL('image/png');
+  });
+  await page.locator('#fileInput').setInputFiles({
+    name: 'luma-optical-effects-test.png', mimeType: 'image/png',
+    buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
+  });
+  await expect.poll(() => page.locator('#filename').innerText()).toContain('luma-optical-effects-test.png');
+  await page.locator('[data-tool="adjust"]').click();
+  await page.locator('[data-adjust-group="effects"]').click();
+  const sample = async () => page.locator('#preview').evaluate(canvas => {
+    const d = canvas.getContext('2d').getImageData(55, 60, 1, 1).data;
+    return [d[0], d[1], d[2]];
+  });
+  const before = await sample();
+  await page.locator('#bloom').evaluate(el => { el.value = '100'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.locator('#bloomRadius').evaluate(el => { el.value = '100'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.locator('#halation').evaluate(el => { el.value = '100'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.locator('#halationRadius').evaluate(el => { el.value = '100'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.waitForTimeout(300);
+  const after = await sample();
+  expect(after[0] + after[1] + after[2]).toBeGreaterThan(before[0] + before[1] + before[2]);
+  expect(errors, 'optical effect browser errors').toEqual([]);
+});
