@@ -116,6 +116,12 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await expect(page.locator('#compareBtn')).toBeEnabled();
     await expect(page.locator('#exportBtn')).toBeEnabled();
 
+    traceStep('verify photo-aware preset thumbnails');
+    await page.locator('[data-tool="presets"]').click();
+    await expect(page.locator('.controls [data-tool-panel="presets"] .preset').first()).toBeVisible();
+    await expect.poll(() => page.locator('.controls [data-tool-panel="presets"] .preset .swatch').first().evaluate(el => el.style.backgroundImage.includes('data:image/jpeg'))).toBe(true);
+    await page.locator('[data-tool="crop"]').click();
+
     // Transform controls live in the Crop/Transform tool panel; open that panel before testing them.
     traceStep('open transform panel');
     await page.locator('[data-tool="crop"]').click();
