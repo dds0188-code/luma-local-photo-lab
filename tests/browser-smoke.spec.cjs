@@ -198,6 +198,9 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
 
     await page.locator('[data-tool="presets"]').click();
     await expect(page.locator('[data-tool-panel="presets"]')).toBeVisible();
+    await expect(page.locator('.controls')).toBeVisible();
+    await expect(page.locator('.left')).toBeHidden();
+    await expect(page.locator('#favoriteOnly')).toHaveAttribute('aria-label', '즐겨찾기만 보기');
     await expect(page.locator('.preset').first()).toBeVisible();
     await page.locator('.preset').first().click();
     await page.locator('.preset-management > summary').click();
