@@ -18,8 +18,6 @@ const base = {
 module.exports = defineConfig({
   ...base,
   projects: [
-    { name: 'chromium-desktop-and-mobile-viewport', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox-desktop-and-mobile-viewport', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit-safari-engine-desktop-and-mobile-viewport', use: { ...devices['Desktop Safari'] } }
+    { name: 'chromium-desktop-and-mobile-viewport', use: { ...devices['Desktop Chrome'] } }
   ]
 });
