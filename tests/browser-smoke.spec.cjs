@@ -286,6 +286,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     expect(project.suggestedFilename()).toMatch(/\.json$/i);
     const recipePromise = page.waitForEvent('download', { timeout: 12000 });
     await page.locator('[data-tool="files"]').click();
+    await page.locator('details.project-settings > summary').click();
     await page.locator('#saveRecipe').click();
     const recipe = await recipePromise;
     expect(recipe.suggestedFilename()).toMatch(/\.json$/i);
