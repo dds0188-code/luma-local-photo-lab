@@ -238,6 +238,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     const exportSettings = page.locator('details.export-settings');
     await expect(exportSettings).toBeVisible();
     await expect(exportSettings).toHaveAttribute('open', '');
+    await page.locator('[data-tool-panel="export"] .panel-subnav button').filter({ hasText: 'SNS 비율 캔버스' }).click();
     const jpegPromise = page.waitForEvent('download', { timeout: 12000 });
     await revealInOpenGroups(page, '#exportWatermarked');
     await page.locator('#exportWatermarked').click();
@@ -293,6 +294,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     expect(recipe.suggestedFilename()).toMatch(/\.json$/i);
 
     await page.locator('[data-tool="export"]').click();
+    await page.locator('[data-tool-panel="export"] .panel-subnav button').filter({ hasText: '내보내기 프로필' }).click();
     await page.locator('#exportProfileName').fill('CI Export Profile');
     await page.locator('#exportProfileFormat').selectOption('image/png');
     await page.locator('#saveExportProfile').click();
@@ -302,6 +304,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('#applyExportProfile').click();
     await expect(page.locator('#exportProfileStatus')).not.toBeEmpty();
 
+    await page.locator('[data-tool-panel="export"] .panel-subnav button').filter({ hasText: '액자 · 여백 내보내기' }).click();
     await page.locator('#exportFramed').evaluate(el => {
       let parent = el.closest('details');
       while (parent) { parent.open = true; parent = parent.parentElement.closest('details'); }
