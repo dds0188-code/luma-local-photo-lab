@@ -23,8 +23,13 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('[data-tool="color"]').click();
     const rail=page.locator('#hslColorRail');
     await expect(rail.locator('button')).toHaveCount(7);
-    await expect(rail.locator('button[aria-label="빨강"]')).toBeVisible();
-    await expect(rail.locator('button[aria-label="보라"]')).toBeVisible();
+    await expect(rail.locator('button[aria-label="빨강"]')).toHaveText('빨강');
+    await expect(rail.locator('button[aria-label="주황"]')).toHaveText('주황');
+    await expect(rail.locator('button[aria-label="노랑"]')).toHaveText('노랑');
+    await expect(rail.locator('button[aria-label="초록"]')).toHaveText('초록');
+    await expect(rail.locator('button[aria-label="파랑"]')).toHaveText('파랑');
+    await expect(rail.locator('button[aria-label="남색"]')).toHaveText('남색');
+    await expect(rail.locator('button[aria-label="보라"]')).toHaveText('보라');
     await expect(page.locator('#hslControls .hslgroup[data-color-key="red"]')).toBeVisible();
     await expect(page.locator('#hslControls .hslgroup[data-color-key="orange"]')).toBeHidden();
     await rail.locator('button[aria-label="주황"]').click();
@@ -34,10 +39,29 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await expect(page.locator('#hslControls .hslgroup[data-color-key="orange"] input[type="range"]')).toHaveCount(3);
   });
 
+  test('mobile editor pins preview, scrolls inspector independently and keeps tools in bottom dock', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+    await page.locator('[data-tool="adjust"]').click();
+    const geometry = await page.evaluate(() => {
+      const stage=document.querySelector('#stage'),controls=document.querySelector('.controls'),nav=document.querySelector('#toolNav');
+      return {stagePosition:getComputedStyle(stage).position,controlsPosition:getComputedStyle(controls).position,controlsOverflow:getComputedStyle(controls).overflowY,navPosition:getComputedStyle(nav).position,navBottom:Math.round(nav.getBoundingClientRect().bottom),viewport:innerHeight};
+    });
+    expect(geometry.stagePosition).toBe('fixed');
+    expect(geometry.controlsPosition).toBe('fixed');
+    expect(geometry.controlsOverflow).toBe('auto');
+    expect(geometry.navPosition).toBe('fixed');
+    expect(Math.abs(geometry.navBottom-geometry.viewport)).toBeLessThanOrEqual(2);
+    await page.locator('[data-tool="presets"]').click();
+    await expect(page.locator('.controls [data-tool-panel="presets"]')).toBeVisible();
+    await expect(page.locator('.left')).toBeHidden();
+  });
+
   test('desktop editor gives photo canvas the main width and divider resizes both columns', async ({ page }) => {
     await page.setViewportSize({ width: 1600, height: 1000 });
     await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
     await page.locator('[data-tool="adjust"]').click();
+    await expect.poll(() => page.locator('#toolNav').evaluate(el => el.parentElement === document.body)).toBe(true);
     const layout = page.locator('.layout');
     const workspace = page.locator('.workspace');
     const controls = page.locator('.controls');
