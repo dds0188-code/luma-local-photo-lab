@@ -82,13 +82,13 @@ const requiredMarkers = [
   ["effects controls in adjustment panel", "bloom:'effects',bloomRadius:'effects',halation:'effects',halationRadius:'effects'"],
   ["mask layer rendering", "function renderMaskLayer("],
 
-  ["presets live in the right inspector", "class="toolpane preset-workspace" data-tool-panel="presets""],
+  ["presets live in the right inspector", 'class="toolpane preset-workspace" data-tool-panel="presets"'],
   ["presets no longer trigger left-side workspace mode", "const side=name==='library';"],
-  ["preset browsing and management are separated", "class="preset-management""],
+  ["preset browsing and management are separated", 'class="preset-management"'],
   ["preset management does not auto-expand over the preset browser", "name==='presets')return;"],
   ["consistent preset panel grid", ".preset-workspace .presets{grid-template-columns:repeat(2,minmax(0,1fr))!important"],
   ["desktop editor inspector remains resizable", "grid-template-columns:minmax(460px,1fr) minmax(380px,var(--luma-right-width,430px))!important"],
-  ["new workspace design layer", "id="luma-workspace-redesign-v3""],
+  ["new workspace design layer", 'id="luma-workspace-redesign-v3"'],
 
 
 
