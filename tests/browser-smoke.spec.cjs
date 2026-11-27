@@ -124,10 +124,10 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
 
     // Sized export is inside the advanced section of the Mask tool, so reveal it first.
     traceStep('open advanced export panel');
-    await page.locator('[data-tool="mask"]').click();
-    await page.locator('[data-mask-view="advanced"]').click();
-    const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
-    await expect.poll(() => advanced.evaluate(el => el.hidden)).toBe(false);
+    await page.locator('[data-tool="export"]').click();
+    const exportSettings = page.locator('details.export-settings');
+    await expect(exportSettings).toBeVisible();
+    await expect(exportSettings).toHaveAttribute('open', '');
     await revealInOpenGroups(page, '#exportSizedJpeg');
     traceStep('trigger sized jpeg download');
     const downloadPromise = page.waitForEvent('download', { timeout: 15000 });
@@ -234,10 +234,10 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('#saveToLibrary').click();
     await expect(page.locator('#libraryItems')).not.toBeEmpty();
 
-    await page.locator('[data-tool="mask"]').click();
-    await page.locator('[data-mask-view="advanced"]').click();
-    const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
-    await expect.poll(() => advanced.evaluate(el => el.hidden)).toBe(false);
+    await page.locator('[data-tool="export"]').click();
+    const exportSettings = page.locator('details.export-settings');
+    await expect(exportSettings).toBeVisible();
+    await expect(exportSettings).toHaveAttribute('open', '');
     const jpegPromise = page.waitForEvent('download', { timeout: 12000 });
     await revealInOpenGroups(page, '#exportWatermarked');
     await page.locator('#exportWatermarked').click();
@@ -275,10 +275,10 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
       buffer: Buffer.from(dataUrl.split(',')[1], 'base64')
     });
 
-    await page.locator('[data-tool="mask"]').click();
-    await page.locator('[data-mask-view="advanced"]').click();
-    const advancedProject = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
-    await expect.poll(() => advancedProject.evaluate(el => el.hidden)).toBe(false);
+    await page.locator('[data-tool="files"]').click();
+    const projectManagement = page.locator('details.project-management');
+    await expect(projectManagement).toBeVisible();
+    await expect(projectManagement).toHaveAttribute('open', '');
     const projectPromise = page.waitForEvent('download', { timeout: 12000 });
     await revealInOpenGroups(page, '#saveProjectJson');
     await page.locator('#saveProjectJson').click();
@@ -290,8 +290,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     const recipe = await recipePromise;
     expect(recipe.suggestedFilename()).toMatch(/\.json$/i);
 
-    await page.locator('[data-tool="mask"]').click();
-    await page.locator('[data-mask-view="advanced"]').click();
+    await page.locator('[data-tool="export"]').click();
     await page.locator('#exportProfileName').fill('CI Export Profile');
     await page.locator('#exportProfileFormat').selectOption('image/png');
     await page.locator('#saveExportProfile').click();
@@ -377,10 +376,10 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await expect(page.locator('#aiAuto')).toBeEnabled();
     await page.locator('#aiAuto').click();
 
-    await page.locator('[data-tool="mask"]').click();
-    await page.locator('[data-mask-view="advanced"]').click();
-    const advanced = page.locator('details.mask-extra.mask-group[data-mask-subgroup="advanced"]');
-    await expect.poll(() => advanced.evaluate(el => el.hidden)).toBe(false);
+    await page.locator('[data-tool="export"]').click();
+    const exportSettings = page.locator('details.export-settings');
+    await expect(exportSettings).toBeVisible();
+    await expect(exportSettings).toHaveAttribute('open', '');
     const downloadPromise = page.waitForEvent('download', { timeout: 12000 });
     await revealInOpenGroups(page, '#exportSizedJpeg');
     await page.locator('#exportSizedJpeg').click();
