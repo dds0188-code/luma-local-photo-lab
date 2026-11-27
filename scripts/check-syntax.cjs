@@ -25,9 +25,9 @@ for (const file of ["package.json", "capacitor.config.json", "manifest.webmanife
 // Guard the regressions repeatedly reported during mobile editing reviews.
 // These checks verify the required wiring exists; they do not replace real-device testing.
 const requiredMarkers = [
-  ["fixed mobile photo preview", "#stage.stage{display:flex!important;position:fixed!important"],
-  ["independently scrolling mobile controls", ".controls{display:block!important;position:fixed!important"],
-  ["horizontal mobile submenu rails", "touch-action:pan-x!important;white-space:nowrap!important"],
+  ["fixed mobile photo preview", "--mobile-preview-h:clamp(160px,25dvh,210px)"],
+  ["independently scrolling mobile controls", "overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch"],
+  ["horizontal mobile submenu rails", "overscroll-behavior-x:contain;scrollbar-width:none"],
   ["crop pointer-down handler", "cropOverlay.addEventListener('pointerdown'"],
   ["crop pointer-move handler", "cropOverlay.addEventListener('pointermove'"],
   ["relighting position overlay", "function drawRelightOverlay()"],
@@ -64,8 +64,8 @@ const requiredMarkers = [
   ["workspace-density preview resolution", "const cssEdge=Math.max(rect?.width||0,rect?.height||0,window.innerWidth*.72,window.innerHeight*.68)"],
   ["stable interactive render scheduling", "Expensive mask/HSL/curve pixel passes are coalesced; canvas resolution stays constant for the whole gesture."],
   ["full-quality render on slider release", "range.addEventListener('change',()=>{fastPreview=false;clearTimeout(fastPreviewTimer);scheduleRender(0,false);saveHistory()})"],
-  ["focused editor panel styling", "id=\"luma-editor-polish-v2\""],
-  ["task-first panel focus", "id=\"luma-panel-focus-v2\""],
+  ,
+  ,
   ["high density preview cap", "mobile?(memory<=4?1500:1800):(memory<=4?1900:2400)"],
   ["color grading pipeline", "function applyColorGrade("],
   ["cinematic bloom and halation pipeline", "function applyOpticalGlow(target)"],
@@ -77,7 +77,8 @@ const requiredMarkers = [
   ["lens controls in effects panel", "lensDistortion:'effects',chromaticAberration:'effects'"],
   ["seven-color HSL selector", "const palette=[\n      {key:'red',label:'빨강',color:'#ef3340'}"],
   ["single active HSL group", "#hslControls .hslgroup[data-active=\"true\"]{display:block!important}"],
-  ["desktop canvas-first grid", "grid-template-columns:minmax(480px,1fr) minmax(360px,var(--luma-right-width,420px))!important"],
+  ["visible seven-color HSL labels", "chip.textContent=item.label"],
+  ["desktop canvas-first grid", "grid-template-columns:minmax(0,1fr) minmax(390px,var(--inspector-w))"],
   ["desktop panel resize bounds", "max: Math.min(620, Math.max(460, window.innerWidth * .42))"],
   ["effects controls in adjustment panel", "bloom:'effects',bloomRadius:'effects',halation:'effects',halationRadius:'effects'"],
   ["mask layer rendering", "function renderMaskLayer("],
@@ -86,18 +87,19 @@ const requiredMarkers = [
   ["presets no longer trigger left-side workspace mode", "const side=name==='library';"],
   ["preset browsing and management are separated", 'class="preset-management"'],
   ["preset management does not auto-expand over the preset browser", "name==='presets')return;"],
-  ["consistent preset panel grid", ".preset-workspace .presets{grid-template-columns:repeat(2,minmax(0,1fr))!important"],
-  ["desktop editor inspector remains resizable", "grid-template-columns:minmax(460px,1fr) minmax(380px,var(--luma-right-width,430px))!important"],
-  ["new workspace design layer", 'id="luma-workspace-redesign-v3"'],
+  ["consistent preset panel grid", ".presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))"],
+  ,
+  ["unified Luma Studio design system", 'id="luma-studio-design-v8"'],
+  ["global tool navigation", 'id="luma-global-navigation-v8"'],,
   ["export has a dedicated editing tool", 'data-tool-panel="export"'],
   ["project controls are separated from masking", 'class="project-management"'],
   ["mask panel no longer hosts export actions", 'data-mask-view="adjust"'],
-  ["task-oriented export panel hierarchy", 'id="luma-task-panels-v4"'],
+
   ["area select and adjustment views", 'data-area-view="adjust"'],
-  ["area task-first layout", 'id="luma-area-workspace-v4"'],
-  ["export task groups", 'id="luma-export-groups-v5"'],
-  ["unified professional visual palette", 'id="luma-visual-system-v7"'],
-  ["consistent panel micro-layout", 'id="luma-final-panel-polish-v6"'],
+
+
+
+
 
 
 
