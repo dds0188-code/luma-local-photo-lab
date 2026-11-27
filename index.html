@@ -1475,6 +1475,48 @@ details>summary:after{color:#9ca8b8!important}
 .sampler-chip{min-width:0;display:flex;align-items:center;gap:5px;padding:5px;border:1px solid var(--line);border-radius:7px;background:#222329;color:var(--text);font-size:9px;cursor:pointer}
 .sampler-chip i{width:18px;height:18px;flex:none;border-radius:4px;border:1px solid #ffffff30}.sampler-chip span{overflow:hidden;text-overflow:ellipsis}
 #preview.sampler-picking{cursor:crosshair!important;outline:2px solid var(--accent);outline-offset:2px}
+
+/* LUMA DESKTOP CANVAS-FIRST LAYOUT FIX
+   Keep the photo workspace as the flexible primary column. The inspector width
+   is controlled by the shared variable so dragging its divider resizes both. */
+@media (min-width:761px){
+  .layout.edit-view{
+    display:grid!important;
+    grid-template-columns:minmax(480px,1fr) minmax(360px,var(--luma-right-width,420px))!important;
+    min-width:0!important;
+    width:100%!important;
+    overflow:hidden!important;
+  }
+  .layout.edit-view>.left{display:none!important}
+  .layout.edit-view>.workspace{display:flex!important;min-width:0!important;width:auto!important;max-width:none!important;grid-column:1!important}
+  .layout.edit-view>.controls{
+    display:block!important;grid-column:2!important;grid-row:1!important;
+    width:auto!important;min-width:360px!important;max-width:none!important;
+    min-height:0!important;max-height:calc(100dvh - 64px)!important;
+    overflow-x:hidden!important;overflow-y:auto!important;
+    position:relative!important;box-sizing:border-box!important;
+  }
+  .layout.edit-view>.controls::before{
+    left:-5px!important;right:auto!important;width:10px!important;
+    cursor:col-resize!important;touch-action:none!important;
+  }
+  .layout.edit-view>.controls::after{left:-2px!important;pointer-events:none!important}
+  .layout.edit-view>.workspace>.stage{min-width:0!important;min-height:0!important;width:100%!important}
+  .layout.edit-view>.workspace>.stage #preview{
+    max-width:100%!important;max-height:100%!important;object-fit:contain!important;
+  }
+  .layout.side-view{
+    display:grid!important;grid-template-columns:clamp(240px,20vw,300px) minmax(0,1fr)!important;
+  }
+  .layout.side-view>.left{display:block!important;grid-column:1!important;min-width:0!important}
+  .layout.side-view>.workspace{display:flex!important;grid-column:2!important;min-width:0!important}
+  .layout.side-view>.controls{display:none!important}
+}
+@media (min-width:761px) and (max-width:1100px){
+  .layout.edit-view{grid-template-columns:minmax(360px,1fr) minmax(320px,var(--luma-right-width,380px))!important}
+  .layout.edit-view>.controls{min-width:320px!important}
+}
+
 </style>
 </head>
 <body>
@@ -2884,8 +2926,8 @@ try{const auto=JSON.parse(localStorage.getItem('luma-recipe')||'null');if(auto?.
   if (!layout || !controls) return;
   const storageKey = 'luma-desktop-right-panel-width-v1';
   const bounds = () => window.innerWidth <= 1100
-    ? { min: Math.min(310, Math.max(285, window.innerWidth * .29)), max: Math.min(400, Math.max(330, window.innerWidth * .39)) }
-    : { min: 400, max: Math.min(640, Math.max(440, window.innerWidth * .42)) };
+    ? { min: Math.min(320, Math.max(285, window.innerWidth * .30)), max: Math.min(480, Math.max(360, window.innerWidth * .46)) }
+    : { min: 360, max: Math.min(620, Math.max(460, window.innerWidth * .42)) };
   const readSaved = () => {
     try {
       const value = Number(localStorage.getItem(storageKey));
