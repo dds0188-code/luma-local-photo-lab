@@ -17,6 +17,23 @@ async function revealInOpenGroups(page, selector) {
 }
 
 test.describe('Luma Local Photo Lab browser smoke', () => {
+  test('HSL color rail shows seven labeled swatches and only the selected color controls', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+    await page.locator('[data-tool="color"]').click();
+    const rail=page.locator('#hslColorRail');
+    await expect(rail.locator('button')).toHaveCount(7);
+    await expect(rail.locator('button[aria-label="빨강"]')).toBeVisible();
+    await expect(rail.locator('button[aria-label="보라"]')).toBeVisible();
+    await expect(page.locator('#hslControls .hslgroup[data-color-key="red"]')).toBeVisible();
+    await expect(page.locator('#hslControls .hslgroup[data-color-key="orange"]')).toBeHidden();
+    await rail.locator('button[aria-label="주황"]').click();
+    await expect(page.locator('#hslControls .hslgroup[data-color-key="orange"]')).toBeVisible();
+    await expect(page.locator('#hslControls .hslgroup[data-color-key="red"]')).toBeHidden();
+    await expect(rail.locator('button[aria-label="주황"]')).toHaveAttribute('aria-pressed','true');
+    await expect(page.locator('#hslControls .hslgroup[data-color-key="orange"] input[type="range"]')).toHaveCount(3);
+  });
+
   test('desktop editor gives photo canvas the main width and divider resizes both columns', async ({ page }) => {
     await page.setViewportSize({ width: 1600, height: 1000 });
     await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
