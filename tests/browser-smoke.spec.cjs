@@ -248,6 +248,7 @@ test.describe('Luma Local Photo Lab browser smoke', () => {
     await page.locator('#exportSizedPng').click();
     const png = await pngPromise;
     expect(png.suggestedFilename()).toMatch(/\.png$/i);
+    await page.locator('[data-tool="files"]').click();
     const metadataPromise = page.waitForEvent('download', { timeout: 12000 });
     await page.locator('#downloadMetadata').click();
     const metadata = await metadataPromise;
